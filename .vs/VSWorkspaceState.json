@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\backend\\obj\\Release",
-    "\\backend\\obj\\Release\\net8.0"
+    "\\backend"
   ],
-  "SelectedNode": "\\backend",
+  "SelectedNode": "\\backend\\Program.cs",
   "PreviewInSolutionExplorer": false
 }
