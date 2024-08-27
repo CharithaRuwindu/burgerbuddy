@@ -4,7 +4,7 @@ const Layout = () => {
   return (
     <>
       <nav className="bg-yellow-600 h-14 content-center">
-        <ul className="flex">
+        <ul className="flex bg-red-400">
           <li>
             <Link to="/">Home</Link>
           </li>
