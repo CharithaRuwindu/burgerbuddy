@@ -3,24 +3,40 @@
   "WorkspaceRootPath": "E:\\personal project\\burgerbuddy\\backend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\migrations\\20240906174358_initial3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\migrations\\20240906174358_initial3.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\migrations\\20240906172745_initial2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\migrations\\20240906172745_initial2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\migrations\\20240906170220_initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\migrations\\20240906170220_initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\backend.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\backend.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\models\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\models\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\models\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\models\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,32 +55,84 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "20240906174358_initial3.cs",
+              "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Migrations\\20240906174358_initial3.cs",
+              "RelativeDocumentMoniker": "backend\\Migrations\\20240906174358_initial3.cs",
+              "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Migrations\\20240906174358_initial3.cs",
+              "RelativeToolTip": "backend\\Migrations\\20240906174358_initial3.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-06T17:43:59.017Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "20240906172745_initial2.cs",
+              "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Migrations\\20240906172745_initial2.cs",
+              "RelativeDocumentMoniker": "backend\\Migrations\\20240906172745_initial2.cs",
+              "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Migrations\\20240906172745_initial2.cs",
+              "RelativeToolTip": "backend\\Migrations\\20240906172745_initial2.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAoAAABFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-06T17:27:45.431Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "20240906170220_initial.cs",
+              "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Migrations\\20240906170220_initial.cs",
+              "RelativeDocumentMoniker": "backend\\Migrations\\20240906170220_initial.cs",
+              "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Migrations\\20240906170220_initial.cs",
+              "RelativeToolTip": "backend\\Migrations\\20240906170220_initial.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAABUAAABPAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-06T17:02:21.112Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "backend",
+              "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\backend.csproj",
+              "RelativeDocumentMoniker": "backend\\backend.csproj",
+              "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\backend.csproj",
+              "RelativeToolTip": "backend\\backend.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-09-06T08:08:24.364Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Program.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Program.cs",
               "RelativeDocumentMoniker": "backend\\Program.cs",
               "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Program.cs",
               "RelativeToolTip": "backend\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAAXAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-05T18:11:31.752Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "appsettings.json",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.json",
               "RelativeDocumentMoniker": "backend\\appsettings.json",
               "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.json",
               "RelativeToolTip": "backend\\appsettings.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAEAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2024-09-05T17:58:30.657Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 8,
               "Title": "appsettings.Development.json",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.Development.json",
               "RelativeDocumentMoniker": "backend\\appsettings.Development.json",
@@ -77,26 +145,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Data\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "backend\\Data\\ApplicationDbContext.cs",
               "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Data\\ApplicationDbContext.cs",
               "RelativeToolTip": "backend\\Data\\ApplicationDbContext.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAfAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-05T17:48:39.044Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Menu.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\Menu.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Menu.cs",
               "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\Menu.cs",
               "RelativeToolTip": "backend\\Models\\Menu.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAApAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAxAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-05T16:59:27.979Z",
               "EditorCaption": ""

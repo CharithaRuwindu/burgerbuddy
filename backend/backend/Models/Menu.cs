@@ -1,7 +1,10 @@
-﻿namespace backend.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace backend.Models
 {
     public class Menu
     {
+        [Key]
         public Guid Menu_ID { get; set; }
         public required string Name { get; set; }
         public required string Category { get; set; }

@@ -5,10 +5,10 @@ namespace backend.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
-        public DbSet<Menu> Menu { get; set; }
+        public DbSet<Menu> Menus { get; set; }
     }
 }
