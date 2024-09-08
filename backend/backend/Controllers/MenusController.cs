@@ -39,5 +39,41 @@ namespace backend.Controllers
 
             return Ok(itemEntity);
         }
+
+        [HttpGet]
+        [Route("{id:guid}")]
+        public IActionResult GetItemById(Guid id)
+        {
+            var item = dbContext.Menus.Find(id);
+
+            if(item is null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(item);
+            }
+        }
+
+        [HttpPut]
+        [Route("{id:guid}")]
+        public IActionResult UpdateItems(Guid id, UpdateItemsDto updateItemsDto)
+        {
+            var item = dbContext.Menus.Find(id);
+            if(item is null)
+            {
+                return NotFound();
+            }
+
+            item.Name = updateItemsDto.Name;
+            item.Category = updateItemsDto.Category;
+            item.Price = updateItemsDto.Price;
+            item.IsActive = updateItemsDto.IsActive;
+
+            dbContext.SaveChanges();
+
+            return Ok(item);
+        }
     }
 }
