@@ -1,4 +1,5 @@
 ﻿using backend.Data;
+using backend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,22 @@ namespace backend.Controllers
             var allMenus = dbContext.Menus.ToList();
 
             return Ok(allMenus);
+        }
+
+        [HttpPost]
+        public IActionResult AddItem(AddItemDto addItemDto)
+        {
+            var itemEntity = new Menu()
+            {
+                Name = addItemDto.Name,
+                Category = addItemDto.Category,
+                Price = addItemDto.Price,
+                IsActive = addItemDto.IsActive,
+            };
+            dbContext.Menus.Add(itemEntity);
+            dbContext.SaveChanges();
+
+            return Ok(itemEntity);
         }
     }
 }

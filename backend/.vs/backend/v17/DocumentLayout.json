@@ -7,6 +7,14 @@
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\controllers\\menuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\models\\additemdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\models\\additemdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\models\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\models\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -18,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -26,13 +34,39 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Menu.cs",
+              "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\Menu.cs",
+              "RelativeDocumentMoniker": "backend\\Models\\Menu.cs",
+              "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\Menu.cs",
+              "RelativeToolTip": "backend\\Models\\Menu.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAApAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-08T13:22:38.294Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "AddItemDto.cs",
+              "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\AddItemDto.cs",
+              "RelativeDocumentMoniker": "backend\\Models\\AddItemDto.cs",
+              "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\AddItemDto.cs",
+              "RelativeToolTip": "backend\\Models\\AddItemDto.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-08T13:22:04.678Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Program.cs",
               "RelativeDocumentMoniker": "backend\\Program.cs",
               "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Program.cs",
               "RelativeToolTip": "backend\\Program.cs",
-              "ViewState": "AQIAABIAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-07T16:56:19.956Z",
               "EditorCaption": ""
@@ -45,7 +79,7 @@
               "RelativeDocumentMoniker": "backend\\Controllers\\MenusController.cs",
               "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Controllers\\MenusController.cs",
               "RelativeToolTip": "backend\\Controllers\\MenusController.cs",
-              "ViewState": "AQIAABAAAAAAAAAAAAAQwAwAAAAAAAAA",
+              "ViewState": "AQIAABYAAAAAAAAAAAAYwCIAAAAvAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-07T16:51:34.731Z",
               "EditorCaption": ""
