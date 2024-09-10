@@ -32,6 +32,7 @@ namespace backend.Controllers
                 Name = addItemDto.Name,
                 Category = addItemDto.Category,
                 Price = addItemDto.Price,
+                IsAvailable = addItemDto.IsAvailable,
                 IsActive = addItemDto.IsActive,
             };
             dbContext.Menus.Add(itemEntity);
@@ -69,6 +70,7 @@ namespace backend.Controllers
             item.Name = updateItemsDto.Name;
             item.Category = updateItemsDto.Category;
             item.Price = updateItemsDto.Price;
+            item.IsAvailable = updateItemsDto.IsAvailable;
             item.IsActive = updateItemsDto.IsActive;
 
             dbContext.SaveChanges();
