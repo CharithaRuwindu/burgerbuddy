@@ -1,6 +1,6 @@
 export default function ItemCard({ itemName, itemPrice, itemAvailability }) {
     return (
-      <div>
+      <div className="w-60 bg-slate-500">
         <h2>{itemName}</h2>
         <h3>{itemPrice}</h3>
         <p>{itemAvailability}</p>

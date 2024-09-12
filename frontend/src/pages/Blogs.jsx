@@ -20,6 +20,7 @@ const Blogs = () => {
     return (
         <>
             <h1 className="font-bold">Hello, this is the blog</h1>
+            <div className="flex">
 
             {menus ? (
                 menus.map((menu, index) => (
@@ -33,6 +34,7 @@ const Blogs = () => {
             ) : (
                 <div>Loading...</div>
             )}
+            </div>
         </>
     );
 };
