@@ -27,6 +27,7 @@ const Blogs = () => {
                     <ItemCard
                         key={menu.menu_ID}
                         itemName={menu.name}
+                        itemCategory={menu.category}
                         itemPrice={`LKR ${menu.price}`}
                         itemAvailability={menu.isAvailable ? "Available" : "Unavailable"}
                     />
