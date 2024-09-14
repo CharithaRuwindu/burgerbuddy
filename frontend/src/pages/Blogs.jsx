@@ -20,10 +20,11 @@ const Blogs = () => {
     return (
         <>
             <h1 className="font-bold">Hello, this is the blog</h1>
-            <div className="flex">
+            <div className="flex flex-wrap">
 
             {menus ? (
                 menus.map((menu, index) => (
+
                     <ItemCard
                         key={menu.menu_ID}
                         itemName={menu.name}
@@ -31,6 +32,8 @@ const Blogs = () => {
                         itemPrice={`LKR ${menu.price}`}
                         itemAvailability={menu.isAvailable ? "Available" : "Unavailable"}
                     />
+                    
+                    
                 ))
             ) : (
                 <div>Loading...</div>
