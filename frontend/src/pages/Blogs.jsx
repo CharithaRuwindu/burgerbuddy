@@ -23,15 +23,18 @@ const Blogs = () => {
             <div className="flex flex-wrap">
 
             {menus ? (
-                menus.map((menu, index) => (
-
+                menus.map((menu) => (
+                    menu.isAvailable ? (
+                    
                     <ItemCard
                         key={menu.menu_ID}
                         itemName={menu.name}
                         itemCategory={menu.category}
                         itemPrice={`LKR ${menu.price}`}
-                        itemAvailability={menu.isAvailable ? "Available" : "Unavailable"}
+                        itemAvailability="Available"
                     />
+                ) : null
+                    
                     
                     
                 ))
