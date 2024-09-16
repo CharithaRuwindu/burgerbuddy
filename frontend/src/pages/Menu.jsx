@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ItemCard from "../components/ItemCard";
+import MenuSelector from "../components/MenuSelector";
 
-const Blogs = () => {
+const Menu = () => {
     const [menus, setMenus] = useState(null);
 
     useEffect(() => {
@@ -19,7 +20,7 @@ const Blogs = () => {
 
     return (
         <>
-            <h1 className="font-bold">Hello, this is the blog</h1>
+            <h1 className="font-bold">We got some choices for you</h1>
             <div className="flex flex-wrap">
 
             {menus ? (
@@ -42,8 +43,11 @@ const Blogs = () => {
                 <div>Loading...</div>
             )}
             </div>
+            <div>
+                <MenuSelector/>
+            </div>
         </>
     );
 };
 
-export default Blogs;
+export default Menu;

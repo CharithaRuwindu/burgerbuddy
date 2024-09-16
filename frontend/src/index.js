@@ -3,7 +3,8 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import Blogs from "./pages/Blogs";
+import Menu from "./pages/Menu";
+import Contact from "./pages/Contact";
 import "./index.css";
 
 export default function App() {
@@ -13,7 +14,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="blogs" element={< Blogs/>}/>
+            <Route path="menu" element={<Menu/>}/>
+            <Route path="contact" element={<Contact/>}/>
           </Route>
         </Routes>
       </BrowserRouter>
