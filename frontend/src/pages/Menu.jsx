@@ -22,6 +22,8 @@ const Menu = () => {
         <>
             <h1 className="font-bold">We got some choices for you</h1>
             <div className="flex flex-wrap">
+                <span className="absolute bottom-0 left-0"><MenuSelector/></span>
+            
 
             {menus ? (
                 menus.map((menu) => (
@@ -42,9 +44,6 @@ const Menu = () => {
             ) : (
                 <div>Loading...</div>
             )}
-            </div>
-            <div>
-                <MenuSelector/>
             </div>
         </>
     );
