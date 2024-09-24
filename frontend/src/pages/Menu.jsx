@@ -22,7 +22,7 @@ const Menu = () => {
 
     return (
         <>
-            <h1 className="font-bold">We got some choices for you</h1>
+            <h3 className="font-bold mt-2 ml-2">We got some choices for you</h3>
             <div className="flex flex-wrap">
                 <span className="absolute bottom-0 left-0"><MenuSelector Active={Active} setActive={setActive}/></span>
             
