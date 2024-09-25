@@ -34,7 +34,9 @@ namespace backend.Controllers
                 Price = addItemDto.Price,
                 IsAvailable = addItemDto.IsAvailable,
                 IsActive = addItemDto.IsActive,
+                ItemImage = addItemDto.ItemImage,
             };
+
             dbContext.Menus.Add(itemEntity);
             dbContext.SaveChanges();
 
