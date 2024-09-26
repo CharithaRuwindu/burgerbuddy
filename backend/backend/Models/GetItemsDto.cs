@@ -1,6 +1,6 @@
 ﻿namespace backend.Models
 {
-    public class UpdateItemsDto
+    public class GetItemsDto
     {
         public required string Name { get; set; }
         public required string Category { get; set; }

@@ -1,5 +1,6 @@
 ﻿using backend.Data;
 using backend.Models;
+using backend.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,13 @@ namespace backend.Controllers
         [HttpPost]
         public IActionResult AddItem(AddItemDto addItemDto)
         {
+            byte[] imageBytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                addItemDto.ItemImage.CopyToAsync(memoryStream);
+                imageBytes = memoryStream.ToArray();
+            }
+
             var itemEntity = new Menu()
             {
                 Name = addItemDto.Name,
@@ -34,7 +42,7 @@ namespace backend.Controllers
                 Price = addItemDto.Price,
                 IsAvailable = addItemDto.IsAvailable,
                 IsActive = addItemDto.IsActive,
-                ItemImage = addItemDto.ItemImage,
+                ItemImage = imageBytes,
             };
 
             dbContext.Menus.Add(itemEntity);
@@ -69,11 +77,20 @@ namespace backend.Controllers
                 return NotFound();
             }
 
+            byte[] imageBytes;
+
+            using (var memoryStream = new MemoryStream())
+            {
+                updateItemsDto.ItemImage.CopyToAsync(memoryStream);
+                imageBytes = memoryStream.ToArray();
+            }
+
             item.Name = updateItemsDto.Name;
             item.Category = updateItemsDto.Category;
             item.Price = updateItemsDto.Price;
             item.IsAvailable = updateItemsDto.IsAvailable;
             item.IsActive = updateItemsDto.IsActive;
+            item.ItemImage = imageBytes;
 
             dbContext.SaveChanges();
 
