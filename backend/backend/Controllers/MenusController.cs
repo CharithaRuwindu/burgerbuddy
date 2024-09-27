@@ -20,7 +20,16 @@ namespace backend.Controllers
         [HttpGet]
         public IActionResult GetMenus()
         {
-            var allMenus = dbContext.Menus.ToList();
+            var allMenus = dbContext.Menus.Select(menu=>new GetItemsDto
+            {
+                Menu_ID = menu.Menu_ID,
+                Name = menu.Name,
+                Category = menu.Category,
+                Price = menu.Price,
+                IsAvailable = menu.IsAvailable,
+                IsActive = menu.IsActive,
+                ItemImage = menu.ItemImage != null ? Convert.ToBase64String(menu.ItemImage) : null
+            }).ToList();
 
             return Ok(allMenus);
         }

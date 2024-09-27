@@ -36,6 +36,7 @@ const Menu = () => {
                         itemName={menu.name}
                         // itemCategory={menu.category}
                         itemPrice={`LKR ${menu.price}`}
+                        itemImage={menu.itemImage}
                         // itemAvailability="Available"
                     />
                 ) : null
