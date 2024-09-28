@@ -39,8 +39,7 @@
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAqAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-25T16:57:04.775Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Bookmark",
@@ -56,8 +55,7 @@
               "RelativeToolTip": "backend\\Models\\GetItemsDto.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAApAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-26T15:21:51.831Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-26T15:21:51.831Z"
             },
             {
               "$type": "Document",
@@ -69,8 +67,7 @@
               "RelativeToolTip": "backend\\Models\\UpdateItemsDto.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAA5AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-25T18:26:45.625Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-25T18:26:45.625Z"
             },
             {
               "$type": "Document",

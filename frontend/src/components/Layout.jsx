@@ -14,6 +14,9 @@ const Layout = () => {
           <li>
             <Link to="/contact">Contact</Link>
           </li>
+          <li>
+            <button className="bg-slate-400 w-16 h-8"><Link to="/login">Login</Link></button>
+          </li>
         </ul>
       </nav>
 
