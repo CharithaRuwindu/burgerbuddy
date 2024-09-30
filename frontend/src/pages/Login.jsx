@@ -12,6 +12,8 @@ const Login = () => {
                         Password
                         <input type="text" />
                     </label>
+                    <button>Login</button>
+                    <p className="text-sky-500">Forgot password?</p>
                 </form>
             </div>
         </div>
