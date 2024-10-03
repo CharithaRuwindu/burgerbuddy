@@ -2,8 +2,8 @@ import React from "react";
 
 const Login = () => {
     return (
-        <div className="flex">
-            <div className="rounded shadow-md m-auto">
+        <div className="flex bg-slate-300">
+            <div className="rounded shadow-md m-auto bg-red-200">
                 <form action="">
                     <label htmlFor="">Email
                         <input type="text" />
