@@ -3,7 +3,7 @@ import { Outlet, Link } from "react-router-dom";
 const Layout = () => {
   return (
     <>
-      <nav className="bg-yellow-600 shadow-md text-stone-100 font-medium h-14 content-center">
+      <nav className="bg-yellow-600 shadow-md text-stone-100 font-medium h-[8vh] content-center">
         <ul className="flex place-content-end space-x-20 mr-8">
           <li className="my-auto">
             <Link to="/">Home</Link>
