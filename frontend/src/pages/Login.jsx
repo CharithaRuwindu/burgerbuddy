@@ -3,8 +3,10 @@ import { React, useState } from '../utils/Imports';
 const Login = () => {
 
     const [isRegistered, setIsRegistered] = useState(true);
-    const [isSigninValid, setIsSigninValid] = useState(false);
-    const [isSignupValid, setIsSignupValid] = useState(false);
+    // const [isSigninValid, setIsSigninValid] = useState(false);
+    // const [isSignupValid, setIsSignupValid] = useState(false);
+    const [errLoginMail, setErrLoginMail] = useState(false);
+    const [errSignupMail, setErrSignupMail] = useState(false);
     const [loginInput, setLoginInput] = useState({
         email: '',
         password: ''
@@ -21,27 +23,66 @@ const Login = () => {
 
     const signin = (event) => {
         event.preventDefault();
-        signinvalidate();
-        console.log(loginInput);
+        if(signinvalidate() === true){
+            console.log(loginInput);
+        }
+        else {
+            console.log("Ane api iwarai aiye");
+        }
     }
 
     const signinvalidate = () => {
-        
-
+        if(loginInput.email.trim()===''|| loginInput.password.trim()===''){
+            return false;
+        }
+        else if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(loginInput.email)){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     const signup = (event) => {
         event.preventDefault();
-        signupvalidate();
-        console.log(signupInput);
-    }
-
-    const signupvalidate = () => {
+        if(signupvalidate() === true){
+            console.log(signupInput);
+        }
+        else {
+            console.log("kawada bn");
+        }
         
     }
 
+    const signupvalidate = () => {
+        if(signupInput.email.trim()===''|| signupInput.password.trim()==='' || signupInput.firstName.trim()==='' || signupInput.lastName.trim()==='' || signupInput.contactNumber.trim()==='' || signupInput.address.trim()===''){
+            return false;
+        }
+        else if (!(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(signupInput.email))){
+            return false;
+        }
+        else if (!(/^[a-zA-Z]*$/.test(signupInput.firstName)) || !(/^[a-zA-Z]*$/.test(signupInput.lastName)) || !(/^(0\d{9})$/.test(signupInput.contactNumber))){
+            return false;
+        }
+        else {
+            return true
+        }
+    }
+
     const handleLoginInput = (e) => {
-        setLoginInput({ ...loginInput, [e.target.name]: e.target.value });
+        if (e.target.name === 'password') {
+            setLoginInput({ ...loginInput, [e.target.name]: e.target.value });
+        }
+        else if (e.target.name === 'email') {
+            if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(e.target.value)) {
+                setErrLoginMail(false);
+                setLoginInput({ ...loginInput, [e.target.name]: e.target.value });
+            }
+            else {
+                setLoginInput({ ...loginInput, [e.target.name]: '' });
+                setErrLoginMail(true);
+            }
+        }
     }
 
     const handleSignupInput = (e) => {
@@ -53,7 +94,10 @@ const Login = () => {
             <div className={`rounded shadow-md drop-shadow-xl m-auto bg-white p-4 h-[50vh] w-[28rem] ${isRegistered ? "flex" : "hidden"}`}>
                 <form onSubmit={signin} className="my-auto w-full">
                     <label>Email
-                        <input type="email" name='email' onChange={handleLoginInput} className="w-full border h-[6vh]" required placeholder="Enter your email" />
+                        <input type="text" name='email' onChange={handleLoginInput} className="w-full border h-[6vh]" required placeholder="Enter your email" />
+                        {errLoginMail ? (
+                            <p className='text-red-600'>Input a valid email. Example: this@mail.com</p>
+                        ) : ''}
                     </label>
                     <div className="mt-6">
                         <label>
@@ -82,7 +126,7 @@ const Login = () => {
                     </div>
                     <div className="mt-5">
                         <label>Email
-                            <input type="email" name='email' onChange={handleSignupInput} className="w-full border h-[6vh]" required placeholder="Enter your email" />
+                            <input type="text" name='email' onChange={handleSignupInput} className="w-full border h-[6vh]" required placeholder="Enter your email" />
                         </label>
                     </div>
                     <div className="mt-5">
