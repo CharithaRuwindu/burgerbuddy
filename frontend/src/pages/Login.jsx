@@ -3,10 +3,16 @@ import { React, useState } from '../utils/Imports';
 const Login = () => {
 
     const [isRegistered, setIsRegistered] = useState(true);
-    // const [isSigninValid, setIsSigninValid] = useState(false);
-    // const [isSignupValid, setIsSignupValid] = useState(false);
     const [errLoginMail, setErrLoginMail] = useState(false);
     const [errSignupMail, setErrSignupMail] = useState(false);
+    const [contactErr, setContactErr] = useState();
+    const [errSignupContact, setErrSignupContact] = useState(false);
+    const [firstNameErr, setFirstNameErr] = useState();
+    const [errSignupFirstName, setErrSignupFirstName] = useState(false);
+    const [lastNameErr, setLastNameErr] = useState();
+    const [errSignupLastName, setErrSignupLastName] = useState(false);
+    const [passwordErr, setPasswordErr] = useState();
+    const [errSignupPassword, setErrSignupPassword] = useState(false);
     const [loginInput, setLoginInput] = useState({
         email: '',
         password: ''
@@ -85,18 +91,70 @@ const Login = () => {
         }
     }
 
-    const handleSignupInput = (e) => {
-        setSignupInput({ ...signupInput, [e.target.name]: e.target.value });
+    const handleSignupInput = (e) => {   
+        if (e.target.name === 'email') {
+            if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(e.target.value)) {
+                setSignupInput({ ...signupInput, [e.target.name]: ''})
+                setErrSignupMail(true);
+            }
+            else {
+                setErrSignupMail(false);
+                setSignupInput({ ...signupInput, [e.target.name]: e.target.value });   
+            }
+        } else if (e.target.name === 'password') {
+            if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(e.target.value)) {
+                setSignupInput({ ...signupInput, [e.target.name]: ''})
+                setPasswordErr('Password should contain at least one lowercase letter, one uppercase letter, one digit, and one special character.');
+                setErrSignupPassword(true);
+            }
+            else {
+                setErrSignupPassword(false);
+                setSignupInput({ ...signupInput, [e.target.name]: e.target.value });   
+            } 
+        } else if (e.target.name === 'contactNumber') {
+            if(!(/^(\d+)$/.test(e.target.value))) {
+                setSignupInput({ ...signupInput, [e.target.name]: ''})
+                setContactErr('Phone number must contain only numbers')
+                setErrSignupContact(true);
+            }
+            else if(!(/^(0\d{9})$/.test(e.target.value))) {
+                setSignupInput({ ...signupInput, [e.target.name]: ''})
+                setContactErr('Phone number must be 10 digits and start with 0')
+                setErrSignupContact(true);
+            }
+            else {
+                setErrSignupContact(false);
+                setSignupInput({ ...signupInput, [e.target.name]: e.target.value });
+            }
+        } else if (e.target.name === 'firstName') {
+            if (!(/^[a-zA-Z]*$/.test(e.target.value))) {
+                setSignupInput({ ...signupInput, [e.target.name]: ''})
+                setFirstNameErr('Name must only contain letters from A to Z')
+                setErrSignupFirstName(true);
+            } else {
+                setErrSignupFirstName(false);
+                setSignupInput({ ...signupInput, [e.target.name]: e.target.value });
+            }
+        } else if (e.target.name === 'lastName') {
+            if (!(/^[a-zA-Z]*$/.test(e.target.value))) {
+                setSignupInput({ ...signupInput, [e.target.name]: ''})
+                setLastNameErr('Name must only contain letters from A to Z')
+                setErrSignupLastName(true);
+            } else {
+                setErrSignupLastName(false);
+                setSignupInput({ ...signupInput, [e.target.name]: e.target.value });
+            }
+        }
     }
 
     return (
-        <div className="flex h-[92vh]" style={{ backgroundColor: '#F6F6F6' }}>
+        <div className="flex overflow-auto h-[92vh]" style={{ backgroundColor: '#F6F6F6' }}>
             <div className={`rounded shadow-md drop-shadow-xl m-auto bg-white p-4 h-[50vh] w-[28rem] ${isRegistered ? "flex" : "hidden"}`}>
                 <form onSubmit={signin} className="my-auto w-full">
                     <label>Email
                         <input type="text" name='email' onChange={handleLoginInput} className="w-full border h-[6vh]" required placeholder="Enter your email" />
                         {errLoginMail ? (
-                            <p className='text-red-600'>Input a valid email. Example: this@mail.com</p>
+                            <p className='text-red-600 text-xs'>Input a valid email. Example: this@mail.com</p>
                         ) : ''}
                     </label>
                     <div className="mt-6">
@@ -112,32 +170,47 @@ const Login = () => {
             </div>
 
 
-            <div className={`rounded shadow-md drop-shadow-xl m-auto bg-white p-4 h-[90vh] w-[28rem] ${isRegistered ? "hidden" : "flex"}`}>
+            <div className={`rounded shadow-md drop-shadow-xl m-auto bg-white p-4 min-h-[90vh] w-[28rem] ${isRegistered ? "hidden" : "flex"}`}>
                 <form onSubmit={signup} className="my-auto w-full">
                     <div>
                         <label>First Name
                             <input type="text" name='firstName' onChange={handleSignupInput} className="w-full border h-[6vh]" required placeholder="Enter your First Name" />
+                            {errSignupFirstName ? (
+                            <p className='text-red-600 text-xs'>{(firstNameErr)}</p>
+                        ) : ''}
                         </label>
                     </div>
                     <div className="mt-5">
                         <label>Last Name
                             <input type="text" name='lastName' onChange={handleSignupInput} className="w-full border h-[6vh]" required placeholder="Enter your Last Name" />
+                            {errSignupLastName ? (
+                            <p className='text-red-600 text-xs'>{(lastNameErr)}</p>
+                        ) : ''}
                         </label>
                     </div>
                     <div className="mt-5">
                         <label>Email
                             <input type="text" name='email' onChange={handleSignupInput} className="w-full border h-[6vh]" required placeholder="Enter your email" />
+                            {errSignupMail ? (
+                            <p className='text-red-600 text-xs'>Input a valid email. Example: this@mail.com</p>
+                        ) : ''}
                         </label>
                     </div>
                     <div className="mt-5">
                         <label>
                             Password
                             <input type="password" name='password' onChange={handleSignupInput} className="w-full border h-[6vh]" placeholder="Enter your password" required />
+                            {errSignupPassword ? (
+                            <p className='text-red-600 text-xs'>{(passwordErr)}</p>
+                        ) : ''}
                         </label>
                     </div>
                     <div className="mt-5">
                         <label>Contact Number
                             <input type="text" name='contactNumber' onChange={handleSignupInput} className="w-full border h-[6vh]" required placeholder="Enter your contact number" />
+                            {errSignupContact ? (
+                            <p className='text-red-600 text-xs'>{(contactErr)}</p>
+                        ) : ''}
                         </label>
                     </div>
                     <div className="mt-5">
