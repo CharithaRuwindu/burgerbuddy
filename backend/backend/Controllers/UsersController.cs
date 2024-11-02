@@ -32,5 +32,25 @@ namespace backend.Models
             }).ToList();
             return Ok(allUser);
         }
+
+        [HttpPost]
+        public IActionResult AddUser(AddUserDto addUserDto)
+        {
+
+            var userEntity = new User()
+            {
+                firstName = addUserDto.firstName,
+                lastName = addUserDto.lastName,
+                email = addUserDto.email,
+                hashedpassword = addUserDto.hashedpassword,
+                contactNumber = addUserDto.contactNumber,
+                address = addUserDto.address,
+            };
+
+            dbContext.Users.Add(userEntity);
+            dbContext.SaveChanges();
+
+            return Ok(userEntity);
+        }
     }
 }
