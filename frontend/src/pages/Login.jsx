@@ -1,4 +1,5 @@
 import { React, useState } from '../utils/Imports';
+import axios from "axios";
 
 const Login = () => {
 
@@ -29,7 +30,7 @@ const Login = () => {
 
     const signin = (event) => {
         event.preventDefault();
-        if(signinvalidate() === true){
+        if (signinvalidate() === true) {
             console.log(loginInput);
         }
         else {
@@ -38,10 +39,10 @@ const Login = () => {
     }
 
     const signinvalidate = () => {
-        if(loginInput.email.trim()===''|| loginInput.password.trim()===''){
+        if (loginInput.email.trim() === '' || loginInput.password.trim() === '') {
             return false;
         }
-        else if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(loginInput.email)){
+        else if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(loginInput.email)) {
             return true;
         }
         else {
@@ -49,25 +50,68 @@ const Login = () => {
         }
     }
 
-    const signup = (event) => {
+
+
+    const signup = async (event) => {
         event.preventDefault();
-        if(signupvalidate() === true){
-            console.log(signupInput);
+        if (signupvalidate() === true) {
+
+            console.log("ela")
+
+            const data = {
+                firstName: signupInput.firstName,
+                lastName: signupInput.lastName,
+                email: signupInput.email,
+                hashedpassword: signupInput.password,
+                contactNumber: signupInput.contactNumber,
+                address: signupInput.address,
+                isActive: true
+            };
+
+            try {
+                const response = await fetch('https://localhost:7163/api/User', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+                if (response.ok) {
+                    console.log("Hammata me badu shokne")
+                    const result = await response.json();
+                    console.log(result);
+                } else {
+                    console.log("Ane aiye api iwarai")
+                    const errorData = await response.text();
+                    console.log("Error details:", errorData);
+                }
+            } catch (error) {
+                console.log("Error registering user data:", error);
+            }
         }
         else {
-            console.log("kawada bn");
+            console.log("validation error");
         }
-        
+
     }
 
     const signupvalidate = () => {
-        if(signupInput.email.trim()===''|| signupInput.password.trim()==='' || signupInput.firstName.trim()==='' || signupInput.lastName.trim()==='' || signupInput.contactNumber.trim()==='' || signupInput.address.trim()===''){
+
+        if (signupInput.contactNumber.trim() === '' || signupInput.lastName.trim() === '' || signupInput.firstName.trim() === '' || signupInput.password.trim() === '' || signupInput.email.trim() === '') {
+            console.log("ela4")
             return false;
         }
-        else if (!(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(signupInput.email))){
+
+        else if (!(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(signupInput.email))) {
+            console.log("ela2")
             return false;
         }
-        else if (!(/^[a-zA-Z]*$/.test(signupInput.firstName)) || !(/^[a-zA-Z]*$/.test(signupInput.lastName)) || !(/^(0\d{9})$/.test(signupInput.contactNumber))){
+        else if (signupInput.address.trim() === '') {
+            console.log("ela5")
+            return false;
+        }
+        else if (!(/^[a-zA-Z]*$/.test(signupInput.firstName)) || !(/^[a-zA-Z]*$/.test(signupInput.lastName)) || !(/^(0\d{9})$/.test(signupInput.contactNumber))) {
+            console.log("ela3")
             return false;
         }
         else {
@@ -91,34 +135,34 @@ const Login = () => {
         }
     }
 
-    const handleSignupInput = (e) => {   
+    const handleSignupInput = (e) => {
         if (e.target.name === 'email') {
             if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(e.target.value)) {
-                setSignupInput({ ...signupInput, [e.target.name]: ''})
+                setSignupInput({ ...signupInput, [e.target.name]: '' })
                 setErrSignupMail(true);
             }
             else {
                 setErrSignupMail(false);
-                setSignupInput({ ...signupInput, [e.target.name]: e.target.value });   
+                setSignupInput({ ...signupInput, [e.target.name]: e.target.value });
             }
         } else if (e.target.name === 'password') {
             if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(e.target.value)) {
-                setSignupInput({ ...signupInput, [e.target.name]: ''})
+                setSignupInput({ ...signupInput, [e.target.name]: '' })
                 setPasswordErr('Password should contain at least one lowercase letter, one uppercase letter, one digit, and one special character.');
                 setErrSignupPassword(true);
             }
             else {
                 setErrSignupPassword(false);
-                setSignupInput({ ...signupInput, [e.target.name]: e.target.value });   
-            } 
+                setSignupInput({ ...signupInput, [e.target.name]: e.target.value });
+            }
         } else if (e.target.name === 'contactNumber') {
-            if(!(/^(\d+)$/.test(e.target.value))) {
-                setSignupInput({ ...signupInput, [e.target.name]: ''})
+            if (!(/^(\d+)$/.test(e.target.value))) {
+                setSignupInput({ ...signupInput, [e.target.name]: '' })
                 setContactErr('Phone number must contain only numbers')
                 setErrSignupContact(true);
             }
-            else if(!(/^(0\d{9})$/.test(e.target.value))) {
-                setSignupInput({ ...signupInput, [e.target.name]: ''})
+            else if (!(/^(0\d{9})$/.test(e.target.value))) {
+                setSignupInput({ ...signupInput, [e.target.name]: '' })
                 setContactErr('Phone number must be 10 digits and start with 0')
                 setErrSignupContact(true);
             }
@@ -128,7 +172,7 @@ const Login = () => {
             }
         } else if (e.target.name === 'firstName') {
             if (!(/^[a-zA-Z]*$/.test(e.target.value))) {
-                setSignupInput({ ...signupInput, [e.target.name]: ''})
+                setSignupInput({ ...signupInput, [e.target.name]: '' })
                 setFirstNameErr('Name must only contain letters from A to Z')
                 setErrSignupFirstName(true);
             } else {
@@ -137,13 +181,15 @@ const Login = () => {
             }
         } else if (e.target.name === 'lastName') {
             if (!(/^[a-zA-Z]*$/.test(e.target.value))) {
-                setSignupInput({ ...signupInput, [e.target.name]: ''})
+                setSignupInput({ ...signupInput, [e.target.name]: '' })
                 setLastNameErr('Name must only contain letters from A to Z')
                 setErrSignupLastName(true);
             } else {
                 setErrSignupLastName(false);
                 setSignupInput({ ...signupInput, [e.target.name]: e.target.value });
             }
+        } else if (e.target.name === 'address') {
+            setSignupInput({ ...signupInput, [e.target.name]: e.target.value });
         }
     }
 
@@ -176,24 +222,24 @@ const Login = () => {
                         <label>First Name
                             <input type="text" name='firstName' onChange={handleSignupInput} className="w-full border h-[6vh]" required placeholder="Enter your First Name" />
                             {errSignupFirstName ? (
-                            <p className='text-red-600 text-xs'>{(firstNameErr)}</p>
-                        ) : ''}
+                                <p className='text-red-600 text-xs'>{(firstNameErr)}</p>
+                            ) : ''}
                         </label>
                     </div>
                     <div className="mt-5">
                         <label>Last Name
                             <input type="text" name='lastName' onChange={handleSignupInput} className="w-full border h-[6vh]" required placeholder="Enter your Last Name" />
                             {errSignupLastName ? (
-                            <p className='text-red-600 text-xs'>{(lastNameErr)}</p>
-                        ) : ''}
+                                <p className='text-red-600 text-xs'>{(lastNameErr)}</p>
+                            ) : ''}
                         </label>
                     </div>
                     <div className="mt-5">
                         <label>Email
                             <input type="text" name='email' onChange={handleSignupInput} className="w-full border h-[6vh]" required placeholder="Enter your email" />
                             {errSignupMail ? (
-                            <p className='text-red-600 text-xs'>Input a valid email. Example: this@mail.com</p>
-                        ) : ''}
+                                <p className='text-red-600 text-xs'>Input a valid email. Example: this@mail.com</p>
+                            ) : ''}
                         </label>
                     </div>
                     <div className="mt-5">
@@ -201,16 +247,16 @@ const Login = () => {
                             Password
                             <input type="password" name='password' onChange={handleSignupInput} className="w-full border h-[6vh]" placeholder="Enter your password" required />
                             {errSignupPassword ? (
-                            <p className='text-red-600 text-xs'>{(passwordErr)}</p>
-                        ) : ''}
+                                <p className='text-red-600 text-xs'>{(passwordErr)}</p>
+                            ) : ''}
                         </label>
                     </div>
                     <div className="mt-5">
                         <label>Contact Number
                             <input type="text" name='contactNumber' onChange={handleSignupInput} className="w-full border h-[6vh]" required placeholder="Enter your contact number" />
                             {errSignupContact ? (
-                            <p className='text-red-600 text-xs'>{(contactErr)}</p>
-                        ) : ''}
+                                <p className='text-red-600 text-xs'>{(contactErr)}</p>
+                            ) : ''}
                         </label>
                     </div>
                     <div className="mt-5">

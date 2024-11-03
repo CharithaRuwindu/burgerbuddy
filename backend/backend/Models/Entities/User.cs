@@ -23,9 +23,11 @@ namespace backend.Models.Entities
         public required string hashedpassword { get; set; }
 
         [MaxLength(10)]
-        public required double contactNumber { get; set; }
+        public required string contactNumber { get; set; }
         [MaxLength(200)]
         public required string address { get; set; }
+
+        public required bool isActive { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }

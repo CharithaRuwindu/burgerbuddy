@@ -28,7 +28,8 @@ namespace backend.Models
                 email = user.email,
                 hashedpassword = user.hashedpassword,
                 contactNumber = user.contactNumber,
-                address = user.address
+                address = user.address,
+                isActive = user.isActive
             }).ToList();
             return Ok(allUser);
         }
@@ -45,6 +46,7 @@ namespace backend.Models
                 hashedpassword = addUserDto.hashedpassword,
                 contactNumber = addUserDto.contactNumber,
                 address = addUserDto.address,
+                isActive = addUserDto.isActive,
             };
 
             dbContext.Users.Add(userEntity);
