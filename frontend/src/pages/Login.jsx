@@ -1,5 +1,4 @@
 import { React, useState } from '../utils/Imports';
-import axios from "axios";
 
 const Login = () => {
 
@@ -68,11 +67,15 @@ const Login = () => {
                 isActive: true
             };
 
+            console.log(data)
+
             try {
-                const response = await fetch('https://localhost:7163/api/User', {
-                    method: "POST",
+                const response = await fetch(`https://localhost:7163/api/User`, {
+                    method: 'POST',
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                     },
                     body: JSON.stringify(data),
                 });
