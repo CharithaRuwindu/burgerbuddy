@@ -12,9 +12,6 @@ const Layout = () => {
             <Link to="/menu">Menu</Link>
           </li>
           <li className="my-auto">
-            <Link to="/contact">Contact</Link>
-          </li>
-          <li className="my-auto">
             <Link to="/login"><button className="py-1 px-4 bg-yellow-800 rounded shadow-md">Login</button></Link>
           </li>
         </ul>
