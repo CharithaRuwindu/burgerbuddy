@@ -1,27 +1,51 @@
 import React from "react";
 import burgersImage from '../assets/burgers.jpg';
+import foodPic from '../assets/food.png';
 import { IoIosCall } from "react-icons/io";
-import { MdEmail } from "react-icons/md";
+import { MdEmail, MdKeyboardDoubleArrowRight } from "react-icons/md";
 import { FaAnglesDown, FaLocationDot, FaXTwitter } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
 import { FiFacebook } from "react-icons/fi";
 import logo from '../assets/logo.png';
+import { Link } from "react-router-dom";
 
 const Home = () => {
     return (
-        <div className="h-[92vh] w-full bg-cover bg-center overflow-auto scrollbar-hide" style={{ backgroundImage: `url(${burgersImage})`,backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative'}}>
+        <div className="h-[92vh] w-full bg-cover bg-center overflow-auto scrollbar-hide" style={{ backgroundImage: `url(${burgersImage})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
             <div className="absolute top-0 left-0 right-0 bottom-0 bg-black/50 backdrop-blur-[4px]"></div>
             <section className="h-[92vh] relative text-stone-100 font-medium z-10">
                 <div className="h-[10rem] w-[15rem]"><img src={logo} alt="logo" /></div>
-                <div className="flex justify-center mt-[7%] text-7xl drop-shadow-2xl">Happy Dining</div>
-                <div className="flex justify-center w-screen absolute left-0 bottom-0"><FaAnglesDown onClick={() => document.getElementById('intro').scrollIntoView({ behavior: 'smooth' })} className="cursor-pointer w-[5rem] h-[5rem]"/></div>
+                <div className="flex justify-center mt-[7%] text-7xl drop-shadow-2xl">Happy Dining !</div>
+                <div className="flex justify-center w-screen absolute left-0 bottom-0"><FaAnglesDown onClick={() => document.getElementById('intro').scrollIntoView({ behavior: 'smooth' })} className="cursor-pointer w-[5rem] h-[5rem]" /></div>
             </section>
             <section id="intro" className="h-[92vh] bg-white flex justify-center">
-                <div className="w-[50%]"></div>
-                <div className="w-[30%] flex">
-                    <div className="w-[50%]"><img src={logo} alt="" /></div>
-                    <div><img src={logo} alt="" /></div>
-                    <div><img src={logo} alt="" /></div>
+                <div className="w-[50%] flex justify-center">
+                    <svg width="100%" height="100%" viewBox="0 0 500 500">
+                        <defs>
+                            <mask id="burgerMask">
+                                <rect x="10%" y="32%" width="15%" height="36%" fill="white" />
+                                <rect x="26%" y="22%" width="15%" height="56%" fill="white" />
+                                <rect x="42%" y="7%" width="15%" height="86%" fill="white" />
+                                <rect x="58%" y="22%" width="15%" height="56%" fill="white" />
+                                <rect x="74%" y="32%" width="15%" height="36%" fill="white" />
+                            </mask>
+                        </defs>
+
+                        <image
+                            href={foodPic}
+                            width="100%"
+                            height="100%"
+                            mask="url(#burgerMask)"
+                            preserveAspectRatio="xMidYMid slice"
+                        />
+                    </svg>
+                </div>
+                <div className="w-[30%]">
+                    <h1 className="mt-[25%] text-3xl font-semibold text-yellow-700">Dine With Us</h1>
+                    <p className="mt-[10%] text-lg">Welcome to Burger Buddy – where every bite is an experience!</p>
+                    <p className="mt-[10%] text-lg">Whether you're craving a juicy classic or something daring and unique, we’ve got something to satisfy every taste. So, bring your friends,
+                        grab a seat, and enjoy the warm, lively atmosphere where good food and good company come together.</p>
+                    <div className="flex mt-[10%] justify-end text-lg font-semibold text-yellow-700"><Link to="/menu"><div className="flex cursor-pointer">Check our menu <MdKeyboardDoubleArrowRight className="my-auto h-[1.5rem] w-[1.5rem]" /></div></Link></div>
                 </div>
             </section>
             <section className="h-[92vh] bg-white flex justify-center">
@@ -30,15 +54,15 @@ const Home = () => {
                     <h1 className="text-3xl font-semibold text-yellow-700">Get in touch</h1>
                     <table className="m-auto mt-8 border-separate border-spacing-3">
                         <tr>
-                            <td><div className="rounded-full h-[2rem] w-[2rem] bg-slate-300 flex justify-center items-center"><IoIosCall/></div></td>
+                            <td><div className="rounded-full h-[2rem] w-[2rem] bg-slate-300 flex justify-center items-center"><IoIosCall /></div></td>
                             <td>071 123 4567</td>
                         </tr>
                         <tr>
-                            <td><div className="rounded-full h-[2rem] w-[2rem] bg-slate-300 flex justify-center items-center"><MdEmail/></div></td>
+                            <td><div className="rounded-full h-[2rem] w-[2rem] bg-slate-300 flex justify-center items-center"><MdEmail /></div></td>
                             <td>info@burgerbuddy.com</td>
                         </tr>
                         <tr>
-                            <td><div className="rounded-full h-[2rem] w-[2rem] bg-slate-300 flex justify-center items-center"><FaLocationDot/></div></td>
+                            <td><div className="rounded-full h-[2rem] w-[2rem] bg-slate-300 flex justify-center items-center"><FaLocationDot /></div></td>
                             <td>No 2/11, Sri Khemananda Mawatha, Ratnapura</td>
                         </tr>
                     </table>
