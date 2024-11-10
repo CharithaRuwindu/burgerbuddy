@@ -1,4 +1,5 @@
 import { Outlet, Link } from "react-router-dom";
+import { BsCart4 } from "react-icons/bs";
 
 const Layout = () => {
   return (
@@ -10,6 +11,9 @@ const Layout = () => {
           </li>
           <li className="my-auto">
             <Link to="/menu">Menu</Link>
+          </li>
+          <li className="my-auto text-2xl">
+            <Link to="/cart"><BsCart4 /></Link>
           </li>
           <li className="my-auto">
             <Link to="/login"><button className="py-1 px-4 bg-yellow-800 rounded shadow-md">Login</button></Link>
