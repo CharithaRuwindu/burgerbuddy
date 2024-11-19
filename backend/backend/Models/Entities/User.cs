@@ -29,7 +29,7 @@ namespace backend.Models.Entities
 
         public required bool isActive { get; set; }
 
-        public int RoleId { get; set; } // Foreign key for Role
+        public int RoleId { get; set; }
         public Role Role { get; set; } = null!;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
