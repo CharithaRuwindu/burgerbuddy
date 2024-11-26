@@ -1,5 +1,6 @@
 import fooditem from '../assets/burgers.jpg';
 import { ImBin } from "react-icons/im";
+import cartdata from './cartdata.json';
 const Cart = () => {
     return (
         <div className="flex justify-center overflow-auto h-[92vh]" style={{ backgroundColor: '#F6F6F6' }}>
@@ -31,7 +32,11 @@ const Cart = () => {
                                     <p>Onion Burger -Onion Burger - LargeOnion Burger - Large</p>
                                 </td>
                                 <td>500</td>
-                                <td>2</td>
+                                <td><div className='flex justify-center items-center'>
+                                    <div className='w-8 bg-stone-200 rounded-sm cursor-pointer flex justify-center items-center'>-</div>
+                                    <div className='w-8'>2</div>
+                                    <div className='w-8 bg-stone-200 rounded-sm cursor-pointer flex justify-center items-center'>+</div>
+                                </div></td>
                                 <td>1000</td>
                                 <td><div className='h-10 w-10 m-auto cursor-pointer rounded-full border-2 flex justify-center items-center hover:text-red-500 hover:border-red-400'><ImBin /></div></td>
                             </tr>
@@ -39,26 +44,17 @@ const Cart = () => {
                                 <td><input type="checkbox" name="" id="" /></td>
                                 <td><img src={fooditem} alt="fooditem" /></td>
                                 <td>500</td>
-                                <td>2</td>
+                                <td>
+                                    <div className='flex justify-center items-center'>
+                                        <div className='w-8 bg-stone-200 rounded-sm cursor-pointer flex justify-center items-center'>-</div>
+                                        <div className='w-8'>2</div>
+                                        <div className='w-8 bg-stone-200 rounded-sm cursor-pointer flex justify-center items-center'>+</div>
+                                    </div>
+                                </td>
                                 <td>1000</td>
                                 <td><div className='h-10 w-10 m-auto cursor-pointer rounded-full border-2 flex justify-center items-center hover:text-red-500 hover:border-red-400'><ImBin /></div></td>
                             </tr>
-                            <tr className='text-center max-h-5'>
-                                <td><input type="checkbox" name="" id="" /></td>
-                                <td><img src={fooditem} alt="fooditem" /></td>
-                                <td>500</td>
-                                <td>2</td>
-                                <td>1000</td>
-                                <td><div className='h-10 w-10 m-auto cursor-pointer rounded-full border-2 flex justify-center items-center hover:text-red-500 hover:border-red-400'><ImBin /></div></td>
-                            </tr>
-                            <tr className='text-center max-h-5'>
-                                <td><input type="checkbox" name="" id="" /></td>
-                                <td><img src={fooditem} alt="fooditem" /></td>
-                                <td>500</td>
-                                <td>2</td>
-                                <td>1000</td>
-                                <td><div className='h-10 w-10 m-auto cursor-pointer rounded-full border-2 flex justify-center items-center hover:text-red-500 hover:border-red-400'><ImBin /></div></td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>
