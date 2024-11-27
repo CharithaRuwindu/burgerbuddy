@@ -76,6 +76,25 @@ namespace backend.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("items")]
+        public IActionResult GetItemsByIds([FromQuery] List<Guid> ids)
+        {
+            if (ids == null || !ids.Any())
+            {
+                return BadRequest("No IDs provided.");
+            }
+
+            var items = dbContext.Menus.Where(item => ids.Contains(item.Menu_ID)).ToList();
+
+            if (!items.Any())
+            {
+                return NotFound("No items found for the provided IDs.");
+            }
+
+            return Ok(items);
+        }
+
         [HttpPut]
         [Route("{id:guid}")]
         public IActionResult UpdateItems(Guid id, UpdateItemsDto updateItemsDto)

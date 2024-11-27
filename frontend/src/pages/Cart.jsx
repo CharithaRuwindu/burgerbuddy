@@ -1,7 +1,18 @@
-import fooditem from '../assets/burgers.jpg';
-import { ImBin } from "react-icons/im";
-import cartdata from './cartdata.json';
+import { useEffect, fooditem, cartdata, ImBin } from '../utils/Imports';
+
 const Cart = () => {
+    var itemlist = [];
+
+    useEffect(() => {
+        getItemInfo();
+    }, []);
+
+    const getItemInfo = () => {
+        for (let item of cartdata) {
+            itemlist.push(item.id);
+        }
+        console.log(itemlist)
+    };
     return (
         <div className="flex justify-center overflow-auto h-[92vh]" style={{ backgroundColor: '#F6F6F6' }}>
             <div className='mt-[5%] w-[60%]'>
@@ -54,7 +65,7 @@ const Cart = () => {
                                 <td>1000</td>
                                 <td><div className='h-10 w-10 m-auto cursor-pointer rounded-full border-2 flex justify-center items-center hover:text-red-500 hover:border-red-400'><ImBin /></div></td>
                             </tr>
-                            
+
                         </tbody>
                     </table>
                 </div>
@@ -66,20 +77,24 @@ const Cart = () => {
                     </p>
                     <hr />
                     <table className='w-[80%] ml-5 border-separate border-spacing-y-10 text-slate-600'>
-                        <tr>
-                            <td className='w-[70%]'>Subtotal</td>
-                            <td>Rs. 0</td>
-                        </tr>
-                        <tr>
-                            <td className='w-[70%]'>Delivery Charges</td>
-                            <td>Rs. 0</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td className='w-[70%]'>Subtotal</td>
+                                <td>Rs. 0</td>
+                            </tr>
+                            <tr>
+                                <td className='w-[70%]'>Delivery Charges</td>
+                                <td>Rs. 0</td>
+                            </tr>
+                        </tbody>
                     </table>
                     <table className='w-[80%] mt-[15%] ml-5 text-lg'>
-                        <tr>
-                            <td className='w-[70%]'>Total</td>
-                            <td>Rs. 0</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td className='w-[70%]'>Total</td>
+                                <td>Rs. 0</td>
+                            </tr>
+                        </tbody>
                     </table>
                     <div className='mt-[5%]'>
                         <div className='bg-yellow-600 text-center font-semibold text-stone-100 py-3 w-[90%] mx-auto cursor-pointer rounded-md hover:bg-yellow-700 transition-colors delay-100'>
