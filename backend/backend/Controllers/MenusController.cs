@@ -76,24 +76,33 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("items")]
-        public IActionResult GetItemsByIds([FromQuery] List<Guid> ids)
+        [HttpGet("items")]
+public IActionResult GetItemsByIds([FromQuery] string ids)
+{
+    if (string.IsNullOrWhiteSpace(ids))
+    {
+        return BadRequest("The 'ids' parameter is required.");
+    }
+
+    try
+    {
+        var idList = ids.Split(',').Select(Guid.Parse).ToList();
+
+        // Example: Query database with the parsed GUIDs
+        var items = dbContext.Menus.Where(menu => idList.Contains(menu.Menu_ID)).ToList();
+
+        if (!items.Any())
         {
-            if (ids == null || !ids.Any())
-            {
-                return BadRequest("No IDs provided.");
-            }
-
-            var items = dbContext.Menus.Where(item => ids.Contains(item.Menu_ID)).ToList();
-
-            if (!items.Any())
-            {
-                return NotFound("No items found for the provided IDs.");
-            }
-
-            return Ok(items);
+            return NotFound("No items found for the provided IDs.");
         }
+
+        return Ok(items);
+    }
+    catch (Exception ex)
+    {
+        return BadRequest($"Invalid 'ids' parameter: {ex.Message}");
+    }
+}
 
         [HttpPut]
         [Route("{id:guid}")]

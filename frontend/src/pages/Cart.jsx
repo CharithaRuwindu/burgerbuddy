@@ -1,20 +1,29 @@
-import { useEffect, fooditem, cartdata, ImBin } from '../utils/Imports';
+import { useEffect, cartdata, ImBin, useState, axios } from '../utils/Imports';
 
 const Cart = () => {
-    var itemlist = [];
+    const [cart, setCart] = useState([]);
 
     useEffect(() => {
         getItemInfo();
     }, []);
 
     const getItemInfo = () => {
-        for (let item of cartdata) {
-            itemlist.push(item.id);
-        }
-        console.log(itemlist)
+        var itemlist = cartdata.map(item => item.id).join(',');
+        console.log('itemlist :', itemlist)
+
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`/api/Menus/items?ids=${itemlist}`);
+                setCart(response.data);
+            } catch (error) {
+                console.log("Error fetching data:", error);
+            }
+        };
+        fetchData();
     };
     return (
         <div className="flex justify-center overflow-auto h-[92vh]" style={{ backgroundColor: '#F6F6F6' }}>
+
             <div className='mt-[5%] w-[60%]'>
                 <div className='h-[8%] flex items-center text-slate-600 bg-white rounded-xl shadow-lg'>
                     <input type="checkbox" name="" id="" className='ml-7' />
@@ -32,39 +41,32 @@ const Cart = () => {
                                 <td className='w-[22%]'>Food Item</td>
                                 <td className='w-[21%]'>Price</td>
                                 <td className='w-[21%]'>Quantity</td>
-                                <td className='w-[21%]'>Total Price</td>
+                                <td className='w-[21%]'>Total Price (LKR)</td>
                                 <td className='w-[8%]'></td>
                             </tr>
                         </thead>
                         <tbody className=''>
-                            <tr className='text-center'>
-                                <td><input type="checkbox" name="" id="" /></td>
-                                <td><img src={fooditem} alt="fooditem" />
-                                    <p>Onion Burger -Onion Burger - LargeOnion Burger - Large</p>
-                                </td>
-                                <td>500</td>
-                                <td><div className='flex justify-center items-center'>
-                                    <div className='w-8 bg-stone-200 rounded-sm cursor-pointer flex justify-center items-center'>-</div>
-                                    <div className='w-8'>2</div>
-                                    <div className='w-8 bg-stone-200 rounded-sm cursor-pointer flex justify-center items-center'>+</div>
-                                </div></td>
-                                <td>1000</td>
-                                <td><div className='h-10 w-10 m-auto cursor-pointer rounded-full border-2 flex justify-center items-center hover:text-red-500 hover:border-red-400'><ImBin /></div></td>
-                            </tr>
-                            <tr className='text-center max-h-5'>
-                                <td><input type="checkbox" name="" id="" /></td>
-                                <td><img src={fooditem} alt="fooditem" /></td>
-                                <td>500</td>
-                                <td>
-                                    <div className='flex justify-center items-center'>
-                                        <div className='w-8 bg-stone-200 rounded-sm cursor-pointer flex justify-center items-center'>-</div>
-                                        <div className='w-8'>2</div>
-                                        <div className='w-8 bg-stone-200 rounded-sm cursor-pointer flex justify-center items-center'>+</div>
-                                    </div>
-                                </td>
-                                <td>1000</td>
-                                <td><div className='h-10 w-10 m-auto cursor-pointer rounded-full border-2 flex justify-center items-center hover:text-red-500 hover:border-red-400'><ImBin /></div></td>
-                            </tr>
+                            {cart ? (
+                                cart.map((cartitem) => (
+
+                                    <tr className='text-center' key={cartitem.menu_ID}>
+                                        <td><input type="checkbox" name="" id="" /></td>
+                                        <td><img src={`data:image/jpeg;base64,${cartitem.itemImage}`} className='h-36 m-auto' alt="fooditem" />
+                                            <p>{cartitem.name}</p>
+                                        </td>
+                                        <td>{cartitem.price}</td>
+                                        <td><div className='flex justify-center items-center'>
+                                            <div className='w-8 bg-stone-200 rounded-sm cursor-pointer flex justify-center items-center'>-</div>
+                                            <div className='w-8'>2</div>
+                                            <div className='w-8 bg-stone-200 rounded-sm cursor-pointer flex justify-center items-center'>+</div>
+                                        </div></td>
+                                        <td>1000</td>
+                                        <td><div className='h-10 w-10 m-auto cursor-pointer rounded-full border-2 flex justify-center items-center hover:text-red-500 hover:border-red-400'><ImBin /></div></td>
+                                    </tr>
+
+                                ))
+                            ) : null
+                            }
 
                         </tbody>
                     </table>
@@ -72,7 +74,7 @@ const Cart = () => {
             </div>
             <div className='mt-[5%] ml-[3%] w-[25%]'>
                 <div className='h-[70%] bg-white rounded-xl shadow-lg'>
-                    <p className='pt-[4%] ml-[3%] text-xl'>
+                    <p className='pt-[4%] ml-[5%] text-xl'>
                         Summary
                     </p>
                     <hr />

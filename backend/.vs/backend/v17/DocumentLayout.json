@@ -7,6 +7,22 @@
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\controllers\\menuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\backend.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\backend.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\models\\entities\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\models\\entities\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\models\\getitemsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\models\\getitemsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -15,20 +31,12 @@
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\models\\additemdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\models\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\models\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\models\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\models\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\models\\entities\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\models\\entities\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\models\\updateitemsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -42,11 +50,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "User.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\Entities\\User.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Entities\\User.cs",
@@ -58,8 +66,36 @@
               "IsPinned": true
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "backend\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "backend\\Data\\ApplicationDbContext.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-27T18:08:35.831Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "backend.http",
+              "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\backend.http",
+              "RelativeDocumentMoniker": "backend\\backend.http",
+              "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\backend.http",
+              "RelativeToolTip": "backend\\backend.http",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2024-11-27T18:08:19.395Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "GetItemsDto.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\GetItemsDto.cs",
               "RelativeDocumentMoniker": "backend\\Models\\GetItemsDto.cs",
@@ -67,12 +103,7 @@
               "RelativeToolTip": "backend\\Models\\GetItemsDto.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-27T15:17:07.199Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+              "WhenOpened": "2024-11-27T15:17:07.199Z"
             },
             {
               "$type": "Document",
@@ -84,12 +115,11 @@
               "RelativeToolTip": "backend\\appsettings.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-11-25T09:58:06.442Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-25T09:58:06.442Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "Role.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\Entities\\Role.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Entities\\Role.cs",
@@ -101,7 +131,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "UpdateItemsDto.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\UpdateItemsDto.cs",
               "RelativeDocumentMoniker": "backend\\Models\\UpdateItemsDto.cs",
@@ -113,7 +143,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "AddItemDto.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\AddItemDto.cs",
               "RelativeDocumentMoniker": "backend\\Models\\AddItemDto.cs",
@@ -121,12 +151,11 @@
               "RelativeToolTip": "backend\\Models\\AddItemDto.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-06T19:48:20.525Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-06T19:48:20.525Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 4,
               "Title": "Menu.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\Entities\\Menu.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Entities\\Menu.cs",
@@ -144,7 +173,7 @@
               "RelativeDocumentMoniker": "backend\\Controllers\\MenusController.cs",
               "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Controllers\\MenusController.cs*",
               "RelativeToolTip": "backend\\Controllers\\MenusController.cs*",
-              "ViewState": "AQIAAEUAAAAAAAAAAAAcwFQAAAA2AAAA",
+              "ViewState": "AQIAAEsAAAAAAAAAAAAqwF8AAABEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-01T15:09:12.931Z",
               "EditorCaption": ""
