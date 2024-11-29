@@ -1,4 +1,4 @@
-import { useEffect, cartdata, ImBin, useState, axios } from '../utils/Imports';
+import { useEffect, cartdata, ImBin, useState, axios, CartRow } from '../utils/Imports';
 
 const Cart = () => {
     const [cart, setCart] = useState([]);
@@ -9,7 +9,6 @@ const Cart = () => {
 
     const getItemInfo = () => {
         var itemlist = cartdata.map(item => item.id).join(',');
-        console.log('itemlist :', itemlist)
 
         const fetchData = async () => {
             try {
@@ -49,20 +48,13 @@ const Cart = () => {
                             {cart ? (
                                 cart.map((cartitem) => (
 
-                                    <tr className='text-center' key={cartitem.menu_ID}>
-                                        <td><input type="checkbox" name="" id="" /></td>
-                                        <td><img src={`data:image/jpeg;base64,${cartitem.itemImage}`} className='h-36 m-auto' alt="fooditem" />
-                                            <p>{cartitem.name}</p>
-                                        </td>
-                                        <td>{cartitem.price}</td>
-                                        <td><div className='flex justify-center items-center'>
-                                            <div className='w-8 bg-stone-200 rounded-sm cursor-pointer flex justify-center items-center'>-</div>
-                                            <div className='w-8'>2</div>
-                                            <div className='w-8 bg-stone-200 rounded-sm cursor-pointer flex justify-center items-center'>+</div>
-                                        </div></td>
-                                        <td>1000</td>
-                                        <td><div className='h-10 w-10 m-auto cursor-pointer rounded-full border-2 flex justify-center items-center hover:text-red-500 hover:border-red-400'><ImBin /></div></td>
-                                    </tr>
+                                    <CartRow
+                                        menu_ID={cartitem.menu_ID}
+                                        itemImage={cartitem.itemImage}
+                                        name={cartitem.name}
+                                        price={cartitem.price}
+                                        qty={2}
+                                    />
 
                                 ))
                             ) : null
