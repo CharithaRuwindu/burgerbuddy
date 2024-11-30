@@ -74,11 +74,11 @@ const Cart = () => {
                         <tbody>
                             <tr>
                                 <td className='w-[70%]'>Subtotal</td>
-                                <td>Rs. 0</td>
+                                <td>LKR. 0</td>
                             </tr>
                             <tr>
                                 <td className='w-[70%]'>Delivery Charges</td>
-                                <td>Rs. 0</td>
+                                <td>LKR. 350.00</td>
                             </tr>
                         </tbody>
                     </table>
@@ -86,7 +86,7 @@ const Cart = () => {
                         <tbody>
                             <tr>
                                 <td className='w-[70%]'>Total</td>
-                                <td>Rs. 0</td>
+                                <td>LKR. 0</td>
                             </tr>
                         </tbody>
                     </table>
