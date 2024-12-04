@@ -24,5 +24,5 @@ export default function App() {
     </div>
   );
 }
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+// const root = ReactDOM.createRoot(document.getElementById("root"));
+// root.render(<App />);

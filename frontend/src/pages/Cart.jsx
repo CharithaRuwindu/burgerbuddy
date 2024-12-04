@@ -1,14 +1,16 @@
-import { useEffect, cartdata, ImBin, useState, axios, CartRow } from '../utils/Imports';
+import { useEffect, ImBin, useState, axios, CartRow } from '../utils/Imports';
+import { useSelector } from 'react-redux';
 
 const Cart = () => {
     const [cart, setCart] = useState([]);
+    const cartstate = useSelector((state) => state.cart);
 
     useEffect(() => {
         getItemInfo();
-    }, []);
+    },[cartstate]);
 
     const getItemInfo = () => {
-        var itemlist = cartdata.map(item => item.id).join(',');
+        var itemlist = cartstate.map(item => item.id).join(',');
 
         const fetchData = async () => {
             try {
@@ -48,7 +50,7 @@ const Cart = () => {
                             {cart ? (
                                 cart.map((cartitem) => (
 
-                                    <CartRow
+                                    <CartRow key={cartitem.menu_ID}
                                         menu_ID={cartitem.menu_ID}
                                         itemImage={cartitem.itemImage}
                                         name={cartitem.name}

@@ -1,8 +1,15 @@
 import { ImBin, useState, useEffect } from '../utils/Imports';
+import { removeItem } from '../redux/slices/cartSlice';
+import { useDispatch } from 'react-redux';
 
 export default function CartRow({ menu_ID, itemImage, name, price, qty }) {
     const [quantity, setQuantity] = useState(qty);
     const [totalPrice, setTotalPrice] = useState(price * qty);
+    const dispatch = useDispatch();
+
+    const handleRemoveItem = (id) => {
+        dispatch(removeItem(id));
+      };
 
     useEffect(() => {
         setTotalPrice(price * quantity);
@@ -37,7 +44,7 @@ export default function CartRow({ menu_ID, itemImage, name, price, qty }) {
                 </div>
             </td>
             <td>{totalPrice}</td>
-            <td><div className='h-10 w-10 m-auto cursor-pointer rounded-full border-2 flex justify-center items-center hover:text-red-500 hover:border-red-400'><ImBin /></div></td>
+            <td><div className='h-10 w-10 m-auto cursor-pointer rounded-full border-2 flex justify-center items-center hover:text-red-500 hover:border-red-400' onClick={() => handleRemoveItem(menu_ID)}><ImBin /></div></td>
         </tr>
     );
 }
