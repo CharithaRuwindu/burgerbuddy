@@ -16,13 +16,18 @@ namespace backend.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Role>()
+                .HasData(
+                    new Role { RoleId = 1, RoleName = "Admin" },
+                    new Role { RoleId = 2, RoleName = "Kitchen Staff" },
+                    new Role { RoleId = 3, RoleName = "Delivery Staff" }
+                );
 
-            modelBuilder.Entity<Role>().HasData(
-                new Role { RoleId = 1, RoleName = "Admin" },
-                new Role { RoleId = 2, RoleName = "Manager" },
-                new Role { RoleId = 3, RoleName = "Customer" }
-            );
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Role)
+                .WithMany(r => r.Users)
+                .HasForeignKey(u => u.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
