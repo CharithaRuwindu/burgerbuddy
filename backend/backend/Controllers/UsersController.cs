@@ -29,6 +29,7 @@ namespace backend.Models
                 hashedpassword = user.hashedpassword,
                 contactNumber = user.contactNumber,
                 address = user.address,
+                roleId = user.roleId,
                 isActive = user.isActive
             }).ToList();
             return Ok(allUser);
@@ -46,6 +47,7 @@ namespace backend.Models
                 hashedpassword = addUserDto.hashedpassword,
                 contactNumber = addUserDto.contactNumber,
                 address = addUserDto.address,
+                roleId = addUserDto.roleId,
                 isActive = addUserDto.isActive,
             };
 

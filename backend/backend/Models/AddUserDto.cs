@@ -8,6 +8,7 @@
         public required string hashedpassword { get; set; }
         public required string contactNumber { get; set; }
         public required string address { get; set; }
+        public required int roleId { get; set; }
         public required bool isActive { get; set; }
     }
 }
