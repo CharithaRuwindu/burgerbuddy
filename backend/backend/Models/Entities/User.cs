@@ -4,32 +4,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models.Entities
 {
-    [Index(nameof(email), IsUnique = true)]
-    [Index(nameof(contactNumber), IsUnique = true)]
+    [Index(nameof(Email), IsUnique = true)]
+    [Index(nameof(ContactNumber), IsUnique = true)]
     public class User
     {
         [Key]
         public Guid User_ID { get; set; }
 
         [MaxLength(50)]
-        public required string firstName { get; set; }
+        public required string FirstName { get; set; }
         [MaxLength(50)] 
-        public required string lastName { get; set; }
+        public required string LastName { get; set; }
 
         [EmailAddress]
         [MaxLength(100)]
-        public required string email { get; set; }
+        public required string Email { get; set; }
         [MaxLength(255)]
-        public required string hashedpassword { get; set; }
+        public required string Hashedpassword { get; set; }
 
         [MaxLength(10)]
-        public required string contactNumber { get; set; }
+        public required string ContactNumber { get; set; }
         [MaxLength(200)]
-        public required string address { get; set; }
+        public required string Address { get; set; }
 
-        public required bool isActive { get; set; }
+        public required bool IsActive { get; set; }
 
-        public required int roleId { get; set; }
+        public required int RoleId { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }

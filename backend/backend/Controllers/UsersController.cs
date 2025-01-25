@@ -1,60 +1,66 @@
-﻿using backend.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using backend.Models;
+using System.Collections.Generic;
+using System.Linq;
+using backend.Data;
 using backend.Models.Entities;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
-namespace backend.Models
+namespace backend.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    [Route("api/[controller]")]
+    public class UsersController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
 
-        public UserController(ApplicationDbContext dbContext)
+        public UsersController(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
-        [HttpGet]
-        public IActionResult GetUser()
-        {
 
-            var allUser = dbContext.Users.Select(user => new GetUserDto
-            {
-                User_ID = user.User_ID,
-                firstName = user.firstName,
-                lastName = user.lastName,
-                email = user.email,
-                hashedpassword = user.hashedpassword,
-                contactNumber = user.contactNumber,
-                address = user.address,
-                roleId = user.roleId,
-                isActive = user.isActive
-            }).ToList();
-            return Ok(allUser);
+        // GET: api/Users
+        [HttpGet]
+        public IActionResult GetUsers()
+        {
+            var users = dbContext.Users.ToList();
+            return Ok(users);
         }
 
-        [HttpPost]
-        public IActionResult AddUser(AddUserDto addUserDto)
+        // GET: api/Users/{id}
+        [HttpGet("{id:int}")]
+        public IActionResult GetUserById(int id)
         {
+            var user = dbContext.Users.Find(id);
 
-            var userEntity = new User()
+            if (user == null)
             {
-                firstName = addUserDto.firstName,
-                lastName = addUserDto.lastName,
-                email = addUserDto.email,
-                hashedpassword = addUserDto.hashedpassword,
-                contactNumber = addUserDto.contactNumber,
-                address = addUserDto.address,
-                roleId = addUserDto.roleId,
-                isActive = addUserDto.isActive,
+                return NotFound($"User with ID {id} not found.");
+            }
+
+            return Ok(user);
+        }
+
+        // POST: api/Users
+        [HttpPost]
+        public IActionResult AddUser(AddUserDto userDto)
+        {
+            // Create a new user entity
+            var user = new User()
+            {
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName,
+                Email = userDto.Email,
+                Hashedpassword = userDto.Hashedpassword,
+                ContactNumber = userDto.ContactNumber,
+                Address = userDto.Address,
+                RoleId = userDto.RoleId,
+                IsActive = userDto.IsActive
             };
 
-            dbContext.Users.Add(userEntity);
+            dbContext.Users.Add(user);
             dbContext.SaveChanges();
 
-            return Ok(userEntity);
+            return CreatedAtAction(nameof(GetUserById), new { User_ID = user.User_ID }, user);
         }
     }
 }
