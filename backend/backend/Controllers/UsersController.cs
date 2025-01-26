@@ -7,8 +7,8 @@ using backend.Models.Entities;
 
 namespace backend.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class UsersController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
@@ -27,8 +27,9 @@ namespace backend.Controllers
         }
 
         // GET: api/Users/{id}
-        [HttpGet("{id:int}")]
-        public IActionResult GetUserById(int id)
+        [HttpGet]
+        [Route("{id:guid}")]
+        public IActionResult GetUserById(Guid id)
         {
             var user = dbContext.Users.Find(id);
 
