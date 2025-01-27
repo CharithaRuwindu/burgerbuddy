@@ -29,9 +29,17 @@ namespace backend.Models.Entities
 
         public required bool IsActive { get; set; }
 
-        public required int RoleId { get; set; }
+        public required UserRole Role { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
     }
+
+    public enum UserRole
+    {
+        Admin = 1,
+        Manager = 2,
+        Customer = 3
+    }
+
 }

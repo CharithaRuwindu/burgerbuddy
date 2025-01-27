@@ -54,7 +54,7 @@ namespace backend.Controllers
                 Hashedpassword = userDto.Hashedpassword,
                 ContactNumber = userDto.ContactNumber,
                 Address = userDto.Address,
-                RoleId = userDto.RoleId,
+                Role = userDto.Role,
                 IsActive = userDto.IsActive
             };
 

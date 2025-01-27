@@ -5,18 +5,24 @@
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class initial3 : Migration
+    public partial class addingroleenum : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-
+            migrationBuilder.RenameColumn(
+                name: "RoleId",
+                table: "Users",
+                newName: "Role");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-
+            migrationBuilder.RenameColumn(
+                name: "Role",
+                table: "Users",
+                newName: "RoleId");
         }
     }
 }

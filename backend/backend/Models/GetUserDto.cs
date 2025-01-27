@@ -1,4 +1,6 @@
-﻿namespace backend.Models
+﻿using backend.Models.Entities;
+
+namespace backend.Models
 {
     public class GetUserDto
     {
@@ -9,7 +11,7 @@
         public required string Hashedpassword { get; set; }
         public required string ContactNumber { get; set; }
         public required string Address { get; set; }
-        public required int RoleId { get; set; }
+        public required UserRole Role { get; set; }
         public required bool IsActive { get; set; }
     }
 }
