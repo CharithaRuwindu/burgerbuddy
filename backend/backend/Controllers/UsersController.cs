@@ -45,6 +45,10 @@ namespace backend.Controllers
         [HttpPost]
         public IActionResult AddUser(AddUserDto userDto)
         {
+            if (!Enum.TryParse<UserRole>(userDto.Role, true, out var userRole))
+            {
+                return BadRequest("Invalid role. Role must be Admin, Manager, or Customer.");
+            }
             // Create a new user entity
             var user = new User()
             {
@@ -54,7 +58,7 @@ namespace backend.Controllers
                 Hashedpassword = userDto.Hashedpassword,
                 ContactNumber = userDto.ContactNumber,
                 Address = userDto.Address,
-                Role = userDto.Role,
+                Role = userRole,
                 IsActive = userDto.IsActive
             };
 
