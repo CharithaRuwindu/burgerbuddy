@@ -18,7 +18,6 @@ namespace backend.Controllers
             this.dbContext = dbContext;
         }
 
-        // GET: api/Users
         [HttpGet]
         public IActionResult GetUsers()
         {
@@ -26,7 +25,6 @@ namespace backend.Controllers
             return Ok(users);
         }
 
-        // GET: api/Users/{id}
         [HttpGet]
         [Route("{id:guid}")]
         public IActionResult GetUserById(Guid id)
