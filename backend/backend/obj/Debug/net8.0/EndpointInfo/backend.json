@@ -288,7 +288,7 @@
             "type": "string",
             "nullable": true
           },
-          "hashedpassword": {
+          "password": {
             "type": "string",
             "nullable": true
           },
