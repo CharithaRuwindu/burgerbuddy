@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "E:\\personal project\\burgerbuddy\\backend\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -25,10 +33,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\models\\adduserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\models\\adduserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\services\\passwordhasher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -59,10 +63,6 @@
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\migrations\\20250126183642_aluthin patan gatta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend\\backend.csproj|solutionrelative:backend\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -90,7 +90,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 14,
           "Children": [
             {
               "$type": "Bookmark",
@@ -98,7 +98,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "UserToken.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\Entities\\UserToken.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Entities\\UserToken.cs",
@@ -106,12 +106,11 @@
               "RelativeToolTip": "backend\\Models\\Entities\\UserToken.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-04T18:22:05.92Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-04T18:22:05.92Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "AuthenticationController.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Controllers\\AuthenticationController.cs",
               "RelativeDocumentMoniker": "backend\\Controllers\\AuthenticationController.cs",
@@ -119,12 +118,11 @@
               "RelativeToolTip": "backend\\Controllers\\AuthenticationController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAOwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-04T18:20:42.377Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-04T18:20:42.377Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "20250403173631_passwordhash.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Migrations\\20250403173631_passwordhash.cs",
               "RelativeDocumentMoniker": "backend\\Migrations\\20250403173631_passwordhash.cs",
@@ -132,12 +130,11 @@
               "RelativeToolTip": "backend\\Migrations\\20250403173631_passwordhash.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-03T17:36:34.168Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-03T17:36:34.168Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "PasswordHasher.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Services\\PasswordHasher.cs",
               "RelativeDocumentMoniker": "backend\\Services\\PasswordHasher.cs",
@@ -149,7 +146,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "backend.csproj",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\backend.csproj",
               "RelativeDocumentMoniker": "backend\\backend.csproj",
@@ -161,7 +158,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "20250127175607_adding role enum.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Migrations\\20250127175607_adding role enum.cs",
               "RelativeDocumentMoniker": "backend\\Migrations\\20250127175607_adding role enum.cs",
@@ -173,7 +170,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "20250126183642_Aluthin patan gatta.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Migrations\\20250126183642_Aluthin patan gatta.cs",
               "RelativeDocumentMoniker": "backend\\Migrations\\20250126183642_Aluthin patan gatta.cs",
@@ -185,7 +182,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Data\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "backend\\Data\\ApplicationDbContext.cs",
@@ -198,7 +195,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "AddUserDto.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\AddUserDto.cs",
               "RelativeDocumentMoniker": "backend\\Models\\AddUserDto.cs",
@@ -210,7 +207,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "UsersController.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Controllers\\UsersController.cs",
               "RelativeDocumentMoniker": "backend\\Controllers\\UsersController.cs",
@@ -218,12 +215,11 @@
               "RelativeToolTip": "backend\\Controllers\\UsersController.cs",
               "ViewState": "AgIAAEwAAAAAAAAAAAAwwF8AAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-05T18:36:07.306Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-05T18:36:07.306Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "User.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\Entities\\User.cs",
               "RelativeDocumentMoniker": "backend\\Models\\Entities\\User.cs",
@@ -235,7 +231,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "MenusController.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Controllers\\MenusController.cs",
               "RelativeDocumentMoniker": "backend\\Controllers\\MenusController.cs",
@@ -247,7 +243,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "GetUserDto.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\GetUserDto.cs",
               "RelativeDocumentMoniker": "backend\\Models\\GetUserDto.cs",
@@ -259,15 +255,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 0,
               "Title": "appsettings.json",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.json",
               "RelativeDocumentMoniker": "backend\\appsettings.json",
               "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.json",
               "RelativeToolTip": "backend\\appsettings.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-12-06T11:07:35.065Z"
+              "WhenOpened": "2024-12-06T11:07:35.065Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -283,15 +280,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Program.cs",
               "RelativeDocumentMoniker": "backend\\Program.cs",
               "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Program.cs",
               "RelativeToolTip": "backend\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAnAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-06T11:06:38.915Z"
+              "WhenOpened": "2024-12-06T11:06:38.915Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
