@@ -3,6 +3,7 @@ using backend.Models;
 using backend.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
@@ -35,7 +36,8 @@ namespace backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddItem(AddItemDto addItemDto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddItem(AddItemDto addItemDto)
         {
             byte[] imageBytes;
             using (var memoryStream = new MemoryStream())
@@ -55,7 +57,7 @@ namespace backend.Controllers
             };
 
             dbContext.Menus.Add(itemEntity);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
             return Ok(itemEntity);
         }
