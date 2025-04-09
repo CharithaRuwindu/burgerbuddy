@@ -108,6 +108,7 @@ public IActionResult GetItemsByIds([FromQuery] string ids)
 
         [HttpPut]
         [Route("{id:guid}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateItems(Guid id, UpdateItemsDto updateItemsDto)
         {
             var item = dbContext.Menus.Find(id);
