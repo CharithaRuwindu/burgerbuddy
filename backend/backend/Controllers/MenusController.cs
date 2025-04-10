@@ -42,7 +42,7 @@ namespace backend.Controllers
             byte[] imageBytes;
             using (var memoryStream = new MemoryStream())
             {
-                addItemDto.ItemImage.CopyToAsync(memoryStream);
+                await addItemDto.ItemImage.CopyToAsync(memoryStream);
                 imageBytes = memoryStream.ToArray();
             }
 
@@ -109,7 +109,7 @@ public IActionResult GetItemsByIds([FromQuery] string ids)
         [HttpPut]
         [Route("{id:guid}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult UpdateItems(Guid id, UpdateItemsDto updateItemsDto)
+        public async Task<IActionResult> UpdateItems(Guid id, UpdateItemsDto updateItemsDto)
         {
             var item = dbContext.Menus.Find(id);
             if(item is null)
@@ -121,7 +121,7 @@ public IActionResult GetItemsByIds([FromQuery] string ids)
 
             using (var memoryStream = new MemoryStream())
             {
-                updateItemsDto.ItemImage.CopyToAsync(memoryStream);
+                await updateItemsDto.ItemImage.CopyToAsync(memoryStream);
                 imageBytes = memoryStream.ToArray();
             }
 
@@ -132,7 +132,7 @@ public IActionResult GetItemsByIds([FromQuery] string ids)
             item.IsActive = updateItemsDto.IsActive;
             item.ItemImage = imageBytes;
 
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
             return Ok(item);
         }
