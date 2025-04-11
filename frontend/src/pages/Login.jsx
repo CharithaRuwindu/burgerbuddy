@@ -13,6 +13,9 @@ const Login = () => {
     const [errSignupLastName, setErrSignupLastName] = useState(false);
     const [passwordErr, setPasswordErr] = useState();
     const [errSignupPassword, setErrSignupPassword] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertType, setAlertType] = useState('');
     const [loginInput, setLoginInput] = useState({
         email: '',
         password: ''
@@ -27,13 +30,23 @@ const Login = () => {
         password: ''
     })
 
-    const signin = (event) => {
+    const displayAlert = (message, type) => {
+        setAlertMessage(message);
+        setAlertType(type);
+        setShowAlert(true);
+
+        setTimeout(() => {
+            setShowAlert(false);
+        }, 5000);
+    };
+
+    const signin = async (event) => {
         event.preventDefault();
         if (signinvalidate() === true) {
-            console.log(loginInput);
+            displayAlert('Login successful!', 'success');
         }
         else {
-            console.log("Ane api iwarai aiye");
+            displayAlert('Please check your email and password', 'error');
         }
     }
 
@@ -80,13 +93,10 @@ const Login = () => {
                     body: JSON.stringify(data),
                 });
                 if (response.ok) {
-                    console.log("Hammata me badu shokne")
-                    const result = await response.json();
-                    console.log(result);
+                    displayAlert('Registration successful! You can now login.', 'success');
+                    setIsRegistered(true);
                 } else {
-                    console.log("Ane aiye api iwarai")
-                    const errorData = await response.text();
-                    console.log("Error details:", errorData);
+                    displayAlert('Registration failed. Please try again.', 'error');
                 }
             } catch (error) {
                 console.log("Error registering user data:", error);
@@ -198,6 +208,17 @@ const Login = () => {
 
     return (
         <div className="flex overflow-auto h-[92vh]" style={{ backgroundColor: '#F6F6F6' }}>
+
+            {showAlert && (
+                <div className={`fixed top-4 right-4 p-4 rounded shadow-lg ${alertType === 'success' ? 'bg-green-500' :
+                        alertType === 'error' ? 'bg-red-500' :
+                            'bg-yellow-500'} text-white`}>
+                    <div className="flex justify-between items-center">
+                        <span>{alertMessage}</span>
+                        <button onClick={() => setShowAlert(false)} className="ml-4 font-bold">×</button>
+                    </div>
+                </div>
+            )}
             <div className={`rounded shadow-md drop-shadow-xl m-auto bg-white p-4 h-[50vh] w-[28rem] ${isRegistered ? "flex" : "hidden"}`}>
                 <form onSubmit={signin} className="my-auto w-full">
                     <label>Email

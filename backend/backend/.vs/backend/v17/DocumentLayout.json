@@ -44,7 +44,7 @@
               "RelativeDocumentMoniker": "Controllers\\AuthenticationController.cs",
               "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Controllers\\AuthenticationController.cs",
               "RelativeToolTip": "Controllers\\AuthenticationController.cs",
-              "ViewState": "AgIAAEEAAAAAAAAAAAAIwKAAAAA7AAAAAAAAAA==",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAQwCUAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-10T18:26:12.133Z",
               "EditorCaption": ""
@@ -59,8 +59,7 @@
               "RelativeToolTip": "Controllers\\MenusController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAH8AAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T18:24:44.002Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-08T18:24:44.002Z"
             },
             {
               "$type": "Document",
@@ -96,8 +95,7 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAACEAAAAAAAAAAAAcwDMAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T17:36:22.425Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-07T17:36:22.425Z"
             }
           ]
         },
