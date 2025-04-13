@@ -1,6 +1,8 @@
 import { React, useState, axios } from "../utils/Imports";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [isRegistered, setIsRegistered] = useState(true);
   const [errLoginMail, setErrLoginMail] = useState(false);
   const [errSignupMail, setErrSignupMail] = useState(false);
@@ -58,6 +60,20 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify(response.data.user));
 
         displayAlert("Login successful! Redirecting...", "success");
+
+        const userRole = response.data.user.role;
+        setTimeout(() => {
+          switch(userRole) {
+            case "Admin":
+              navigate("/admindashboard");
+              break;
+            case "Customer":
+              navigate("/userprofile");
+              break;
+            default:
+              navigate("/menu");
+          }
+        }, 1000);
       } catch (error) {
         if (error.response) {
           const errorMessage =
