@@ -7,6 +7,13 @@ import Login from "./pages/Login";
 import Cart from "./pages/Cart";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserProfile from "./pages/UserProfile";
+import Unauthorized from "./pages/Unauthorized";
+import AdminLayout from "./components/AdminLayout";
+import AdmSidebar from "./components/AdmSidebar";
+import Users from "./components/Users";
+import Items from "./pages/Items";
+import Orders from "./pages/Orders";
+
 import "./index.css";
 
 const ProtectedRoute = ({ allowedRoles }) => {
@@ -44,9 +51,16 @@ export default function App() {
             <Route path="menu" element={<Menu/>}/>
             <Route path="cart" element={<Cart/>}/>
             <Route path="login" element={<Login/>}/>
+            <Route path="unauthorized" element={<Unauthorized />} />
           </Route>
           <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
+            <Route element={<AdminLayout />}>
+              <Route path="admsidebar" element={<AdmSidebar />} />
               <Route path="admindashboard" element={<AdminDashboard />} />
+              <Route path="users" element={<Users />} />
+              <Route path="items" element={<Items />} />
+              <Route path="orders" element={<Orders />} />
+            </Route>
           </Route>
           <Route element={<ProtectedRoute allowedRoles={["Customer"]} />}>
               <Route path="userprofile" element={<UserProfile />} />
