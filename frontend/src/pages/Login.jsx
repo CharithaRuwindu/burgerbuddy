@@ -65,7 +65,7 @@ const Login = () => {
         setTimeout(() => {
           switch(userRole) {
             case "Admin":
-              navigate("/admindashboard");
+              navigate("/admsidebar");
               break;
             case "Customer":
               navigate("/userprofile");
