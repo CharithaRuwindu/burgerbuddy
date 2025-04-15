@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const Users = () => {
@@ -17,7 +17,92 @@ const Users = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
 
+    // Tab and user data states
+    const [activeTab, setActiveTab] = useState("All");
+    const [allUsers, setAllUsers] = useState([]);
+    const [displayedUsers, setDisplayedUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    
+    const usersPerPage = 10;
     const roles = ["Admin", "Manager", "Customer"];
+    const tabs = ["All", "Admin", "Manager", "Customer"];
+
+    // Mock data for testing - remove in production
+    const mockUsers = [
+        { id: 1, firstName: "John", lastName: "Doe", email: "john@example.com", contactNumber: "1234567890", role: "Admin" },
+        { id: 2, firstName: "Jane", lastName: "Smith", email: "jane@example.com", contactNumber: "2345678901", role: "Manager" },
+        { id: 3, firstName: "Mike", lastName: "Johnson", email: "mike@example.com", contactNumber: "3456789012", role: "Customer" },
+        { id: 4, firstName: "Sarah", lastName: "Williams", email: "sarah@example.com", contactNumber: "4567890123", role: "Customer" },
+        { id: 5, firstName: "David", lastName: "Brown", email: "david@example.com", contactNumber: "5678901234", role: "Manager" },
+        { id: 6, firstName: "Lisa", lastName: "Davis", email: "lisa@example.com", contactNumber: "6789012345", role: "Admin" }
+    ];
+
+    // Fetch users
+    useEffect(() => {
+        const fetchUsers = async () => {
+            setLoading(true);
+            try {
+                // Try to fetch from API
+                const response = await axios.get("/api/users");
+                console.log("API Response:", response.data);
+                
+                // Process the data to ensure role property exists
+                const processedUsers = response.data.map(user => ({
+                    ...user,
+                    role: user.role || "Customer" // Default to Customer if role is missing
+                }));
+                
+                setAllUsers(processedUsers);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                // Use mock data if API fails
+                console.log("Using mock data instead");
+                setAllUsers(mockUsers);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
+    // Apply filtering whenever activeTab or allUsers changes
+    useEffect(() => {
+        filterUsers(activeTab);
+    }, [activeTab, allUsers]);
+
+    // Function to filter users based on selected tab
+    const filterUsers = (tab) => {
+        console.log("Filtering by tab:", tab);
+        console.log("All users before filtering:", allUsers);
+        
+        let filtered;
+        if (tab === "All") {
+            filtered = [...allUsers];
+        } else {
+            filtered = allUsers.filter(user => {
+                // Fix: Ensure user.role is converted to a string before calling toLowerCase
+                const userRole = String(user.role || "").toLowerCase();
+                const tabRole = tab.toLowerCase();
+                console.log(`User ${user.firstName} role: "${userRole}" compared to tab: "${tabRole}"`);
+                return userRole === tabRole;
+            });
+        }
+        
+        console.log("Filtered result:", filtered);
+        setDisplayedUsers(filtered);
+        setTotalPages(Math.ceil(filtered.length / usersPerPage));
+        setCurrentPage(1); // Reset to first page when filter changes
+    };
+
+    // Get current users for pagination
+    const getCurrentUsers = () => {
+        const indexOfLastUser = currentPage * usersPerPage;
+        const indexOfFirstUser = indexOfLastUser - usersPerPage;
+        return displayedUsers.slice(indexOfFirstUser, indexOfLastUser);
+    };
 
     const validateForm = () => {
         const newErrors = {};
@@ -95,6 +180,10 @@ const Users = () => {
             
             const response = await axios.post("/api/users", userData);
             
+            // Add new user to allUsers state
+            const newUser = response.data;
+            setAllUsers(prev => [...prev, newUser]);
+            
             setSuccessMessage("User added successfully!");
             setTimeout(() => {
                 setSuccessMessage("");
@@ -118,10 +207,31 @@ const Users = () => {
         }
     };
 
+    // Handle page change
+    const handlePageChange = (page) => {
+        if (page < 1 || page > totalPages) return;
+        setCurrentPage(page);
+    };
+
+    // Generate page numbers
+    const getPageNumbers = () => {
+        const pageNumbers = [];
+        for (let i = 1; i <= totalPages; i++) {
+            pageNumbers.push(i);
+        }
+        return pageNumbers;
+    };
+
     return (
         <div className="p-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Users</h1>
+                <div>
+                    <h1 className="text-2xl font-bold">Users Management</h1>
+                    <p className="text-gray-600">
+                        Viewing: {activeTab} users
+                        {displayedUsers.length > 0 && ` (${displayedUsers.length} users found)`}
+                    </p>
+                </div>
                 <button 
                     className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
                     onClick={() => setShowModal(true)}
@@ -130,6 +240,117 @@ const Users = () => {
                 </button>
             </div>
 
+            {/* Tabs */}
+            <div className="border-b border-gray-200 mb-6">
+                <ul className="flex flex-wrap -mb-px">
+                    {tabs.map(tab => (
+                        <li key={tab} className="mr-2">
+                            <button
+                                className={`inline-block p-4 border-b-2 rounded-t-lg ${
+                                    activeTab === tab 
+                                        ? 'text-blue-600 border-blue-600' 
+                                        : 'border-transparent hover:text-gray-600 hover:border-gray-300'
+                                }`}
+                                onClick={() => setActiveTab(tab)}
+                            >
+                                {tab}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            {/* Users Table */}
+            <div className="bg-white shadow-md rounded-lg overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                        <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Name</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Name</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone Number</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {loading ? (
+                            <tr>
+                                <td colSpan="5" className="px-6 py-4 text-center">
+                                    <div className="flex justify-center">
+                                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
+                                    </div>
+                                    <p className="mt-2 text-gray-500">Loading users...</p>
+                                </td>
+                            </tr>
+                        ) : getCurrentUsers().length === 0 ? (
+                            <tr>
+                                <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                                    {activeTab === "All" 
+                                        ? "No users found in the system" 
+                                        : `No users with role "${activeTab}" found`}
+                                </td>
+                            </tr>
+                        ) : (
+                            getCurrentUsers().map((user, index) => (
+                                <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                                    <td className="px-6 py-4 whitespace-nowrap">{user.firstName}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{user.lastName}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{user.contactNumber}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{String(user.role || "Customer")}</td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Pagination */}
+            {!loading && displayedUsers.length > 0 && (
+                <div className="flex justify-center mt-6">
+                    <nav className="inline-flex rounded-md shadow">
+                        <button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className={`px-3 py-1 rounded-l-md border ${
+                                currentPage === 1 
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            Previous
+                        </button>
+                        
+                        {getPageNumbers().map(number => (
+                            <button
+                                key={number}
+                                onClick={() => handlePageChange(number)}
+                                className={`px-3 py-1 border-t border-b ${
+                                    currentPage === number 
+                                        ? 'bg-blue-50 text-blue-600 border-blue-500' 
+                                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                                }`}
+                            >
+                                {number}
+                            </button>
+                        ))}
+                        
+                        <button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className={`px-3 py-1 rounded-r-md border ${
+                                currentPage === totalPages 
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            Next
+                        </button>
+                    </nav>
+                </div>
+            )}
+
+            {/* Add User Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
