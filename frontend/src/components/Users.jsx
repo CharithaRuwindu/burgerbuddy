@@ -17,7 +17,6 @@ const Users = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
 
-    // Tab and user data states
     const [activeTab, setActiveTab] = useState("All");
     const [allUsers, setAllUsers] = useState([]);
     const [displayedUsers, setDisplayedUsers] = useState([]);
@@ -29,37 +28,22 @@ const Users = () => {
     const roles = ["Admin", "Manager", "Customer"];
     const tabs = ["All", "Admin", "Manager", "Customer"];
 
-    // Mock data for testing - remove in production
-    const mockUsers = [
-        { id: 1, firstName: "John", lastName: "Doe", email: "john@example.com", contactNumber: "1234567890", role: "Admin" },
-        { id: 2, firstName: "Jane", lastName: "Smith", email: "jane@example.com", contactNumber: "2345678901", role: "Manager" },
-        { id: 3, firstName: "Mike", lastName: "Johnson", email: "mike@example.com", contactNumber: "3456789012", role: "Customer" },
-        { id: 4, firstName: "Sarah", lastName: "Williams", email: "sarah@example.com", contactNumber: "4567890123", role: "Customer" },
-        { id: 5, firstName: "David", lastName: "Brown", email: "david@example.com", contactNumber: "5678901234", role: "Manager" },
-        { id: 6, firstName: "Lisa", lastName: "Davis", email: "lisa@example.com", contactNumber: "6789012345", role: "Admin" }
-    ];
-
-    // Fetch users
     useEffect(() => {
         const fetchUsers = async () => {
             setLoading(true);
             try {
-                // Try to fetch from API
                 const response = await axios.get("/api/users");
                 console.log("API Response:", response.data);
                 
-                // Process the data to ensure role property exists
                 const processedUsers = response.data.map(user => ({
                     ...user,
-                    role: user.role || "Customer" // Default to Customer if role is missing
+                    role: user.role || "Customer"
                 }));
                 
                 setAllUsers(processedUsers);
             } catch (error) {
                 console.error("Error fetching users:", error);
-                // Use mock data if API fails
-                console.log("Using mock data instead");
-                setAllUsers(mockUsers);
+                setAllUsers([]);
             } finally {
                 setLoading(false);
             }
@@ -68,12 +52,10 @@ const Users = () => {
         fetchUsers();
     }, []);
 
-    // Apply filtering whenever activeTab or allUsers changes
     useEffect(() => {
         filterUsers(activeTab);
     }, [activeTab, allUsers]);
 
-    // Function to filter users based on selected tab
     const filterUsers = (tab) => {
         console.log("Filtering by tab:", tab);
         console.log("All users before filtering:", allUsers);
@@ -83,7 +65,6 @@ const Users = () => {
             filtered = [...allUsers];
         } else {
             filtered = allUsers.filter(user => {
-                // Fix: Ensure user.role is converted to a string before calling toLowerCase
                 const userRole = String(user.role || "").toLowerCase();
                 const tabRole = tab.toLowerCase();
                 console.log(`User ${user.firstName} role: "${userRole}" compared to tab: "${tabRole}"`);
@@ -180,7 +161,6 @@ const Users = () => {
             
             const response = await axios.post("/api/users", userData);
             
-            // Add new user to allUsers state
             const newUser = response.data;
             setAllUsers(prev => [...prev, newUser]);
             
@@ -207,13 +187,11 @@ const Users = () => {
         }
     };
 
-    // Handle page change
     const handlePageChange = (page) => {
         if (page < 1 || page > totalPages) return;
         setCurrentPage(page);
     };
 
-    // Generate page numbers
     const getPageNumbers = () => {
         const pageNumbers = [];
         for (let i = 1; i <= totalPages; i++) {
@@ -240,7 +218,6 @@ const Users = () => {
                 </button>
             </div>
 
-            {/* Tabs */}
             <div className="border-b border-gray-200 mb-6">
                 <ul className="flex flex-wrap -mb-px">
                     {tabs.map(tab => (
@@ -260,7 +237,6 @@ const Users = () => {
                 </ul>
             </div>
 
-            {/* Users Table */}
             <div className="bg-white shadow-md rounded-lg overflow-hidden">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
@@ -305,7 +281,6 @@ const Users = () => {
                 </table>
             </div>
 
-            {/* Pagination */}
             {!loading && displayedUsers.length > 0 && (
                 <div className="flex justify-center mt-6">
                     <nav className="inline-flex rounded-md shadow">
@@ -350,7 +325,6 @@ const Users = () => {
                 </div>
             )}
 
-            {/* Add User Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
