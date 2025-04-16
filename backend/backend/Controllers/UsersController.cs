@@ -25,7 +25,21 @@ namespace backend.Controllers
         public IActionResult GetUsers()
         {
             var users = dbContext.Users.ToList();
-            return Ok(users);
+            var usersDto = users.Select(user => new
+            {
+                user.User_ID,
+                user.FirstName,
+                user.LastName,
+                user.Email,
+                user.ContactNumber,
+                user.Address,
+                user.IsActive,
+                Role = Enum.GetName(typeof(UserRole), user.Role),
+                user.CreatedAt,
+                user.UpdatedAt
+            }).ToList();
+
+            return Ok(usersDto);
         }
 
         [HttpGet]
