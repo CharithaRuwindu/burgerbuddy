@@ -4,6 +4,7 @@ import axios from "axios";
 const Users = () => {
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
+        user_ID: "",
         firstName: "",
         lastName: "",
         email: "",
@@ -16,6 +17,7 @@ const Users = () => {
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
+    const [deleteMessage, setDeleteMessage] = useState("");
 
     const [activeTab, setActiveTab] = useState("All");
     const [allUsers, setAllUsers] = useState([]);
@@ -23,6 +25,7 @@ const Users = () => {
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [deleteLoading, setDeleteLoading] = useState(null);
     
     const usersPerPage = 10;
     const roles = ["Admin", "Manager", "Customer"];
@@ -75,10 +78,9 @@ const Users = () => {
         console.log("Filtered result:", filtered);
         setDisplayedUsers(filtered);
         setTotalPages(Math.ceil(filtered.length / usersPerPage));
-        setCurrentPage(1); // Reset to first page when filter changes
+        setCurrentPage(1);
     };
 
-    // Get current users for pagination
     const getCurrentUsers = () => {
         const indexOfLastUser = currentPage * usersPerPage;
         const indexOfFirstUser = indexOfLastUser - usersPerPage;
@@ -148,16 +150,7 @@ const Users = () => {
         setIsSubmitting(true);
         
         try {
-            const userData = {
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                email: formData.email,
-                password: formData.password,
-                contactNumber: formData.contactNumber,
-                address: formData.address,
-                role: formData.role,
-                isActive: true
-            };
+            const userData = { ...formData };
             
             const response = await axios.post("/api/users", userData);
             
@@ -169,6 +162,7 @@ const Users = () => {
                 setSuccessMessage("");
                 setShowModal(false);
                 setFormData({
+                    user_ID: "",
                     firstName: "",
                     lastName: "",
                     email: "",
@@ -184,6 +178,35 @@ const Users = () => {
             setErrors({ submit: "Failed to add user. Please try again." });
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    const handleDelete = async (user_ID) => {
+        if (!user_ID) {
+            console.error("Invalid user ID for deletion");
+            return;
+        }
+
+        if (!window.confirm("Are you sure you want to delete this user?")) {
+            return;
+        }
+        
+        setDeleteLoading(user_ID);
+        
+        try {
+            await axios.delete(`/api/users/${user_ID}`);
+            
+            setAllUsers(prev => prev.filter(user => user.user_ID !== user_ID));
+            
+            setDeleteMessage("User deleted successfully");
+            setTimeout(() => {
+                setDeleteMessage("");
+            }, 3000);
+        } catch (error) {
+            console.error("Error deleting user:", error);
+            alert("Failed to delete user. Please try again.");
+        } finally {
+            setDeleteLoading(null);
         }
     };
 
@@ -218,6 +241,12 @@ const Users = () => {
                 </button>
             </div>
 
+            {deleteMessage && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    {deleteMessage}
+                </div>
+            )}
+
             <div className="border-b border-gray-200 mb-6">
                 <ul className="flex flex-wrap -mb-px">
                     {tabs.map(tab => (
@@ -246,12 +275,13 @@ const Users = () => {
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone Number</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {loading ? (
                             <tr>
-                                <td colSpan="5" className="px-6 py-4 text-center">
+                                <td colSpan="6" className="px-6 py-4 text-center">
                                     <div className="flex justify-center">
                                         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
                                     </div>
@@ -260,7 +290,7 @@ const Users = () => {
                             </tr>
                         ) : getCurrentUsers().length === 0 ? (
                             <tr>
-                                <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                                <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
                                     {activeTab === "All" 
                                         ? "No users found in the system" 
                                         : `No users with role "${activeTab}" found`}
@@ -274,6 +304,29 @@ const Users = () => {
                                     <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">{user.contactNumber}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">{String(user.role || "Customer")}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <button
+                                            onClick={() => handleDelete(user.user_ID)}
+                                            disabled={deleteLoading === user.user_ID}
+                                            className={`text-white font-medium py-1 px-2 rounded ${
+                                                deleteLoading === user.user_ID
+                                                    ? 'bg-red-300 cursor-not-allowed'
+                                                    : 'bg-red-500 hover:bg-red-600'
+                                            }`}
+                                            title="Delete user"
+                                        >
+                                            {deleteLoading === user.user_ID ? (
+                                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                            ) : (
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                </svg>
+                                            )}
+                                        </button>
+                                    </td>
                                 </tr>
                             ))
                         )}
