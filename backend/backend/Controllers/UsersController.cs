@@ -102,6 +102,77 @@ namespace backend.Controllers
             return CreatedAtAction(nameof(GetUserById), new { id = user.User_ID }, user);
         }
 
+        [HttpPut]
+        [Route("{id:guid}")]
+        public IActionResult UpdateUser(Guid id, UpdateUserDto userDto)
+        {
+            var user = dbContext.Users.Find(id);
+            if (user == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
+
+            if (userDto.Email != user.Email && dbContext.Users.Any(u => u.Email == userDto.Email))
+            {
+                return BadRequest("Email already exists in the system.");
+            }
+
+            if (userDto.ContactNumber != user.ContactNumber && dbContext.Users.Any(u => u.ContactNumber == userDto.ContactNumber))
+            {
+                return BadRequest("Contact number already exists in the system.");
+            }
+
+            if (!IsValidEmail(userDto.Email))
+            {
+                return BadRequest("Invalid email format.");
+            }
+
+            if (!Enum.TryParse<UserRole>(userDto.Role, true, out var userRole))
+            {
+                return BadRequest("Invalid role. Role must be Admin, Manager, or Customer.");
+            }
+
+            user.FirstName = userDto.FirstName;
+            user.LastName = userDto.LastName;
+            user.Email = userDto.Email;
+            user.ContactNumber = userDto.ContactNumber;
+            user.Address = userDto.Address;
+            user.Role = userRole;
+            user.IsActive = userDto.IsActive;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            if (!string.IsNullOrEmpty(userDto.Password))
+            {
+                if (!IsStrongPassword(userDto.Password))
+                {
+                    return BadRequest("Password must be at least 8 characters and include uppercase, lowercase, numbers, and special characters.");
+                }
+                passwordService.SetPasswordForUser(user, userDto.Password);
+            }
+
+            dbContext.SaveChanges();
+
+            return Ok(user);
+        }
+
+        [HttpPatch]
+        [Route("{id:guid}/deactivate")]
+        public IActionResult DeactivateUser(Guid id)
+        {
+            var user = dbContext.Users.Find(id);
+            if (user == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
+
+            user.IsActive = false;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { message = $"User with ID {id} has been deactivated." });
+        }
+
         private bool IsValidEmail(string email)
         {
             try

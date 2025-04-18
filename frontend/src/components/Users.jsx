@@ -63,11 +63,13 @@ const Users = () => {
         console.log("Filtering by tab:", tab);
         console.log("All users before filtering:", allUsers);
         
+        const activeUsers = allUsers.filter(user => user.isActive === true);
+        
         let filtered;
         if (tab === "All") {
-            filtered = [...allUsers];
+            filtered = [...activeUsers];
         } else {
-            filtered = allUsers.filter(user => {
+            filtered = activeUsers.filter(user => {
                 const userRole = String(user.role || "").toLowerCase();
                 const tabRole = tab.toLowerCase();
                 console.log(`User ${user.firstName} role: "${userRole}" compared to tab: "${tabRole}"`);
@@ -75,7 +77,6 @@ const Users = () => {
             });
         }
         
-        console.log("Filtered result:", filtered);
         setDisplayedUsers(filtered);
         setTotalPages(Math.ceil(filtered.length / usersPerPage));
         setCurrentPage(1);
@@ -183,28 +184,32 @@ const Users = () => {
 
     const handleDelete = async (user_ID) => {
         if (!user_ID) {
-            console.error("Invalid user ID for deletion");
+            console.error("Invalid user ID for deactivation");
             return;
         }
-
-        if (!window.confirm("Are you sure you want to delete this user?")) {
+    
+        if (!window.confirm("Are you sure you want to deactivate this user?")) {
             return;
         }
         
         setDeleteLoading(user_ID);
         
         try {
-            await axios.delete(`/api/users/${user_ID}`);
+            await axios.patch(`/api/users/${user_ID}/deactivate`);
             
-            setAllUsers(prev => prev.filter(user => user.user_ID !== user_ID));
+            setAllUsers(prev => prev.map(user => 
+                user.user_ID === user_ID 
+                    ? {...user, isActive: false} 
+                    : user
+            ));
             
-            setDeleteMessage("User deleted successfully");
+            setDeleteMessage("User deactivated successfully");
             setTimeout(() => {
                 setDeleteMessage("");
             }, 3000);
         } catch (error) {
-            console.error("Error deleting user:", error);
-            alert("Failed to delete user. Please try again.");
+            console.error("Error deactivating user:", error);
+            alert("Failed to deactivate user. Please try again.");
         } finally {
             setDeleteLoading(null);
         }
