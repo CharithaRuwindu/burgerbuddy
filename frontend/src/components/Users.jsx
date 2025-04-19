@@ -18,6 +18,7 @@ const Users = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const [deleteMessage, setDeleteMessage] = useState("");
+    const [editMode, setEditMode] = useState(false);
 
     const [activeTab, setActiveTab] = useState("All");
     const [allUsers, setAllUsers] = useState([]);
@@ -29,14 +30,13 @@ const Users = () => {
     
     const usersPerPage = 10;
     const roles = ["Admin", "Manager", "Customer"];
-    const tabs = ["All", "Admin", "Manager", "Customer"];
+    const tabs = ["All", "Admin", "Manager", "Customer", "Deleted"];
 
     useEffect(() => {
         const fetchUsers = async () => {
             setLoading(true);
             try {
                 const response = await axios.get("/api/users");
-                console.log("API Response:", response.data);
                 
                 const processedUsers = response.data.map(user => ({
                     ...user,
@@ -64,15 +64,17 @@ const Users = () => {
         console.log("All users before filtering:", allUsers);
         
         const activeUsers = allUsers.filter(user => user.isActive === true);
+        const deletedUsers = allUsers.filter(user => user.isActive === false);
         
         let filtered;
         if (tab === "All") {
             filtered = [...activeUsers];
+        } else if (tab === "Deleted") {
+            filtered = [...deletedUsers];
         } else {
             filtered = activeUsers.filter(user => {
                 const userRole = String(user.role || "").toLowerCase();
                 const tabRole = tab.toLowerCase();
-                console.log(`User ${user.firstName} role: "${userRole}" compared to tab: "${tabRole}"`);
                 return userRole === tabRole;
             });
         }
@@ -109,10 +111,12 @@ const Users = () => {
             newErrors.email = "Invalid email address";
         }
         
-        if (!formData.password.trim()) {
-            newErrors.password = "Password is required";
-        } else if (formData.password.length < 6) {
-            newErrors.password = "Password should be at least 6 characters";
+        if (!editMode) {
+            if (!formData.password.trim()) {
+                newErrors.password = "Password is required";
+            } else if (formData.password.length < 6) {
+                newErrors.password = "Password should be at least 6 characters";
+            }
         }
         
         if (!formData.contactNumber.trim()) {
@@ -153,33 +157,93 @@ const Users = () => {
         try {
             const userData = { ...formData };
             
-            const response = await axios.post("/api/users", userData);
+            if (editMode) {
+                delete userData.password;
+            }
             
-            const newUser = response.data;
-            setAllUsers(prev => [...prev, newUser]);
+            let response;
+            let successMsg;
             
-            setSuccessMessage("User added successfully!");
+            if (editMode) {
+                response = await axios.put(`/api/users/${userData.user_ID}`, userData);
+                successMsg = "User updated successfully!";
+                
+                const updatedUser = {
+                    ...response.data,
+                    role: userData.role || "Customer"
+                };
+                
+                setAllUsers(prev => 
+                    prev.map(user => 
+                        user.user_ID === userData.user_ID ? updatedUser : user
+                    )
+                );
+            } else {
+                response = await axios.post("/api/users", userData);
+                successMsg = "User added successfully!";
+                
+                const newUser = {
+                    ...response.data,
+                    role: userData.role || "Customer"
+                };
+                
+                setAllUsers(prev => [...prev, newUser]);
+            }
+            
+            setSuccessMessage(successMsg);
             setTimeout(() => {
                 setSuccessMessage("");
                 setShowModal(false);
-                setFormData({
-                    user_ID: "",
-                    firstName: "",
-                    lastName: "",
-                    email: "",
-                    password: "",
-                    contactNumber: "",
-                    address: "",
-                    role: "Customer",
-                    isActive: true
-                });
+                resetForm();
             }, 2000);
         } catch (error) {
-            console.error("Error adding user:", error);
-            setErrors({ submit: "Failed to add user. Please try again." });
+            console.error("Error saving user:", error);
+            setErrors({ submit: `Failed to ${editMode ? 'update' : 'add'} user. Please try again.` });
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const resetForm = () => {
+        setFormData({
+            user_ID: "",
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+            contactNumber: "",
+            address: "",
+            role: "Customer",
+            isActive: true
+        });
+        setEditMode(false);
+        setErrors({});
+    };
+
+    const handleEdit = (user) => {
+        setFormData({
+            user_ID: user.user_ID,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            password: "",
+            contactNumber: user.contactNumber,
+            address: user.address,
+            role: user.role || "Customer",
+            isActive: user.isActive
+        });
+        setEditMode(true);
+        setShowModal(true);
+    };
+
+    const handleAddUser = () => {
+        resetForm();
+        setShowModal(true);
+    };
+
+    const handleModalClose = () => {
+        setShowModal(false);
+        resetForm();
     };
 
     const handleDelete = async (user_ID) => {
@@ -240,7 +304,7 @@ const Users = () => {
                 </div>
                 <button 
                     className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-                    onClick={() => setShowModal(true)}
+                    onClick={handleAddUser}
                 >
                     Add User
                 </button>
@@ -310,27 +374,38 @@ const Users = () => {
                                     <td className="px-6 py-4 whitespace-nowrap">{user.contactNumber}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">{String(user.role || "Customer")}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <button
-                                            onClick={() => handleDelete(user.user_ID)}
-                                            disabled={deleteLoading === user.user_ID}
-                                            className={`text-white font-medium py-1 px-2 rounded ${
-                                                deleteLoading === user.user_ID
-                                                    ? 'bg-red-300 cursor-not-allowed'
-                                                    : 'bg-red-500 hover:bg-red-600'
-                                            }`}
-                                            title="Delete user"
-                                        >
-                                            {deleteLoading === user.user_ID ? (
-                                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                </svg>
-                                            ) : (
+                                        <div className="flex space-x-2">
+                                            <button
+                                                onClick={() => handleEdit(user)}
+                                                className="text-white font-medium py-1 px-2 rounded bg-blue-500 hover:bg-blue-600"
+                                                title="Edit user"
+                                            >
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                                 </svg>
-                                            )}
-                                        </button>
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(user.user_ID)}
+                                                disabled={deleteLoading === user.user_ID}
+                                                className={`text-white font-medium py-1 px-2 rounded ${
+                                                    deleteLoading === user.user_ID
+                                                        ? 'bg-red-300 cursor-not-allowed'
+                                                        : 'bg-red-500 hover:bg-red-600'
+                                                }`}
+                                                title="Delete user"
+                                            >
+                                                {deleteLoading === user.user_ID ? (
+                                                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                ) : (
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                    </svg>
+                                                )}
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))
@@ -388,12 +463,12 @@ const Users = () => {
                     <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
                         <button 
                             className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-                            onClick={() => setShowModal(false)}
+                            onClick={handleModalClose}
                         >
                             <span className="text-2xl">&times;</span>
                         </button>
                         
-                        <h2 className="text-xl font-bold mb-4">Add New User</h2>
+                        <h2 className="text-xl font-bold mb-4">{editMode ? "Edit User" : "Add New User"}</h2>
                         
                         {successMessage && (
                             <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
@@ -458,21 +533,23 @@ const Users = () => {
                                 )}
                             </div>
                             
-                            <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2">
-                                    Password*
-                                </label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    className={`w-full px-3 py-2 border rounded ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
-                                />
-                                {errors.password && (
-                                    <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-                                )}
-                            </div>
+                            {!editMode && (
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                                        Password*
+                                    </label>
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        className={`w-full px-3 py-2 border rounded ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
+                                    />
+                                    {errors.password && (
+                                        <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+                                    )}
+                                </div>
+                            )}
                             
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -529,7 +606,7 @@ const Users = () => {
                                 <button
                                     type="button"
                                     className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
-                                    onClick={() => setShowModal(false)}
+                                    onClick={handleModalClose}
                                 >
                                     Cancel
                                 </button>
@@ -538,7 +615,7 @@ const Users = () => {
                                     className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
                                     disabled={isSubmitting}
                                 >
-                                    {isSubmitting ? "Adding..." : "Add User"}
+                                    {isSubmitting ? (editMode ? "Updating..." : "Adding...") : (editMode ? "Update User" : "Add User")}
                                 </button>
                             </div>
                         </form>
