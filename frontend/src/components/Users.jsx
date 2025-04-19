@@ -18,6 +18,7 @@ const Users = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const [deleteMessage, setDeleteMessage] = useState("");
+    const [activateMessage, setActivateMessage] = useState("");
     const [editMode, setEditMode] = useState(false);
 
     const [activeTab, setActiveTab] = useState("All");
@@ -27,7 +28,8 @@ const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [deleteLoading, setDeleteLoading] = useState(null);
-    
+    const [activateLoading, setActivateLoading] = useState(null);
+
     const usersPerPage = 10;
     const roles = ["Admin", "Manager", "Customer"];
     const tabs = ["All", "Admin", "Manager", "Customer", "Deleted"];
@@ -37,12 +39,12 @@ const Users = () => {
             setLoading(true);
             try {
                 const response = await axios.get("/api/users");
-                
+
                 const processedUsers = response.data.map(user => ({
                     ...user,
                     role: user.role || "Customer"
                 }));
-                
+
                 setAllUsers(processedUsers);
             } catch (error) {
                 console.error("Error fetching users:", error);
@@ -62,10 +64,10 @@ const Users = () => {
     const filterUsers = (tab) => {
         console.log("Filtering by tab:", tab);
         console.log("All users before filtering:", allUsers);
-        
+
         const activeUsers = allUsers.filter(user => user.isActive === true);
         const deletedUsers = allUsers.filter(user => user.isActive === false);
-        
+
         let filtered;
         if (tab === "All") {
             filtered = [...activeUsers];
@@ -78,7 +80,7 @@ const Users = () => {
                 return userRole === tabRole;
             });
         }
-        
+
         setDisplayedUsers(filtered);
         setTotalPages(Math.ceil(filtered.length / usersPerPage));
         setCurrentPage(1);
@@ -92,25 +94,25 @@ const Users = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        
+
         if (!formData.firstName.trim()) {
             newErrors.firstName = "First name is required";
         } else if (!/^[A-Za-z]+$/.test(formData.firstName)) {
             newErrors.firstName = "First name should contain only letters";
         }
-        
+
         if (!formData.lastName.trim()) {
             newErrors.lastName = "Last name is required";
         } else if (!/^[A-Za-z]+$/.test(formData.lastName)) {
             newErrors.lastName = "Last name should contain only letters";
         }
-        
+
         if (!formData.email.trim()) {
             newErrors.email = "Email is required";
         } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)) {
             newErrors.email = "Invalid email address";
         }
-        
+
         if (!editMode) {
             if (!formData.password.trim()) {
                 newErrors.password = "Password is required";
@@ -118,21 +120,21 @@ const Users = () => {
                 newErrors.password = "Password should be at least 6 characters";
             }
         }
-        
+
         if (!formData.contactNumber.trim()) {
             newErrors.contactNumber = "Contact number is required";
         } else if (!/^\d{10}$/.test(formData.contactNumber)) {
             newErrors.contactNumber = "Contact number should be 10 digits";
         }
-        
+
         if (!formData.address.trim()) {
             newErrors.address = "Address is required";
         }
-        
+
         if (!formData.role) {
             newErrors.role = "Role is required";
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -147,49 +149,49 @@ const Users = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
-        
+
         setIsSubmitting(true);
-        
+
         try {
             const userData = { ...formData };
-            
+
             if (editMode) {
                 delete userData.password;
             }
-            
+
             let response;
             let successMsg;
-            
+
             if (editMode) {
                 response = await axios.put(`/api/users/${userData.user_ID}`, userData);
                 successMsg = "User updated successfully!";
-                
+
                 const updatedUser = {
                     ...response.data,
                     role: userData.role || "Customer"
                 };
-                
-                setAllUsers(prev => 
-                    prev.map(user => 
+
+                setAllUsers(prev =>
+                    prev.map(user =>
                         user.user_ID === userData.user_ID ? updatedUser : user
                     )
                 );
             } else {
                 response = await axios.post("/api/users", userData);
                 successMsg = "User added successfully!";
-                
+
                 const newUser = {
                     ...response.data,
                     role: userData.role || "Customer"
                 };
-                
+
                 setAllUsers(prev => [...prev, newUser]);
             }
-            
+
             setSuccessMessage(successMsg);
             setTimeout(() => {
                 setSuccessMessage("");
@@ -251,22 +253,22 @@ const Users = () => {
             console.error("Invalid user ID for deactivation");
             return;
         }
-    
+
         if (!window.confirm("Are you sure you want to deactivate this user?")) {
             return;
         }
-        
+
         setDeleteLoading(user_ID);
-        
+
         try {
             await axios.patch(`/api/users/${user_ID}/deactivate`);
-            
-            setAllUsers(prev => prev.map(user => 
-                user.user_ID === user_ID 
-                    ? {...user, isActive: false} 
+
+            setAllUsers(prev => prev.map(user =>
+                user.user_ID === user_ID
+                    ? { ...user, isActive: false }
                     : user
             ));
-            
+
             setDeleteMessage("User deactivated successfully");
             setTimeout(() => {
                 setDeleteMessage("");
@@ -276,6 +278,39 @@ const Users = () => {
             alert("Failed to deactivate user. Please try again.");
         } finally {
             setDeleteLoading(null);
+        }
+    };
+
+    const handleActivate = async (user_ID) => {
+        if (!user_ID) {
+            console.error("Invalid user ID for Activation");
+            return;
+        }
+
+        if (!window.confirm("Are you sure you want to Reactivate this user?")) {
+            return;
+        }
+
+        setActivateLoading(user_ID);
+
+        try {
+            await axios.patch(`/api/users/${user_ID}/reactivate`);
+
+            setAllUsers(prev => prev.map(user =>
+                user.user_ID === user_ID
+                    ? { ...user, isActive: true }
+                    : user
+            ));
+
+            setActivateMessage("User Reactivated successfully");
+            setTimeout(() => {
+                setActivateMessage("");
+            }, 3000);
+        } catch (error) {
+            console.error("Error Reactivating user:", error);
+            alert("Failed to Reactivate user. Please try again.");
+        } finally {
+            setActivateLoading(null);
         }
     };
 
@@ -302,7 +337,7 @@ const Users = () => {
                         {displayedUsers.length > 0 && ` (${displayedUsers.length} users found)`}
                     </p>
                 </div>
-                <button 
+                <button
                     className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
                     onClick={handleAddUser}
                 >
@@ -316,16 +351,21 @@ const Users = () => {
                 </div>
             )}
 
+            {activateMessage && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    {activateMessage}
+                </div>
+            )}
+
             <div className="border-b border-gray-200 mb-6">
                 <ul className="flex flex-wrap -mb-px">
                     {tabs.map(tab => (
                         <li key={tab} className="mr-2">
                             <button
-                                className={`inline-block p-4 border-b-2 rounded-t-lg ${
-                                    activeTab === tab 
-                                        ? 'text-blue-600 border-blue-600' 
-                                        : 'border-transparent hover:text-gray-600 hover:border-gray-300'
-                                }`}
+                                className={`inline-block p-4 border-b-2 rounded-t-lg ${activeTab === tab
+                                    ? 'text-blue-600 border-blue-600'
+                                    : 'border-transparent hover:text-gray-600 hover:border-gray-300'
+                                    }`}
                                 onClick={() => setActiveTab(tab)}
                             >
                                 {tab}
@@ -360,8 +400,8 @@ const Users = () => {
                         ) : getCurrentUsers().length === 0 ? (
                             <tr>
                                 <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
-                                    {activeTab === "All" 
-                                        ? "No users found in the system" 
+                                    {activeTab === "All"
+                                        ? "No users found in the system"
                                         : `No users with role "${activeTab}" found`}
                                 </td>
                             </tr>
@@ -384,14 +424,37 @@ const Users = () => {
                                                     <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                                 </svg>
                                             </button>
+                                            
+                                            {activeTab === 'Deleted' ? (
+                                            <button
+                                                onClick={() => handleActivate(user.user_ID)}
+                                                disabled={activateLoading === user.user_ID}
+                                                className={`text-white font-medium py-1 px-2 rounded ${activateLoading === user.user_ID
+                                                    ? 'bg-green-300 cursor-not-allowed'
+                                                    : 'bg-green-500 hover:bg-green-600'
+                                                    }`}
+                                                title="Reactivate user"
+                                            >
+                                                {activateLoading === user.user_ID ? (
+                                                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                ) : (
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                    </svg>
+                                                )}
+                                            </button>
+
+                                            ) : (
                                             <button
                                                 onClick={() => handleDelete(user.user_ID)}
                                                 disabled={deleteLoading === user.user_ID}
-                                                className={`text-white font-medium py-1 px-2 rounded ${
-                                                    deleteLoading === user.user_ID
-                                                        ? 'bg-red-300 cursor-not-allowed'
-                                                        : 'bg-red-500 hover:bg-red-600'
-                                                }`}
+                                                className={`text-white font-medium py-1 px-2 rounded ${deleteLoading === user.user_ID
+                                                    ? 'bg-red-300 cursor-not-allowed'
+                                                    : 'bg-red-500 hover:bg-red-600'
+                                                    }`}
                                                 title="Delete user"
                                             >
                                                 {deleteLoading === user.user_ID ? (
@@ -405,6 +468,8 @@ const Users = () => {
                                                     </svg>
                                                 )}
                                             </button>
+                                            )
+                                        }
                                         </div>
                                     </td>
                                 </tr>
@@ -420,37 +485,34 @@ const Users = () => {
                         <button
                             onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 1}
-                            className={`px-3 py-1 rounded-l-md border ${
-                                currentPage === 1 
-                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                                    : 'bg-white text-gray-700 hover:bg-gray-50'
-                            }`}
+                            className={`px-3 py-1 rounded-l-md border ${currentPage === 1
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'bg-white text-gray-700 hover:bg-gray-50'
+                                }`}
                         >
                             Previous
                         </button>
-                        
+
                         {getPageNumbers().map(number => (
                             <button
                                 key={number}
                                 onClick={() => handlePageChange(number)}
-                                className={`px-3 py-1 border-t border-b ${
-                                    currentPage === number 
-                                        ? 'bg-blue-50 text-blue-600 border-blue-500' 
-                                        : 'bg-white text-gray-700 hover:bg-gray-50'
-                                }`}
+                                className={`px-3 py-1 border-t border-b ${currentPage === number
+                                    ? 'bg-blue-50 text-blue-600 border-blue-500'
+                                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                                    }`}
                             >
                                 {number}
                             </button>
                         ))}
-                        
+
                         <button
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === totalPages}
-                            className={`px-3 py-1 rounded-r-md border ${
-                                currentPage === totalPages 
-                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                                    : 'bg-white text-gray-700 hover:bg-gray-50'
-                            }`}
+                            className={`px-3 py-1 rounded-r-md border ${currentPage === totalPages
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'bg-white text-gray-700 hover:bg-gray-50'
+                                }`}
                         >
                             Next
                         </button>
@@ -461,27 +523,27 @@ const Users = () => {
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
-                        <button 
+                        <button
                             className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
                             onClick={handleModalClose}
                         >
                             <span className="text-2xl">&times;</span>
                         </button>
-                        
+
                         <h2 className="text-xl font-bold mb-4">{editMode ? "Edit User" : "Add New User"}</h2>
-                        
+
                         {successMessage && (
                             <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
                                 {successMessage}
                             </div>
                         )}
-                        
+
                         {errors.submit && (
                             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                                 {errors.submit}
                             </div>
                         )}
-                        
+
                         <form onSubmit={handleSubmit}>
                             <div className="grid grid-cols-2 gap-4 mb-4">
                                 <div>
@@ -499,7 +561,7 @@ const Users = () => {
                                         <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
                                     )}
                                 </div>
-                                
+
                                 <div>
                                     <label className="block text-gray-700 text-sm font-bold mb-2">
                                         Last Name*
@@ -516,7 +578,7 @@ const Users = () => {
                                     )}
                                 </div>
                             </div>
-                            
+
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
                                     Email*
@@ -532,7 +594,7 @@ const Users = () => {
                                     <p className="text-red-500 text-xs mt-1">{errors.email}</p>
                                 )}
                             </div>
-                            
+
                             {!editMode && (
                                 <div className="mb-4">
                                     <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -550,7 +612,7 @@ const Users = () => {
                                     )}
                                 </div>
                             )}
-                            
+
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
                                     Contact Number* (10 digits)
@@ -566,7 +628,7 @@ const Users = () => {
                                     <p className="text-red-500 text-xs mt-1">{errors.contactNumber}</p>
                                 )}
                             </div>
-                            
+
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
                                     Address*
@@ -582,7 +644,7 @@ const Users = () => {
                                     <p className="text-red-500 text-xs mt-1">{errors.address}</p>
                                 )}
                             </div>
-                            
+
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
                                     Role*
@@ -601,7 +663,7 @@ const Users = () => {
                                     <p className="text-red-500 text-xs mt-1">{errors.role}</p>
                                 )}
                             </div>
-                            
+
                             <div className="flex justify-end">
                                 <button
                                     type="button"
