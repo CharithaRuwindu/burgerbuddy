@@ -141,15 +141,6 @@ namespace backend.Controllers
             user.IsActive = userDto.IsActive;
             user.UpdatedAt = DateTime.UtcNow;
 
-            if (!string.IsNullOrEmpty(userDto.Password))
-            {
-                if (!IsStrongPassword(userDto.Password))
-                {
-                    return BadRequest("Password must be at least 8 characters and include uppercase, lowercase, numbers, and special characters.");
-                }
-                passwordService.SetPasswordForUser(user, userDto.Password);
-            }
-
             dbContext.SaveChanges();
 
             return Ok(user);
@@ -171,6 +162,24 @@ namespace backend.Controllers
             dbContext.SaveChanges();
 
             return Ok(new { message = $"User with ID {id} has been deactivated." });
+        }
+
+        [HttpPatch]
+        [Route("{id:guid}/reactivate")]
+        public IActionResult ReactivateUser(Guid id)
+        {
+            var user = dbContext.Users.Find(id);
+            if (user == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
+
+            user.IsActive = true;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { message = $"User with ID {id} has been reactivated." });
         }
 
         private bool IsValidEmail(string email)
