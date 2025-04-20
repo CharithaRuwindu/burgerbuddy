@@ -26,6 +26,8 @@ const Users = () => {
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
     const [confirmDialogType, setConfirmDialogType] = useState(null);
     const [confirmingUserId, setConfirmingUserId] = useState(null);
+    const [showViewModal, setShowViewModal] = useState(false);
+    const [viewingUser, setViewingUser] = useState(null);
 
     const [activeTab, setActiveTab] = useState("All");
     const [allUsers, setAllUsers] = useState([]);
@@ -212,6 +214,16 @@ const Users = () => {
 
     const handleSearchFieldChange = (e) => {
         setSearchField(e.target.value);
+    };
+
+    const handleRowClick = (user) => {
+        setViewingUser(user);
+        setShowViewModal(true);
+    };
+
+    const handleViewModalClose = () => {
+        setShowViewModal(false);
+        setViewingUser(null);
     };
 
     const handleSubmit = async (e) => {
@@ -521,8 +533,8 @@ const Users = () => {
                             <button
                                 type="button"
                                 className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:col-start-2 sm:text-sm ${confirmDialogType === 'delete'
-                                        ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
-                                        : 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
+                                    ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+                                    : 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
                                     }`}
                                 onClick={handleConfirmAction}
                             >
@@ -590,7 +602,11 @@ const Users = () => {
                             </tr>
                         ) : (
                             getCurrentUsers().map((user, index) => (
-                                <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                                <tr
+                                    key={index}
+                                    className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} cursor-pointer hover:bg-gray-100`}
+                                    onClick={() => handleRowClick(user)}
+                                >
                                     <td className="px-6 py-4 whitespace-nowrap">{user.firstName}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">{user.lastName}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
@@ -599,7 +615,10 @@ const Users = () => {
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex space-x-2">
                                             <button
-                                                onClick={() => handleEdit(user)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleEdit(user);
+                                                }}
                                                 className="text-blue-800 font-medium py-2 px-2 rounded bg-blue-200 hover:bg-blue-400 border border-blue-500"
                                                 title="Edit user"
                                             >
@@ -608,7 +627,10 @@ const Users = () => {
 
                                             {activeTab === 'Deleted' ? (
                                                 <button
-                                                    onClick={() => handleActivate(user.user_ID)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleActivate(user.user_ID);
+                                                    }}
                                                     disabled={activateLoading === user.user_ID}
                                                     className={`text-green-800 border border-green-500 font-medium py-2 px-2 rounded ${activateLoading === user.user_ID
                                                         ? 'bg-green-200 cursor-not-allowed'
@@ -628,7 +650,10 @@ const Users = () => {
 
                                             ) : (
                                                 <button
-                                                    onClick={() => handleDelete(user.user_ID)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDelete(user.user_ID);
+                                                    }}
                                                     disabled={deleteLoading === user.user_ID}
                                                     className={`text-red-700 border border-red-500 font-medium py-2 px-2 rounded ${deleteLoading === user.user_ID
                                                         ? 'bg-red-100 cursor-not-allowed'
@@ -694,6 +719,86 @@ const Users = () => {
                             Next
                         </button>
                     </nav>
+                </div>
+            )}
+
+            {showViewModal && viewingUser && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-xl p-0 w-full max-w-md overflow-hidden">
+                        <div className="bg-gradient-to-r from-blue-600 to-blue-400 px-6 py-4 flex justify-between items-center">
+                            <h2 className="text-xl font-bold text-white">Profile</h2>
+                            <button
+                                className="text-white hover:text-gray-200 focus:outline-none"
+                                onClick={handleViewModalClose}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div className="bg-gray-50 flex justify-center py-6">
+                            <div className="h-24 w-24 rounded-full bg-blue-100 flex items-center justify-center border-4 border-white shadow-md">
+                                <span className="text-blue-600 text-3xl font-bold">
+                                    {viewingUser.firstName.charAt(0)}{viewingUser.lastName.charAt(0)}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="px-6 py-4">
+                            <div className="bg-white rounded-lg p-4 divide-y divide-gray-200">
+                                <div className="pb-3 text-center">
+                                    <h3 className="text-lg font-bold text-gray-800">{viewingUser.firstName} {viewingUser.lastName}</h3>
+                                    <span className={`inline-block px-3 py-1 text-sm rounded-full ${viewingUser.isActive
+                                        ? "bg-green-100 text-green-800"
+                                        : "bg-red-100 text-red-800"
+                                        } mt-2`}>
+                                        {viewingUser.isActive ? "Active" : "Deactivated"}
+                                    </span>
+                                </div>
+
+                                <div className="py-3">
+                                    <div className="grid grid-cols-6 gap-1 mb-2">
+                                        <div className="col-span-2 text-gray-500">Role</div>
+                                        <div className="col-span-4 font-medium">{viewingUser.role || "Customer"}</div>
+                                    </div>
+                                    <div className="grid grid-cols-6 gap-1 mb-2">
+                                        <div className="col-span-2 text-gray-500">Email</div>
+                                        <div className="col-span-4 font-medium text-blue-600">{viewingUser.email}</div>
+                                    </div>
+                                    <div className="grid grid-cols-6 gap-1 mb-2">
+                                        <div className="col-span-2 text-gray-500">Phone</div>
+                                        <div className="col-span-4 font-medium">{viewingUser.contactNumber}</div>
+                                    </div>
+                                    <div className="grid grid-cols-6 gap-1">
+                                        <div className="col-span-2 text-gray-500">Address</div>
+                                        <div className="col-span-4 font-medium">{viewingUser.address}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="px-6 py-4 bg-gray-50 flex justify-end space-x-3">
+                            <button
+                                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-md transition duration-200"
+                                onClick={handleViewModalClose}
+                            >
+                                Close
+                            </button>
+                            <button
+                                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-200 flex items-center"
+                                onClick={() => {
+                                    handleViewModalClose();
+                                    handleEdit(viewingUser);
+                                }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                                Edit User
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
 
