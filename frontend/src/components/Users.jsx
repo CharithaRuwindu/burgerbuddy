@@ -123,8 +123,6 @@ const Users = () => {
     }, [activeTab, allUsers]);
 
     const filterUsers = (tab) => {
-        console.log("Filtering by tab:", tab);
-        console.log("All users before filtering:", allUsers);
 
         const activeUsers = allUsers.filter(user => user.isActive === true);
         const deletedUsers = allUsers.filter(user => user.isActive === false);

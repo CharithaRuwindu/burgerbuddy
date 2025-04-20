@@ -1,5 +1,7 @@
+import { MdError } from "react-icons/md";
 import { React, useState, axios } from "../utils/Imports";
 import { useNavigate } from "react-router-dom";
+import { TiTick } from "react-icons/ti";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -65,7 +67,7 @@ const Login = () => {
 
         const userRole = response.data.user.role;
         setTimeout(() => {
-          switch(userRole) {
+          switch (userRole) {
             case "Admin":
               navigate("/admsidebar");
               break;
@@ -113,22 +115,21 @@ const Login = () => {
   const signup = async (event) => {
     event.preventDefault();
     if (signupvalidate() === true) {
-      console.log("ela");
+      setIsLoading(true);
 
       const data = {
         firstName: signupInput.firstName,
         lastName: signupInput.lastName,
         email: signupInput.email,
-        hashedpassword: signupInput.password,
+        password: signupInput.password,
         contactNumber: signupInput.contactNumber,
         address: signupInput.address,
+        role: "Customer",
         isActive: true,
       };
 
-      console.log(data);
-
       try {
-        const response = await fetch(`https://localhost:7163/api/User`, {
+        const response = await fetch(`/api/Users`, {
           method: "POST",
           credentials: "include",
           headers: {
@@ -149,6 +150,7 @@ const Login = () => {
       } catch (error) {
         console.log("Error registering user data:", error);
       }
+      setIsLoading(false);
     } else {
       console.log("validation error");
     }
@@ -162,24 +164,20 @@ const Login = () => {
       signupInput.password.trim() === "" ||
       signupInput.email.trim() === ""
     ) {
-      console.log("ela4");
       return false;
     } else if (
       !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
         signupInput.email
       )
     ) {
-      console.log("ela2");
       return false;
     } else if (signupInput.address.trim() === "") {
-      console.log("ela5");
       return false;
     } else if (
       !/^[a-zA-Z]*$/.test(signupInput.firstName) ||
       !/^[a-zA-Z]*$/.test(signupInput.lastName) ||
       !/^(0\d{9})$/.test(signupInput.contactNumber)
     ) {
-      console.log("ela3");
       return false;
     } else {
       return true;
@@ -264,7 +262,6 @@ const Login = () => {
     }
   };
 
-  // Toggle password visibility handlers
   const toggleLoginPassword = () => {
     setShowLoginPassword(!showLoginPassword);
   };
@@ -278,15 +275,14 @@ const Login = () => {
       className="flex overflow-auto h-[92vh]"
       style={{ backgroundColor: "#F6F6F6" }}
     >
-      {showAlert && (
+      {/* {showAlert && (
         <div
-          className={`fixed top-[10vh] left-1/2 transform -translate-x-1/2 p-4 rounded shadow-lg ${
-            alertType === "success"
-              ? "bg-green-500"
-              : alertType === "error"
+          className={`fixed top-[10vh] left-1/2 transform -translate-x-1/2 p-4 rounded shadow-lg ${alertType === "success"
+            ? "bg-green-500"
+            : alertType === "error"
               ? "bg-red-500"
               : "bg-yellow-500"
-          } text-white`}
+            } text-white`}
         >
           <div className="flex justify-between items-center">
             <span>{alertMessage}</span>
@@ -298,11 +294,44 @@ const Login = () => {
             </button>
           </div>
         </div>
-      )}
+      )} */}
+
+      {showAlert &&
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl transform transition-all">
+            <div className="text-center">
+              {alertType === 'error' ? (
+                <>
+                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+                    <MdError className="h-10 w-10 text-red-600" />
+                  </div>
+                  <h3 className="text-xl font-medium text-gray-900 mb-2">ERROR</h3>
+                  <div className="mt-2">
+                    <p className="text-lg text-gray-500">
+                      {alertMessage}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                    <TiTick className="h-10 w-10 text-green-600" />
+                  </div>
+                  <h3 className="text-xl font-medium text-gray-900 mb-2">SUCCESS</h3>
+                  <div className="mt-2">
+                    <p className="text-lg text-gray-500">
+                      {alertMessage}
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      }
       <div
-        className={`rounded shadow-md drop-shadow-xl m-auto bg-white p-4 h-[50vh] w-[28rem] ${
-          isRegistered ? "flex" : "hidden"
-        }`}
+        className={`rounded shadow-md drop-shadow-xl m-auto bg-white p-4 h-[50vh] w-[28rem] ${isRegistered ? "flex" : "hidden"
+          }`}
       >
         <form onSubmit={signin} className="my-auto w-full">
           <label>
@@ -342,14 +371,14 @@ const Login = () => {
                 >
                   {showLoginPassword ? (
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
                   )}
                 </button>
               </div>
@@ -359,7 +388,15 @@ const Login = () => {
             type="submit"
             className="w-full bg-yellow-600 h-[5vh] mt-6 text-stone-100 font-medium rounded"
           >
-            Login
+            {isLoading ?
+              (
+                <svg className="animate-spin h-5 w-5 m-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              ) : (
+                "Log in"
+              )}
           </button>
           <p className="text-sky-500 mt-6">Forgot password?</p>
           <p>
@@ -375,9 +412,8 @@ const Login = () => {
       </div>
 
       <div
-        className={`rounded shadow-md drop-shadow-xl m-auto bg-white p-4 min-h-[90vh] w-[28rem] ${
-          isRegistered ? "hidden" : "flex"
-        }`}
+        className={`rounded shadow-md drop-shadow-xl m-auto bg-white p-4 min-h-[90vh] w-[28rem] ${isRegistered ? "hidden" : "flex"
+          }`}
       >
         <form onSubmit={signup} className="my-auto w-full">
           <div>
@@ -455,14 +491,14 @@ const Login = () => {
                 >
                   {showSignupPassword ? (
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
                   )}
                 </button>
               </div>
@@ -508,7 +544,15 @@ const Login = () => {
             type="submit"
             className="w-full bg-yellow-600 h-[5vh] mt-6 text-stone-100 font-medium rounded"
           >
-            {isLoading ? "Signing up..." : "Sign up"}
+            {isLoading ?
+              (
+                <svg className="animate-spin h-5 w-5 m-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              ) : (
+                "Sign up"
+              )}
           </button>
           <p className="mt-2">
             Already have an account?{" "}
