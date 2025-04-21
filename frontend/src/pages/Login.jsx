@@ -59,9 +59,9 @@ const Login = () => {
           password: loginInput.password,
         });
 
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("refreshToken", response.data.refreshToken);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        sessionStorage.setItem("accessToken", response.data.accessToken);
+        sessionStorage.setItem("refreshToken", response.data.refreshToken);
+        sessionStorage.setItem("user", JSON.stringify(response.data.user));
 
         displayAlert("Login successful! Redirecting...", "success");
 

@@ -1,7 +1,8 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { MdDashboard, MdPerson, MdFastfood, MdDeliveryDining, MdLogout } from "react-icons/md";
-
+import axios
+ from 'axios';
 const drawerWidth = 240;
 
 const AdmSidebar = () => {
@@ -45,12 +46,18 @@ const AdmSidebar = () => {
     }
   }, [location.pathname, navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("user");
-    
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      const refreshToken = sessionStorage.getItem('refreshToken');
+      
+      await axios.post('/api/logout', { refreshToken });
+      
+      sessionStorage.clear();
+      
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   return (

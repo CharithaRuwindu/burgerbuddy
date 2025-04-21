@@ -10,7 +10,7 @@ import UserProfile from "./pages/UserProfile";
 import Unauthorized from "./pages/Unauthorized";
 import AdminLayout from "./components/AdminLayout";
 import AdmSidebar from "./components/AdmSidebar";
-import Users from "./components/Users";
+import Users from "./pages/Users";
 import Items from "./pages/Items";
 import Orders from "./pages/Orders";
 
@@ -18,12 +18,12 @@ import "./index.css";
 
 const ProtectedRoute = ({ allowedRoles }) => {
   const isAuthenticated = () => {
-    const token = localStorage.getItem('accessToken');
+    const token = sessionStorage.getItem('accessToken');
     return !!token;
   };
 
   const getUserRole = () => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const user = JSON.parse(sessionStorage.getItem('user') || '{}');
     return user.role; 
   };
   

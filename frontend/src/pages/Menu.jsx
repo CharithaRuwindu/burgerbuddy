@@ -34,10 +34,8 @@ const Menu = () => {
                     <ItemCard
                         key={menu.menu_ID}
                         itemName={menu.name}
-                        // itemCategory={menu.category}
                         itemPrice={`LKR ${menu.price}`}
                         itemImage={menu.itemImage}
-                        // itemAvailability="Available"
                     />
                 ) : null
                     
