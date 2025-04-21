@@ -118,12 +118,15 @@ const AdmSidebar = () => {
           ))}
         </ul>
       </nav>
-      <div className="flex-grow"></div>
+      <div className="flex-grow h-[40%]"></div>
 
       <div className="border-t border-gray-200 w-full">
         <div
           className="flex items-center px-6 py-4 cursor-pointer hover:bg-gray-50 text-gray-700"
-          onClick={handleLogout}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleLogout();
+        }}
         >
           <div className="mr-4 text-gray-600">
             <MdLogout size={20} />

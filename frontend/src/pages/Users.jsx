@@ -452,7 +452,7 @@ const Users = () => {
                                     ))}
                                 </select>
                             </div>
-                            <div className="relative flex-grow">
+                            <div className="flex-grow">
                                 <input
                                     type="text"
                                     value={searchTerm}
