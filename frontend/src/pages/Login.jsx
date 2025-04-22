@@ -72,7 +72,7 @@ const Login = () => {
               navigate("/admsidebar");
               break;
             case "Customer":
-              navigate("/userprofile");
+              navigate("/menu");
               break;
             default:
               navigate("/menu");
