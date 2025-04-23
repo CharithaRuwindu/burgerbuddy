@@ -56,7 +56,13 @@ const Users = () => {
         const fetchUsers = async () => {
             setLoading(true);
             try {
-                const response = await axios.get("/api/users");
+                const accessToken = sessionStorage.getItem("accessToken");
+
+                const response = await axios.get("/api/users", {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
 
                 const processedUsers = response.data.map(user => ({
                     ...user,

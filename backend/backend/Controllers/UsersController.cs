@@ -5,6 +5,7 @@ using backend.Data;
 using backend.Models.Entities;
 using backend.Services;
 using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
@@ -21,7 +22,8 @@ namespace backend.Controllers
             this.passwordService = passwordService;
         }
 
-        [HttpGet]
+        [Authorize]
+        [HttpGet("secure-data")]
         public IActionResult GetUsers()
         {
             var users = dbContext.Users.ToList();
