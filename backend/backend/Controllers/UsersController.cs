@@ -23,7 +23,7 @@ namespace backend.Controllers
         }
 
         [Authorize]
-        [HttpGet("secure-data")]
+        [HttpGet]
         public IActionResult GetUsers()
         {
             var users = dbContext.Users.ToList();
