@@ -57,6 +57,8 @@ const Users = () => {
             setLoading(true);
             try {
                 const accessToken = sessionStorage.getItem("accessToken");
+                console.log("Token being sent:", accessToken);
+                console.log("Token has proper format:", accessToken && accessToken.split('.').length === 3);
 
                 const response = await axios.get("/api/users", {
                     headers: {

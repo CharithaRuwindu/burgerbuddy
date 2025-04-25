@@ -22,7 +22,7 @@ namespace backend.Controllers
             this.passwordService = passwordService;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult GetUsers()
         {
