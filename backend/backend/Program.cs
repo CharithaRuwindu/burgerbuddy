@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Security.Claims;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,10 +76,11 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
         ),
+        RoleClaimType = ClaimTypes.Role,
+        NameClaimType = ClaimTypes.Name,
         ClockSkew = TimeSpan.Zero
     };
 
-    // Enhanced event handlers with more detailed diagnostics
     options.Events = new JwtBearerEvents
     {
         OnAuthenticationFailed = context =>
@@ -96,6 +98,12 @@ builder.Services.AddAuthentication(options =>
             Console.WriteLine("Token validated successfully");
             Console.WriteLine($"User: {context.Principal.Identity.Name}");
             Console.WriteLine($"Claims: {string.Join(", ", context.Principal.Claims.Select(c => $"{c.Type}: {c.Value}"))}");
+
+            var roleClaims = context.Principal.Claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+            Console.WriteLine($"Role claims count: {roleClaims.Count}");
+            Console.WriteLine($"Role values: {string.Join(", ", roleClaims.Select(c => c.Value))}");
+            Console.WriteLine($"Is in role 'Admin': {context.Principal.IsInRole("Admin")}");
+
             return Task.CompletedTask;
         },
         OnChallenge = context =>
@@ -120,9 +128,19 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("AdminOrManager", policy => policy.RequireRole("Admin", "Manager"));
-    options.AddPolicy("AllUsers", policy => policy.RequireRole("Admin", "Manager", "Customer"));
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireClaim(ClaimTypes.Role, "Admin"));
+
+    options.AddPolicy("AdminOrManager", policy =>
+        policy.RequireClaim(ClaimTypes.Role, "Admin", "Manager"));
+
+    options.AddPolicy("AllUsers", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c =>
+                c.Type == ClaimTypes.Role &&
+                (c.Value == "Admin" || c.Value == "Manager" || c.Value == "Customer")
+            )
+        ));
 });
 
 
