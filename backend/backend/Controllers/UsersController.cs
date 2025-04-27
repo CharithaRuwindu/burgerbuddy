@@ -6,6 +6,7 @@ using backend.Models.Entities;
 using backend.Services;
 using backend.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace backend.Controllers
 {
@@ -26,20 +27,38 @@ namespace backend.Controllers
         [HttpGet]
         public IActionResult GetUsers()
         {
+            var userIdentity = User.Identity;
+            var isAuthenticated = userIdentity?.IsAuthenticated ?? false;
+            var roles = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+
+            Console.WriteLine($"User authenticated: {isAuthenticated}");
+            Console.WriteLine($"User roles: {string.Join(", ", roles)}");
+            Console.WriteLine($"Is in Admin role: {User.IsInRole("Admin")}");
+
             var users = dbContext.Users.ToList();
-            var usersDto = users.Select(user => new
+            var usersDto = users.Select(user => new GetUserDto
             {
-                user.User_ID,
-                user.FirstName,
-                user.LastName,
-                user.Email,
-                user.ContactNumber,
-                user.Address,
-                user.IsActive,
-                Role = Enum.GetName(typeof(UserRole), user.Role),
-                user.CreatedAt,
-                user.UpdatedAt
+                User_ID = user.User_ID,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                ContactNumber = user.ContactNumber,
+                Address = user.Address,
+                IsActive = user.IsActive,
+                Role = user.Role
             }).ToList();
+
+            foreach (var userDto in usersDto)
+            {
+                Console.WriteLine($"User ID: {userDto.User_ID}");
+                Console.WriteLine($"Name: {userDto.FirstName} {userDto.LastName}");
+                Console.WriteLine($"Email: {userDto.Email}");
+                Console.WriteLine($"Contact: {userDto.ContactNumber}");
+                Console.WriteLine($"Address: {userDto.Address}");
+                Console.WriteLine($"Active: {userDto.IsActive}");
+                Console.WriteLine($"Role: {userDto.Role}");
+                Console.WriteLine("----------------------------");
+            }
 
             return Ok(usersDto);
         }

@@ -60,11 +60,26 @@ const Users = () => {
                 console.log("Token being sent:", accessToken);
                 console.log("Token has proper format:", accessToken && accessToken.split('.').length === 3);
 
+                if (accessToken) {
+                    try {
+                        const parts = accessToken.split('.');
+                        if (parts.length === 3) {
+                            const payload = JSON.parse(atob(parts[1]));
+                            console.log("Token payload:", payload);
+                            //console.log("Role in token:", payload.role || payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']);
+                        }
+                    } catch (e) {
+                        console.error("Error parsing token:", e);
+                    }
+                }
+
                 const response = await axios.get("/api/users", {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
                 });
+
+                console.log(response.data)
 
                 const processedUsers = response.data.map(user => ({
                     ...user,
