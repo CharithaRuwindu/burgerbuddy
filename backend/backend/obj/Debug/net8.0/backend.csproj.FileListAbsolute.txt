@@ -140,4 +140,3 @@ E:\personal project\burgerbuddy\backend\backend\obj\Debug\net8.0\staticwebassets
 E:\personal project\burgerbuddy\backend\backend\obj\Debug\net8.0\staticwebassets\msbuild.backend.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
 E:\personal project\burgerbuddy\backend\backend\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 E:\personal project\burgerbuddy\backend\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-E:\personal project\burgerbuddy\backend\backend\bin\Debug\net8.0\Microsoft.Bcl.Memory.dll

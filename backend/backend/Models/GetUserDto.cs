@@ -11,7 +11,7 @@ namespace backend.Models
         //public required string Hashedpassword { get; set; }
         public required string ContactNumber { get; set; }
         public required string Address { get; set; }
-        public required UserRole Role { get; set; }
+        public required string Role { get; set; }
         public required bool IsActive { get; set; }
     }
 }

@@ -36,6 +36,7 @@ namespace backend.Controllers
             Console.WriteLine($"Is in Admin role: {User.IsInRole("Admin")}");
 
             var users = dbContext.Users.ToList();
+
             var usersDto = users.Select(user => new GetUserDto
             {
                 User_ID = user.User_ID,
@@ -45,21 +46,8 @@ namespace backend.Controllers
                 ContactNumber = user.ContactNumber,
                 Address = user.Address,
                 IsActive = user.IsActive,
-                Role = user.Role
+                Role = Enum.GetName(typeof(UserRole), user.Role) ?? ""
             }).ToList();
-
-            foreach (var userDto in usersDto)
-            {
-                Console.WriteLine($"User ID: {userDto.User_ID}");
-                Console.WriteLine($"Name: {userDto.FirstName} {userDto.LastName}");
-                Console.WriteLine($"Email: {userDto.Email}");
-                Console.WriteLine($"Contact: {userDto.ContactNumber}");
-                Console.WriteLine($"Address: {userDto.Address}");
-                Console.WriteLine($"Active: {userDto.IsActive}");
-                Console.WriteLine($"Role: {userDto.Role}");
-                Console.WriteLine("----------------------------");
-            }
-
             return Ok(usersDto);
         }
 
