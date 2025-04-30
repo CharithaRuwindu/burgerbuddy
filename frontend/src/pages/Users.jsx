@@ -79,8 +79,6 @@ const Users = () => {
                     },
                 });
 
-                console.log(response.data)
-
                 const processedUsers = response.data.map(user => ({
                     ...user,
                     role: user.role || "Customer"

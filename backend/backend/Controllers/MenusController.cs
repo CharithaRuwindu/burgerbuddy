@@ -36,7 +36,6 @@ namespace backend.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddItem(AddItemDto addItemDto)
         {
             byte[] imageBytes;
