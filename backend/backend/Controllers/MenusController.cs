@@ -135,5 +135,73 @@ public IActionResult GetItemsByIds([FromQuery] string ids)
 
             return Ok(item);
         }
+
+        [HttpPatch]
+        [Route("{id:guid}/deactivate")]
+        public IActionResult DeactivateItem(Guid id)
+        {
+            var menu = dbContext.Menus.Find(id);
+            if (menu == null)
+            {
+                return NotFound($"Item with ID {id} not found.");
+            }
+
+            menu.IsActive = false;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { message = $"Item with ID {id} has been deactivated." });
+        }
+
+        [HttpPatch]
+        [Route("{id:guid}/reactivate")]
+        public IActionResult ReactivateItem(Guid id)
+        {
+            var menu = dbContext.Menus.Find(id);
+            if (menu == null)
+            {
+                return NotFound($"Item with ID {id} not found.");
+            }
+
+            menu.IsActive = true;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { message = $"Item with ID {id} has been reactivated." });
+        }
+
+        [HttpPatch]
+        [Route("{id:guid}/makeunavailable")]
+        public IActionResult UnavailableItem(Guid id)
+        {
+            var menu = dbContext.Menus.Find(id);
+            if (menu == null)
+            {
+                return NotFound($"Item with ID {id} not found.");
+            }
+
+            menu.IsAvailable = false;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { message = $"Item with ID {id} has been made unavailable." });
+        }
+
+        [HttpPatch]
+        [Route("{id:guid}/makeavailable")]
+        public IActionResult AvailableItem(Guid id)
+        {
+            var menu = dbContext.Menus.Find(id);
+            if (menu == null)
+            {
+                return NotFound($"Item with ID {id} not found.");
+            }
+
+            menu.IsAvailable = true;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { message = $"Item with ID {id} has been made available." });
+        }
     }
 }
