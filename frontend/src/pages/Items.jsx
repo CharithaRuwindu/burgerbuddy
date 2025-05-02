@@ -28,6 +28,17 @@ const Items = () => {
     const [activateMessage, setActivateMessage] = useState("");
     const [makeavailableMessage, setMakeAvailableMessage] = useState("");
     const [makeunavailableMessage, setMakeUnavailableMessage] = useState("");
+    const [showModal, setShowModal] = useState(false);
+
+    const [formData, setFormData] = useState({
+        menu_ID: "",
+        name: "",
+        category: "",
+        price: "",
+        itemImage: "",
+        isActive: true,
+        isAvailable: true
+        });
 
     const searchFields = [
         { value: "all", label: "All Fields" },
@@ -299,6 +310,23 @@ const Items = () => {
         setConfirmDialogOpen(false);
     };
 
+    const handleAddItem = () => {
+        resetForm();
+        setShowModal(true);
+    };
+
+    const resetForm = () => {
+        setFormData({
+            menu_ID: "",
+            name: "",
+            category: "",
+            price: "",
+            itemImage: "",
+            isActive: true,
+            isAvailable: true
+        });
+    };
+
     return (
         <>
             <div className="p-6">
@@ -310,6 +338,12 @@ const Items = () => {
                             {displayedItems.length > 0 && ` (${displayedItems.length} items found)`}
                         </p>
                     </div>
+                    <button
+                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                    onClick={handleAddItem}
+                >
+                    Add Item
+                </button>
                 </div>
 
                 <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
