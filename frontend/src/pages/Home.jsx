@@ -15,7 +15,18 @@ const Home = () => {
             <div className="absolute top-0 left-0 right-0 bottom-0 bg-black/50 backdrop-blur-[4px]"></div>
             <section className="h-[92vh] relative text-stone-100 font-medium z-10">
                 <div className="h-[10rem] w-[15rem]"><img src={logo} alt="logo" /></div>
-                <div className="flex justify-center mt-[7%] text-7xl drop-shadow-2xl">Happy Dining !</div>
+                <div className="mt-[2%] ml-[2%] text-5xl">
+                    <div>Savor the Best</div>
+                    <div>Burgers Delivered to You</div>
+                </div>
+                <div className="mt-[1%] ml-[2%] text-sm">
+                    <div>Indulge in our mouthwatering selection of Burgers, crafter with the freshest ingredients.</div>
+                    <div>Order online for quick delivery and enjoy a delicious meal from the comfort of your home.</div>
+                </div>
+                <Link to="/menu"><button className="border-2 w-[6%] h-[6%] ml-[2%] mt-[2%] hover:bg-stone-100 hover:text-yellow-800 hover:border-none">
+                    Menu
+                </button></Link>
+                <div className="flex justify-center mt-[4%] text-7xl drop-shadow-2xl">Happy Dining !</div>
                 <div className="flex justify-center w-screen absolute left-0 bottom-0"><FaAnglesDown onClick={() => document.getElementById('intro').scrollIntoView({ behavior: 'smooth' })} className="cursor-pointer w-[5rem] h-[5rem]" /></div>
             </section>
             <section id="intro" className="h-[92vh] bg-white flex justify-center">
