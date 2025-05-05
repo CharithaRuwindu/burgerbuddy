@@ -26,8 +26,8 @@ const Home = () => {
                 <Link to="/menu"><button className="border-2 w-[6%] h-[6%] ml-[2%] mt-[2%] hover:bg-stone-100 hover:text-yellow-800 hover:border-none">
                     Menu
                 </button></Link>
-                <div className="flex justify-center mt-[4%] text-7xl drop-shadow-2xl">Happy Dining !</div>
-                <div className="flex justify-center w-screen absolute left-0 bottom-0"><FaAnglesDown onClick={() => document.getElementById('intro').scrollIntoView({ behavior: 'smooth' })} className="cursor-pointer w-[5rem] h-[5rem]" /></div>
+                <div className="flex justify-center mt-[6%] text-5xl drop-shadow-2xl">Happy Dining !</div>
+                <div className="flex justify-center w-screen absolute left-0 bottom-0"><FaAnglesDown onClick={() => document.getElementById('intro').scrollIntoView({ behavior: 'smooth' })} className="cursor-pointer w-[3rem] h-[3rem]" /></div>
             </section>
             <section id="intro" className="h-[92vh] bg-white flex justify-center">
                 <div className="w-[50%] flex justify-center">

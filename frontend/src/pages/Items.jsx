@@ -30,15 +30,16 @@ const Items = () => {
     const [makeunavailableMessage, setMakeUnavailableMessage] = useState("");
     const [showModal, setShowModal] = useState(false);
 
+    const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
         menu_ID: "",
         name: "",
-        category: "",
+        category: "Burgers",
         price: "",
-        itemImage: "",
+        itemImage: null,
         isActive: true,
         isAvailable: true
-        });
+    });
 
     const searchFields = [
         { value: "all", label: "All Fields" },
@@ -319,12 +320,126 @@ const Items = () => {
         setFormData({
             menu_ID: "",
             name: "",
-            category: "",
+            category: "Burgers",
             price: "",
             itemImage: "",
             isActive: true,
             isAvailable: true
         });
+    };
+
+    const handleModalClose = () => {
+        setShowModal(false);
+        resetForm();
+    };
+
+    const handleChange = (e) => {
+        const { name, value, type, files } = e.target;
+
+        if (type === 'file') {
+            setFormData({
+                ...formData,
+                [name]: files[0]
+            });
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value
+            });
+        }
+
+        if (errors[name]) {
+            setErrors({
+                ...errors,
+                [name]: ''
+            });
+        }
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!formData.name.trim()) {
+            newErrors.name = "Item name is required";
+        }
+
+        if (!formData.price.trim()) {
+            newErrors.price = "Price is required";
+        } else if (!/^\d+$/.test(formData.price)) {
+            newErrors.price = "Price should contain only numbers";
+        }
+
+        if (!formData.category) {
+            newErrors.category = "Category is required";
+        }
+        if (!formData.isActive) {
+            newErrors.isActive = "Status is required";
+        }
+        if (!formData.isAvailable) {
+            newErrors.isAvailable = "Availability is required";
+        }
+        if (!formData.itemImage) {
+            newErrors.itemImage = "Image is required";
+        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+    if (!validateForm()) {
+        return;
+    }
+
+    try {
+        // Create FormData object for file upload
+        const formDataToSend = new FormData();
+        formDataToSend.append('name', formData.name);
+        formDataToSend.append('category', formData.category);
+        formDataToSend.append('price', formData.price);
+        formDataToSend.append('isActive', formData.isActive);
+        formDataToSend.append('isAvailable', formData.isAvailable);
+        
+        // Only append the image if it exists
+        if (formData.itemImage) {
+            formDataToSend.append('itemImage', formData.itemImage);
+        }
+
+        // Make the POST request
+        const response = await axios.post('/api/Menus', formDataToSend, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
+        // Handle successful response
+        console.log('Item created successfully:', response.data);
+        
+        // Optionally: update the items list, close modal, and reset form
+        setItems(prevItems => [...prevItems, response.data]);
+        setShowModal(false);
+        resetForm();
+
+        // Show success message
+        alert('Item added successfully!');
+
+    } catch (error) {
+        console.error('Error creating item:', error);
+        
+        // Handle specific error cases
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            alert(`Error: ${error.response.data.message || 'Failed to create item'}`);
+        } else if (error.request) {
+            // The request was made but no response was received
+            alert('Error: No response from server');
+        } else {
+            // Something happened in setting up the request
+            alert('Error: ' + error.message);
+        }
+    }
     };
 
     return (
@@ -339,11 +454,11 @@ const Items = () => {
                         </p>
                     </div>
                     <button
-                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-                    onClick={handleAddItem}
-                >
-                    Add Item
-                </button>
+                        className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                        onClick={handleAddItem}
+                    >
+                        Add Item
+                    </button>
                 </div>
 
                 <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
@@ -739,7 +854,144 @@ const Items = () => {
                     </div>
                 )}
 
-            </div>
+
+                {/* add item form model starts here */}
+                {showModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
+                            <button
+                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                                onClick={handleModalClose}
+                            >
+                                <span className="text-2xl">&times;</span>
+                            </button>
+
+                            <form onSubmit={handleSubmit}>
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                    <div className="col-span-2">
+                                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                                            Item Image*
+                                        </label>
+                                        <input
+                                            type="file"
+                                            name="itemImage"
+                                            accept="image/*"
+                                            onChange={handleChange}
+                                            className={`w-full px-3 py-2 border rounded ${errors.itemImage ? 'border-red-500' : 'border-gray-300'}`}
+                                        />
+                                        {errors.itemImage && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.itemImage}</p>
+                                        )}
+                                        {formData.itemImage && (
+                                            <div className="mt-2">
+                                                <p className="text-sm text-gray-600">File selected: {formData.itemImage.name}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                                            Item Name*
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            className={`w-full px-3 py-2 border rounded ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
+                                        />
+                                        {errors.name && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                                            Category*
+                                        </label>
+                                        <select
+                                            name="category"
+                                            value={formData.category}
+                                            onChange={handleChange}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded"
+                                        >
+                                            <option value="burgers">Burgers</option>
+                                            <option value="meals">Meals</option>
+                                            <option value="drinks">Drinks</option>
+                                            <option value="sides">Sides</option>
+                                            <option value="desserts">Desserts</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                                            Price(LKR)*
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="price"
+                                            value={formData.price}
+                                            onChange={handleChange}
+                                            className={`w-full px-3 py-2 border rounded ${errors.price ? 'border-red-500' : 'border-gray-300'}`}
+                                        />
+                                        {errors.price && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.price}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                                            Availability*
+                                        </label>
+                                        <select
+                                            name="isAvailable"
+                                            value={formData.isAvailable}
+                                            onChange={handleChange}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded"
+                                        >
+                                            <option value={true}>Available</option>
+                                            <option value={false}>Unavailable</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                                            Status*
+                                        </label>
+                                        <select
+                                            name="isActive"
+                                            value={formData.isActive}
+                                            onChange={handleChange}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded"
+                                        >
+                                            <option value={true}>Active</option>
+                                            <option value={false}>Inactive</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="flex justify-end">
+                                        <button
+                                            type="button"
+                                            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
+                                            onClick={handleModalClose}
+                                        >
+                                            Cancel
+                                        </button>
+
+                                        <button
+                                            type="submit"
+                                            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+
+                                        >Submit</button>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div >
+                )}
+                {/* add item form model ends here */}
+
+            </div >
         </>
     );
 };
