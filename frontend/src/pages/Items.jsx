@@ -4,6 +4,7 @@ import { IoIosAddCircle } from "react-icons/io";
 import { TbHomeMove } from "react-icons/tb";
 import { RiChatDeleteLine, RiDeleteBin6Line } from "react-icons/ri";
 import { MdModeEditOutline } from "react-icons/md";
+import { ImageHandler } from "../components/ImageHandler";
 
 const Items = () => {
 
@@ -389,57 +390,72 @@ const Items = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-    if (!validateForm()) {
-        return;
-    }
-
-    try {
-        // Create FormData object for file upload
-        const formDataToSend = new FormData();
-        formDataToSend.append('name', formData.name);
-        formDataToSend.append('category', formData.category);
-        formDataToSend.append('price', formData.price);
-        formDataToSend.append('isActive', formData.isActive);
-        formDataToSend.append('isAvailable', formData.isAvailable);
-        
-        // Only append the image if it exists
-        if (formData.itemImage) {
-            formDataToSend.append('itemImage', formData.itemImage);
+        if (!validateForm()) {
+            return;
         }
 
-        // Make the POST request
-        const response = await axios.post('/api/Menus', formDataToSend, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
+        try {
+            // Create FormData object for file upload
+            const formDataToSend = new FormData();
+            formDataToSend.append('name', formData.name);
+            formDataToSend.append('category', formData.category);
+            formDataToSend.append('price', formData.price);
+            formDataToSend.append('isActive', formData.isActive);
+            formDataToSend.append('isAvailable', formData.isAvailable);
+
+            // Only append the image if it exists
+            if (formData.itemImage) {
+                formDataToSend.append('itemImage', formData.itemImage);
             }
+
+            // Make the POST request
+            const response = await axios.post('/api/Menus', formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            // Handle successful response
+            console.log('Item created successfully:', response.data);
+
+            // Optionally: update the items list, close modal, and reset form
+            setItems(prevItems => [...prevItems, response.data]);
+            setShowModal(false);
+            resetForm();
+
+            // Show success message
+            alert('Item added successfully!');
+
+        } catch (error) {
+            console.error('Error creating item:', error);
+
+            // Handle specific error cases
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                alert(`Error: ${error.response.data.message || 'Failed to create item'}`);
+            } else if (error.request) {
+                // The request was made but no response was received
+                alert('Error: No response from server');
+            } else {
+                // Something happened in setting up the request
+                alert('Error: ' + error.message);
+            }
+        }
+    };
+
+    const handleImageSelect = (imageFile) => {
+        setFormData({
+            ...formData,
+            itemImage: imageFile
         });
 
-        // Handle successful response
-        console.log('Item created successfully:', response.data);
-        
-        // Optionally: update the items list, close modal, and reset form
-        setItems(prevItems => [...prevItems, response.data]);
-        setShowModal(false);
-        resetForm();
-
-        // Show success message
-        alert('Item added successfully!');
-
-    } catch (error) {
-        console.error('Error creating item:', error);
-        
-        // Handle specific error cases
-        if (error.response) {
-            // The request was made and the server responded with a status code
-            alert(`Error: ${error.response.data.message || 'Failed to create item'}`);
-        } else if (error.request) {
-            // The request was made but no response was received
-            alert('Error: No response from server');
-        } else {
-            // Something happened in setting up the request
-            alert('Error: ' + error.message);
+        // Clear error if exists
+        if (errors.itemImage) {
+            setErrors({
+                ...errors,
+                itemImage: null
+            });
         }
-    }
     };
 
     return (
@@ -872,7 +888,14 @@ const Items = () => {
                                         <label className="block text-gray-700 text-sm font-bold mb-2">
                                             Item Image*
                                         </label>
-                                        <input
+
+                                        <ImageHandler
+                                            onImageSelect={handleImageSelect}
+                                            aspectRatio={3 / 2}
+                                            errorMessage={errors.itemImage}
+                                        />
+
+                                        {/* <input
                                             type="file"
                                             name="itemImage"
                                             accept="image/*"
@@ -886,7 +909,7 @@ const Items = () => {
                                             <div className="mt-2">
                                                 <p className="text-sm text-gray-600">File selected: {formData.itemImage.name}</p>
                                             </div>
-                                        )}
+                                        )} */}
                                     </div>
                                     <div>
                                         <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -914,11 +937,11 @@ const Items = () => {
                                             onChange={handleChange}
                                             className="w-full px-3 py-2 border border-gray-300 rounded"
                                         >
-                                            <option value="burgers">Burgers</option>
-                                            <option value="meals">Meals</option>
-                                            <option value="drinks">Drinks</option>
-                                            <option value="sides">Sides</option>
-                                            <option value="desserts">Desserts</option>
+                                            <option value="Burgers">Burgers</option>
+                                            <option value="Meals">Meals</option>
+                                            <option value="Drinks">Drinks</option>
+                                            <option value="Sides">Sides</option>
+                                            <option value="Desserts">Desserts</option>
                                         </select>
                                     </div>
 
