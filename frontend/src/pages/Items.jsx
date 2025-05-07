@@ -4,7 +4,7 @@ import { IoIosAddCircle } from "react-icons/io";
 import { TbHomeMove } from "react-icons/tb";
 import { RiChatDeleteLine, RiDeleteBin6Line } from "react-icons/ri";
 import { MdModeEditOutline } from "react-icons/md";
-import { ImageHandler } from "../components/ImageHandler";
+import ImageHandler from "../components/ImageHandler";
 
 const Items = () => {
 
@@ -443,20 +443,20 @@ const Items = () => {
         }
     };
 
-    const handleImageSelect = (imageFile) => {
-        setFormData({
-            ...formData,
-            itemImage: imageFile
-        });
-
-        // Clear error if exists
-        if (errors.itemImage) {
-            setErrors({
-                ...errors,
-                itemImage: null
-            });
+    const handleImageSelect = (file) => {
+        setFormData(prev => ({
+          ...prev,
+          itemImage: file
+        }));
+        
+        // Clear errors when a valid file is selected
+        if (file && errors.itemImage) {
+          setErrors(prev => ({
+            ...prev,
+            itemImage: null
+          }));
         }
-    };
+      };
 
     return (
         <>
@@ -890,10 +890,10 @@ const Items = () => {
                                         </label>
 
                                         <ImageHandler
-                                            onImageSelect={handleImageSelect}
-                                            aspectRatio={3 / 2}
-                                            errorMessage={errors.itemImage}
-                                        />
+  onImageSelect={handleImageSelect}
+  aspectRatio={3/2}
+  errorMessage={errors.itemImage}
+/>
 
                                         {/* <input
                                             type="file"

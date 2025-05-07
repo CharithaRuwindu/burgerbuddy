@@ -1,390 +1,454 @@
-// ImageHandler.jsx - A consolidated component for image upload, cropping and preview
-import { useState, useRef, useCallback, useEffect } from 'react';
-import ReactCrop from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
+import React, { useState, useRef, useEffect } from 'react';
 
-export function ImageHandler({
-    onImageSelect,
-    initialImage = null,
-    aspectRatio = 3 / 2,
-    errorMessage = null
-}) {
-    const [imgSrc, setImgSrc] = useState('');
-    const [showCropper, setShowCropper] = useState(false);
-    const [crop, setCrop] = useState({
-        unit: '%',
-        width: 100,
-        height: 100 / aspectRatio,
-        x: 0,
-        y: 0
-    });
-    const [completedCrop, setCompletedCrop] = useState(null);
-    const [imagePreview, setImagePreview] = useState(initialImage);
-    const [originalFile, setOriginalFile] = useState(null);
-    const [isDragging, setIsDragging] = useState(false);
+const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
+  const [preview, setPreview] = useState(null);
+  const [originalImage, setOriginalImage] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isCropping, setIsCropping] = useState(false);
+  const fileInputRef = useRef(null);
+  const imageRef = useRef(null);
+  const cropAreaRef = useRef(null);
+  const cropFrameRef = useRef(null);
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const [cropBox, setCropBox] = useState({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    aspectRatio: aspectRatio
+  });
+  const [resizeHandle, setResizeHandle] = useState(null);
+  const [dragStart, setDragStart] = useState(null);
 
-    const imgRef = useRef(null);
-    const previewCanvasRef = useRef(null);
-    const fileInputRef = useRef(null);
-    const dropZoneRef = useRef(null);
-
-    // Effect to initialize image preview from initialImage prop
-    useEffect(() => {
-        if (initialImage) {
-            setImagePreview(initialImage);
+  useEffect(() => {
+    if (isCropping && originalImage) {
+      const img = new Image();
+      img.src = originalImage;
+      img.onload = () => {
+        const containerWidth = cropAreaRef.current.clientWidth;
+        const containerHeight = cropAreaRef.current.clientHeight;
+        
+        // Calculate displayed image size while maintaining aspect ratio
+        let displayWidth, displayHeight;
+        
+        if (img.width / img.height > containerWidth / containerHeight) {
+          // Image is wider than container
+          displayWidth = containerWidth;
+          displayHeight = (img.height / img.width) * containerWidth;
+        } else {
+          // Image is taller than container
+          displayHeight = containerHeight;
+          displayWidth = (img.width / img.height) * containerHeight;
         }
-    }, [initialImage]);
-
-    // Handle file input change
-    const handleFileChange = (file) => {
-        if (file) {
-            setOriginalFile(file);
-
-            // Create URL for image preview
-            const reader = new FileReader();
-            reader.addEventListener('load', (event) => {
-                // Get the result directly from the event
-                const imageData = event.target.result;
-                
-                // Set the image source for the cropper
-                setImgSrc(imageData);
-                console.log(imgSrc)
-                
-                // Show the cropper immediately after loading the image
-                setShowCropper(true);
-            });
-            reader.readAsDataURL(file);
-        }
-    };
-
-    useEffect(() => {
-        if (imgSrc) {
-            console.log("Updated imgSrc:", imgSrc.substring(0, 50) + "...");
-        }
-    }, [imgSrc]);
-
-    // Handle file input change from input element
-    const handleImageChange = (e) => {
-        e.preventDefault();
-        if (e.target.files && e.target.files[0]) {
-            handleFileChange(e.target.files[0]);
-        }
-    };
-
-    // Handle image load in cropper
-    const onImageLoad = useCallback((img) => {
-        // Store the image reference for cropping
-        imgRef.current = img;
-
-        // Set initial crop to maintain aspect ratio
-        const width = img.width;
-        const height = width / aspectRatio;
-
-        setCrop({
-            unit: 'px',
-            width,
-            height,
-            x: 0,
-            y: (img.height - height) / 2
+        
+        setImageSize({ width: displayWidth, height: displayHeight });
+        
+        // Initialize crop box
+        const cropWidth = Math.min(displayWidth, displayHeight * aspectRatio);
+        const cropHeight = cropWidth / aspectRatio;
+        
+        setCropBox({
+          x: (displayWidth - cropWidth) / 2,
+          y: (displayHeight - cropHeight) / 2,
+          width: cropWidth,
+          height: cropHeight,
+          aspectRatio
         });
-    }, [aspectRatio]);
+      };
+    }
+  }, [isCropping, originalImage, aspectRatio]);
 
-    // Direct file to preview (skipping cropper for testing)
-    const createDirectPreview = (file) => {
-        const previewUrl = URL.createObjectURL(file);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      processFile(file);
+    }
+  };
 
-        // Create image data object with file and preview URL
-        const imageData = {
-            file: file,
-            url: previewUrl,
-            name: file.name
-        };
+  const processFile = (file) => {
+    if (!file.type.startsWith('image/')) {
+      return;
+    }
 
-        // Set the preview image
-        setImagePreview(imageData);
-        onImageSelect(file);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setOriginalImage(e.target.result);
+      setIsCropping(true);
     };
+    reader.readAsDataURL(file);
+  };
 
-    const generateCroppedImage = useCallback(() => {
-        if (!completedCrop || !imgRef.current || !previewCanvasRef.current || !originalFile) {
-            console.error("Missing required elements for crop:", {
-                completedCrop: !!completedCrop,
-                imgRef: !!imgRef.current,
-                canvas: !!previewCanvasRef.current,
-                originalFile: !!originalFile
-            });
-            
-            // If we can't crop, at least show the original image
-            createDirectPreview(originalFile);
-            return;
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      processFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleBrowseClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleCropMouseDown = (e) => {
+    if (!isCropping) return;
+    
+    e.preventDefault();
+    
+    const cropFrame = cropFrameRef.current;
+    if (!cropFrame) return;
+    
+    const cropRect = cropFrame.getBoundingClientRect();
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    
+    // Detect if we're on an edge for resizing (with some margin for easier grabbing)
+    const edgeSize = 10;
+    const isOnLeftEdge = Math.abs(clientX - cropRect.left) <= edgeSize;
+    const isOnRightEdge = Math.abs(clientX - cropRect.right) <= edgeSize;
+    const isOnTopEdge = Math.abs(clientY - cropRect.top) <= edgeSize;
+    const isOnBottomEdge = Math.abs(clientY - cropRect.bottom) <= edgeSize;
+    
+    if (isOnRightEdge && isOnBottomEdge) {
+      setResizeHandle('se');
+    } else if (isOnRightEdge && isOnTopEdge) {
+      setResizeHandle('ne');
+    } else if (isOnLeftEdge && isOnBottomEdge) {
+      setResizeHandle('sw');
+    } else if (isOnLeftEdge && isOnTopEdge) {
+      setResizeHandle('nw');
+    } else if (isOnRightEdge) {
+      setResizeHandle('e');
+    } else if (isOnLeftEdge) {
+      setResizeHandle('w');
+    } else if (isOnBottomEdge) {
+      setResizeHandle('s');
+    } else if (isOnTopEdge) {
+      setResizeHandle('n');
+    } else {
+      setResizeHandle('move');
+    }
+    
+    setDragStart({
+      x: clientX,
+      y: clientY,
+      cropBox: { ...cropBox }
+    });
+  };
+
+  const handleCropMouseMove = (e) => {
+    if (!dragStart || !isCropping) return;
+    
+    e.preventDefault();
+    
+    const dx = e.clientX - dragStart.x;
+    const dy = e.clientY - dragStart.y;
+    const containerWidth = cropAreaRef.current.clientWidth;
+    const containerHeight = cropAreaRef.current.clientHeight;
+    
+    let newCropBox = { ...cropBox };
+    
+    if (resizeHandle === 'move') {
+      // Move the crop box
+      newCropBox.x = Math.max(0, Math.min(imageSize.width - cropBox.width, dragStart.cropBox.x + dx));
+      newCropBox.y = Math.max(0, Math.min(imageSize.height - cropBox.height, dragStart.cropBox.y + dy));
+    } else {
+      // Resize the crop box
+      const minSize = 50; // Minimum crop box size
+      
+      if (resizeHandle.includes('e')) {
+        // Resize from right edge
+        let newWidth = Math.max(minSize, dragStart.cropBox.width + dx);
+        newWidth = Math.min(newWidth, imageSize.width - newCropBox.x);
+        newCropBox.width = newWidth;
+        newCropBox.height = newWidth / aspectRatio;
+      }
+      
+      if (resizeHandle.includes('w')) {
+        // Resize from left edge
+        let newWidth = Math.max(minSize, dragStart.cropBox.width - dx);
+        let newX = dragStart.cropBox.x + (dragStart.cropBox.width - newWidth);
+        
+        // Ensure we don't go out of bounds
+        if (newX >= 0) {
+          newCropBox.x = newX;
+          newCropBox.width = newWidth;
+          newCropBox.height = newWidth / aspectRatio;
         }
-    
-        const image = imgRef.current;
-        const canvas = previewCanvasRef.current;
-        const crop = completedCrop;
-    
-        // Calculate scaling factors
-        const scaleX = image.naturalWidth / image.width;
-        const scaleY = image.naturalHeight / image.height;
-    
-        // Set the canvas dimensions to match the crop
-        canvas.width = crop.width;
-        canvas.height = crop.height;
-    
-        const ctx = canvas.getContext('2d');
-    
-        // Clear the canvas before drawing
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-        // Draw the cropped image onto the canvas
-        ctx.drawImage(
-            image,
-            crop.x * scaleX,
-            crop.y * scaleY,
-            crop.width * scaleX,
-            crop.height * scaleY,
-            0,
-            0,
-            crop.width,
-            crop.height
-        );
-    
-        // Convert canvas to blob for preview
-        canvas.toBlob(
-            (blob) => {
-                if (!blob) {
-                    console.error("Failed to create blob from canvas");
-                    // Fallback to direct preview if blob creation fails
-                    createDirectPreview(originalFile);
-                    return;
-                }
-    
-                try {
-                    // Create URL for preview
-                    const previewUrl = URL.createObjectURL(blob);
-                    console.log("Created blob URL:", previewUrl);
-    
-                    // Create a new File object from the cropped blob
-                    const croppedFile = new File([blob], originalFile.name, {
-                        type: originalFile.type || 'image/jpeg'
-                    });
-    
-                    // Set image preview with the cropped image data
-                    const imageData = {
-                        file: croppedFile,
-                        url: previewUrl,
-                        name: originalFile.name
-                    };
-    
-                    // First hide the cropper to force re-render
-                    setShowCropper(false);
-                    
-                    // Then update the preview
-                    setImagePreview(imageData);
-                    
-                    // Notify parent component
-                    onImageSelect(croppedFile);
-                    
-                    console.log("Preview set with URL:", previewUrl);
-                } catch (error) {
-                    console.error("Error creating preview:", error);
-                    // Fallback to direct preview
-                    createDirectPreview(originalFile);
-                }
-            },
-            originalFile.type || 'image/jpeg',
-            0.95
-        );
-    }, [completedCrop, originalFile, onImageSelect]);
-
-    // Cancel cropping
-    const handleCropCancel = () => {
-        setShowCropper(false);
-        setImgSrc('');
-        setOriginalFile(null);
-    };
-
-    // Remove selected image
-    const handleImageRemove = () => {
-        if (imagePreview && imagePreview.url) {
-            // Revoke the object URL to prevent memory leaks
-            URL.revokeObjectURL(imagePreview.url);
+      }
+      
+      if (resizeHandle.includes('s')) {
+        // Resize from bottom edge
+        let newHeight = Math.max(minSize, dragStart.cropBox.height + dy);
+        newHeight = Math.min(newHeight, imageSize.height - newCropBox.y);
+        newCropBox.height = newHeight;
+        newCropBox.width = newHeight * aspectRatio;
+      }
+      
+      if (resizeHandle.includes('n')) {
+        // Resize from top edge
+        let newHeight = Math.max(minSize, dragStart.cropBox.height - dy);
+        let newY = dragStart.cropBox.y + (dragStart.cropBox.height - newHeight);
+        
+        // Ensure we don't go out of bounds
+        if (newY >= 0) {
+          newCropBox.y = newY;
+          newCropBox.height = newHeight;
+          newCropBox.width = newHeight * aspectRatio;
         }
-        setImagePreview(null);
-        onImageSelect(null);
+      }
+      
+      // Make sure crop box doesn't exceed image bounds
+      if (newCropBox.x + newCropBox.width > imageSize.width) {
+        newCropBox.width = imageSize.width - newCropBox.x;
+        newCropBox.height = newCropBox.width / aspectRatio;
+      }
+      
+      if (newCropBox.y + newCropBox.height > imageSize.height) {
+        newCropBox.height = imageSize.height - newCropBox.y;
+        newCropBox.width = newCropBox.height * aspectRatio;
+      }
+    }
+    
+    setCropBox(newCropBox);
+  };
+
+  const handleCropMouseUp = () => {
+    setDragStart(null);
+    setResizeHandle(null);
+  };
+
+  const handleApplyCrop = () => {
+    if (!originalImage) return;
+    
+    const img = new Image();
+    img.src = originalImage;
+    
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const displayedImg = imageRef.current;
+      
+      // Calculate scale factor between original image and displayed image
+      const scaleX = img.width / imageSize.width;
+      const scaleY = img.height / imageSize.height;
+      
+      // Set canvas size to the crop dimensions
+      canvas.width = cropBox.width * scaleX;
+      canvas.height = cropBox.height * scaleY;
+      
+      const ctx = canvas.getContext('2d');
+      
+      // Draw the cropped portion to the canvas
+      ctx.drawImage(
+        img,
+        cropBox.x * scaleX, cropBox.y * scaleY, // Source x, y
+        cropBox.width * scaleX, cropBox.height * scaleY, // Source width, height
+        0, 0, // Destination x, y
+        canvas.width, canvas.height // Destination width, height
+      );
+      
+      // Convert canvas to blob
+      canvas.toBlob((blob) => {
+        // Create a new file from the blob
+        const croppedFile = new File([blob], "cropped-image.jpg", { type: "image/jpeg" });
+        
+        // Update preview and notify parent component
+        setPreview(canvas.toDataURL('image/jpeg'));
+        setIsCropping(false);
+        onImageSelect(croppedFile);
+      }, 'image/jpeg');
     };
+  };
 
-    // Clean up any object URLs when component unmounts
-    useEffect(() => {
-        return () => {
-            if (imagePreview && imagePreview.url) {
-                URL.revokeObjectURL(imagePreview.url);
-            }
-        };
-    }, [imagePreview]);
+  const handleCancelCrop = () => {
+    setIsCropping(false);
+    setPreview(null);
+    setOriginalImage(null);
+    onImageSelect(null);
+  };
 
-    // Drag and drop handlers
-    const handleDragEnter = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(true);
-    };
-
-    const handleDragLeave = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(false);
-    };
-
-    const handleDragOver = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!isDragging) {
-            setIsDragging(true);
-        }
-    };
-
-    const handleDrop = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(false);
-
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            handleFileChange(e.dataTransfer.files[0]);
-        }
-    };
-
-    // Set up drag and drop event listeners
-    useEffect(() => {
-        const dropZone = dropZoneRef.current;
-
-        if (dropZone) {
-            dropZone.addEventListener('dragenter', handleDragEnter);
-            dropZone.addEventListener('dragleave', handleDragLeave);
-            dropZone.addEventListener('dragover', handleDragOver);
-            dropZone.addEventListener('drop', handleDrop);
-
-            return () => {
-                dropZone.removeEventListener('dragenter', handleDragEnter);
-                dropZone.removeEventListener('dragleave', handleDragLeave);
-                dropZone.removeEventListener('dragover', handleDragOver);
-                dropZone.removeEventListener('drop', handleDrop);
-            };
-        }
-    }, []);
-
-    return (
-        <div>
-            {showCropper ? (
-                <div className="mb-6">
-                    <h3 className="text-lg font-bold mb-2">Crop Image (3:2 Ratio)</h3>
-                    <div className="mb-4">
-                        {imgSrc && (
-                            <ReactCrop
-                                src={imgSrc}
-                                onImageLoad={onImageLoad}
-                                crop={crop}
-                                onChange={setCrop}
-                                onComplete={setCompletedCrop}
-                                aspect={aspectRatio}
-                                className="max-h-96 mx-auto"
-                            />
-                        )}
-                    </div>
-
-                    {/* Canvas for generating the cropped image - hidden from view */}
-                    <canvas
-                        ref={previewCanvasRef}
-                        className="hidden"
-                    />
-
-                    <div className="flex justify-between space-x-4 mt-4">
-                        <button
-                            type="button"
-                            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-                            onClick={() => createDirectPreview(originalFile)}
-                        >
-                            Skip Cropping
-                        </button>
-
-                        <div className="flex space-x-2">
-                            <button
-                                type="button"
-                                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-                                onClick={handleCropCancel}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="button"
-                                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-                                onClick={generateCroppedImage}
-                            >
-                                Apply Crop
-                            </button>
-                        </div>
-                    </div>
+  return (
+    <div className="w-full">
+      {isCropping ? (
+        <div className="border rounded-lg p-4">
+          <h3 className="text-center font-medium mb-3">Crop Image</h3>
+          <p className="text-sm text-gray-500 text-center mb-3">
+            Drag to adjust the crop area or resize from the edges
+          </p>
+          
+          <div 
+            ref={cropAreaRef}
+            className="relative mx-auto mb-4 overflow-hidden bg-gray-200"
+            style={{ 
+              width: '100%', 
+              maxWidth: '500px',
+              height: '350px'
+            }}
+            onMouseDown={handleCropMouseDown}
+            onMouseMove={handleCropMouseMove}
+            onMouseUp={handleCropMouseUp}
+            onMouseLeave={handleCropMouseUp}
+          >
+            {originalImage && (
+              <>
+                <img
+                  ref={imageRef}
+                  src={originalImage}
+                  alt="Original"
+                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                  style={{
+                    width: imageSize.width,
+                    height: imageSize.height
+                  }}
+                />
+                
+                {/* Semi-transparent overlay */}
+                <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+                
+                {/* Crop selection box */}
+                <div
+                  ref={cropFrameRef}
+                  className="absolute border-2 border-white"
+                  style={{
+                    left: cropBox.x,
+                    top: cropBox.y,
+                    width: cropBox.width,
+                    height: cropBox.height,
+                    cursor: resizeHandle ? 
+                      (resizeHandle === 'move' ? 'move' : 
+                       resizeHandle === 'n' || resizeHandle === 's' ? 'ns-resize' :
+                       resizeHandle === 'e' || resizeHandle === 'w' ? 'ew-resize' :
+                       resizeHandle === 'ne' || resizeHandle === 'sw' ? 'nesw-resize' :
+                       'nwse-resize') : 'default'
+                  }}
+                >
+                  {/* Clear the overlay inside the crop box */}
+                  <div className="absolute inset-0 bg-transparent"></div>
+                  
+                  {/* Resize handles */}
+                  <div className="absolute top-0 left-0 w-3 h-3 bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2 cursor-nwse-resize"></div>
+                  <div className="absolute top-0 right-0 w-3 h-3 bg-white rounded-full transform translate-x-1/2 -translate-y-1/2 cursor-nesw-resize"></div>
+                  <div className="absolute bottom-0 left-0 w-3 h-3 bg-white rounded-full transform -translate-x-1/2 translate-y-1/2 cursor-nesw-resize"></div>
+                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-white rounded-full transform translate-x-1/2 translate-y-1/2 cursor-nwse-resize"></div>
                 </div>
-            ) : (
-                <div>
-                    {imagePreview && imagePreview.url ? (
-                        <div className="mb-2">
-                            {imagePreview.url}
-                            <div className="relative">
-                                {/* Display the selected/cropped image preview */}
-                                <img
-                                    src={imagePreview.url}
-                                    alt="Preview"
-                                    className="w-full h-64 object-contain rounded border border-gray-300"
-                                />
-                                <button
-                                    type="button"
-                                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                                    onClick={handleImageRemove}
-                                >
-                                    ×
-                                </button>
-                            </div>
-                            <p className="text-sm text-gray-600 mt-1">
-                                Image selected: {imagePreview.name}
-                            </p>
-                        </div>
-                    ) : (
-                        <div
-                            ref={dropZoneRef}
-                            className={`flex items-center justify-center w-full ${isDragging ? 'bg-blue-50' : 'bg-gray-50'}`}
-                        >
-                            <label
-                                className={`flex flex-col items-center justify-center w-full h-64 border-2 ${isDragging ? 'border-blue-300' : 'border-gray-300'} border-dashed rounded-lg cursor-pointer hover:bg-gray-100`}
-                                htmlFor="file-upload"
-                            >
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <svg className="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                    </svg>
-                                    <p className="mb-2 text-sm text-gray-500">
-                                        <span className="font-semibold">Click to upload</span> or drag and drop
-                                    </p>
-                                    <p className="text-xs text-gray-500">Image will be cropped to 3:2 ratio</p>
-                                </div>
-                                <input
-                                    ref={fileInputRef}
-                                    id="file-upload"
-                                    type="file"
-                                    name="itemImage"
-                                    accept="image/*"
-                                    className="hidden"
-                                    onChange={handleImageChange}
-                                />
-                            </label>
-                        </div>
-                    )}
-
-                    {errorMessage && (
-                        <p className="text-red-500 text-xs mt-1">{errorMessage}</p>
-                    )}
-                </div>
+              </>
             )}
+          </div>
+          
+          <div className="flex justify-center space-x-3">
+            <button
+              type="button"
+              onClick={handleCancelCrop}
+              className="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleApplyCrop}
+              className="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded"
+            >
+              Apply Crop
+            </button>
+          </div>
         </div>
-    );
-}
+      ) : preview ? (
+        <div className="border rounded-lg p-4">
+          <div className="flex flex-col items-center">
+            <div 
+              className="mb-3 w-full bg-gray-100 overflow-hidden flex items-center justify-center"
+              style={{ maxWidth: '400px', aspectRatio: aspectRatio }}
+            >
+              <img
+                src={preview}
+                alt="Preview"
+                className="max-w-full max-h-full object-contain"
+              />
+            </div>
+            <div className="flex space-x-3">
+              <button
+                type="button"
+                onClick={handleBrowseClick}
+                className="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded"
+              >
+                Change Image
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setPreview(null);
+                  setOriginalImage(null);
+                  onImageSelect(null);
+                }}
+                className="px-4 py-2 text-sm bg-red-100 hover:bg-red-200 text-red-700 rounded"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div
+          className={`border-2 border-dashed rounded-lg p-4 text-center ${
+            isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+          } ${errorMessage ? 'border-red-500' : ''}`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          style={{ minHeight: '150px' }}
+        >
+          <div className="flex flex-col items-center justify-center py-6">
+            <svg
+              className="w-12 h-12 text-gray-400 mb-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
+            </svg>
+            <p className="mb-2 text-sm text-gray-500">
+              <span className="font-semibold">Drag and drop</span> your image here or
+            </p>
+            <button
+              type="button"
+              onClick={handleBrowseClick}
+              className="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded"
+            >
+              Browse Files
+            </button>
+          </div>
+        </div>
+      )}
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        onChange={handleFileChange}
+        accept="image/*"
+        className="hidden"
+      />
+      
+      {errorMessage && (
+        <p className="text-red-500 text-xs mt-1">{errorMessage}</p>
+      )}
+    </div>
+  );
+};
+
+export default ImageHandler;
