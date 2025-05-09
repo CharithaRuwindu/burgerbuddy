@@ -445,18 +445,18 @@ const Items = () => {
 
     const handleImageSelect = (file) => {
         setFormData(prev => ({
-          ...prev,
-          itemImage: file
+            ...prev,
+            itemImage: file
         }));
-        
+
         // Clear errors when a valid file is selected
         if (file && errors.itemImage) {
-          setErrors(prev => ({
-            ...prev,
-            itemImage: null
-          }));
+            setErrors(prev => ({
+                ...prev,
+                itemImage: null
+            }));
         }
-      };
+    };
 
     return (
         <>
@@ -890,10 +890,10 @@ const Items = () => {
                                         </label>
 
                                         <ImageHandler
-  onImageSelect={handleImageSelect}
-  aspectRatio={3/2}
-  errorMessage={errors.itemImage}
-/>
+                                            onImageSelect={(file) => handleImageSelect(file)}
+                                            aspectRatio={16 / 9}
+                                            errorMessage={errors.image?.message}
+                                        />
 
                                         {/* <input
                                             type="file"
