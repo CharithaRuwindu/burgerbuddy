@@ -891,7 +891,7 @@ const Items = () => {
 
                                         <ImageHandler
                                             onImageSelect={(file) => handleImageSelect(file)}
-                                            aspectRatio={16 / 9}
+                                            aspectRatio={3 / 2}
                                             errorMessage={errors.image?.message}
                                         />
 

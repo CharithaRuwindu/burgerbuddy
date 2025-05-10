@@ -1,188 +1,317 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
+  const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isCropping, setIsCropping] = useState(false);
+  const [cropCoordinates, setCropCoordinates] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [originalDimensions, setOriginalDimensions] = useState({ width: 0, height: 0 });
+  const [isDraggingCrop, setIsDraggingCrop] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  
   const fileInputRef = useRef(null);
-  const cloudinaryWidget = useRef(null);
-  const cloudName = 'disgrv2zx'; // Your Cloudinary cloud name
+  const imageRef = useRef(null);
+  const cropBoxRef = useRef(null);
+  const containerRef = useRef(null);
   
-  // This effect ensures the preview image is refreshed when it changes
+  // When a new image is loaded
   useEffect(() => {
-    if (preview) {
-      console.log("Preview URL updated:", preview);
-    }
-  }, [preview]);
-  
-  useEffect(() => {
-    // Initialize Cloudinary widget when component mounts
-    if (typeof window !== 'undefined' && window.cloudinary) {
-      initCloudinaryWidget();
-    } else {
-      // Load Cloudinary script if not already loaded
-      const script = document.createElement('script');
-      script.src = 'https://widget.cloudinary.com/v2.0/global/all.js';
-      script.async = true;
-      script.onload = initCloudinaryWidget;
-      document.body.appendChild(script);
+    if (image) {
+      const imageUrl = URL.createObjectURL(image);
       
-      return () => {
-        // Clean up script tag when component unmounts, if it exists
-        if (script.parentNode) {
-          script.parentNode.removeChild(script);
+      // Load the image to get its dimensions
+      const img = new Image();
+      img.onload = () => {
+        setOriginalDimensions({
+          width: img.width,
+          height: img.height
+        });
+        
+        // Start cropping when a new image is loaded
+        setIsCropping(true);
+        
+        // Calculate default crop region based on aspect ratio
+        const cropWidth = img.width;
+        const cropHeight = cropWidth / aspectRatio;
+        
+        // If the calculated height is more than the image height,
+        // recalculate based on height
+        if (cropHeight > img.height) {
+          const newHeight = img.height;
+          const newWidth = newHeight * aspectRatio;
+          setCropCoordinates({
+            x: (img.width - newWidth) / 2,
+            y: 0,
+            width: newWidth,
+            height: newHeight
+          });
+        } else {
+          setCropCoordinates({
+            x: 0,
+            y: (img.height - cropHeight) / 2,
+            width: cropWidth,
+            height: cropHeight
+          });
         }
       };
+      img.src = imageUrl;
+      
+      // No preview yet (we'll set it after cropping)
+      setPreview(null);
+    } else {
+      setIsCropping(false);
+      setPreview(null);
     }
-    
-    // Cleanup function for the widget
-    return () => {
-      if (cloudinaryWidget.current && typeof cloudinaryWidget.current.close === 'function') {
-        cloudinaryWidget.current.close();
-      }
-    };
-  }, [aspectRatio]);
+  }, [image, aspectRatio]);
   
-  const initCloudinaryWidget = () => {
-    cloudinaryWidget.current = window.cloudinary.createUploadWidget(
-      {
-        cloudName: cloudName,
-        uploadPreset: 'burgerbuddy',
-        cropping: true,
-        croppingAspectRatio: aspectRatio,
-        croppingShowDimensions: true,
-        croppingValidateDimensions: true,
-        croppingDefaultSelectionRatio: aspectRatio,
-        showSkipCropButton: false,
-        showPoweredBy: false,
-        sources: ['local', 'url', 'camera'],
-        multiple: false,
-        maxImageFileSize: 10000000, // 10MB max file size
-        clientAllowedFormats: ['jpg', 'jpeg', 'png', 'gif'],
-        styles: {
-          palette: {
-            window: '#FFFFFF',
-            sourceBg: '#F4F4F5',
-            windowBorder: '#90A0B3',
-            tabIcon: '#0078FF',
-            inactiveTabIcon: '#69778A',
-            menuIcons: '#0078FF',
-            link: '#0078FF',
-            action: '#0078FF',
-            inProgress: '#0078FF',
-            complete: '#20B832',
-            error: '#EA2727',
-            textDark: '#000000',
-            textLight: '#FFFFFF'
-          }
-        }
-      },
-      (error, result) => {
-        if (error) {
-          console.error('Error with Cloudinary widget:', error);
-          return;
-        }
+  // Function to apply the crop
+  const applyCrop = () => {
+    if (!image || !cropCoordinates) return;
+    
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size to the cropped size
+    canvas.width = cropCoordinates.width;
+    canvas.height = cropCoordinates.height;
+    
+    // Create an image element to draw from
+    const img = new Image();
+    img.onload = () => {
+      // Draw the cropped region to the canvas
+      ctx.drawImage(
+        img,
+        cropCoordinates.x, cropCoordinates.y, cropCoordinates.width, cropCoordinates.height,
+        0, 0, cropCoordinates.width, cropCoordinates.height
+      );
+      
+      // Convert the canvas to a blob
+      canvas.toBlob((blob) => {
+        // Create a new File object from the blob
+        const croppedFile = new File([blob], image.name, {
+          type: image.type,
+          lastModified: Date.now()
+        });
         
-        // For debugging - Log all events
-        console.log('Cloudinary widget event:', result.event, result);
+        // Generate preview URL
+        const previewUrl = URL.createObjectURL(blob);
+        setPreview(previewUrl);
         
-        if (result.event === 'success') {
-          // Extract information about the uploaded image
-          const { secure_url } = result.info;
-          
-          // Force a unique URL with timestamp to prevent caching
-          const timestamp = new Date().getTime();
-          const imageUrl = `${secure_url}?t=${timestamp}`;
-          
-          console.log('Final image URL:', imageUrl);
-          
-          // Set the preview immediately to show something
-          setPreview(imageUrl);
-          
-          // Add a small delay to ensure Cloudinary has processed the crop
-          setTimeout(() => {
-            // Refresh the preview with a new timestamp
-            const refreshedUrl = `${secure_url}?t=${new Date().getTime()}`;
-            setPreview(refreshedUrl);
-            
-            // Create a File object from the URL
-            fetchImageAsFile(refreshedUrl)
-              .then(file => {
-                onImageSelect(file);
-              })
-              .catch(err => {
-                console.error("Error creating File from URL:", err);
-              });
-          }, 1000); // 1 second delay
-        }
-      }
-    );
+        // Pass the cropped file to the parent component
+        onImageSelect(croppedFile);
+        
+        // Exit cropping mode
+        setIsCropping(false);
+      }, image.type);
+    };
+    
+    // Load the original image
+    img.src = URL.createObjectURL(image);
   };
-
-  // Helper function to fetch an image as a File object
-  const fetchImageAsFile = async (url) => {
-    try {
-      // Add cache-busting parameter to prevent browser caching
-      const cacheBuster = `?cb=${Date.now()}`;
-      const fetchUrl = url.includes('?') ? `${url}&cb=${Date.now()}` : `${url}${cacheBuster}`;
-      
-      const response = await fetch(fetchUrl, { 
-        method: 'GET',
-        cache: 'no-cache', // Ensure we don't use cached version
-        headers: {
-          'Cache-Control': 'no-cache'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
-      }
-      
-      const blob = await response.blob();
-      const filename = url.substring(url.lastIndexOf('/') + 1).split('?')[0]; // Remove query params
-      return new File([blob], filename, { type: blob.type });
-    } catch (error) {
-      console.error("Error fetching image:", error);
-      throw error;
-    }
+  
+  // Function to cancel cropping
+  const cancelCrop = () => {
+    setIsCropping(false);
+    setImage(null);
+    setPreview(null);
+    onImageSelect(null);
   };
-
+  
+  // Handle file selection
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file && cloudinaryWidget.current) {
-      // Reset file input value to allow selecting the same file again
+    if (file) {
+      setImage(file);
+      // Reset file input to allow selecting the same file again
       fileInputRef.current.value = '';
-      // Open the widget with the selected file
-      cloudinaryWidget.current.open(null, { files: [file] });
     }
   };
-
+  
+  // Handle drag over events
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
   };
-
+  
+  // Handle drag leave events
   const handleDragLeave = () => {
     setIsDragging(false);
   };
-
+  
+  // Handle file drop
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
     
-    if (e.dataTransfer.files && e.dataTransfer.files[0] && cloudinaryWidget.current) {
-      // Open the widget with the dropped file
-      cloudinaryWidget.current.open(null, { files: [e.dataTransfer.files[0]] });
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setImage(e.dataTransfer.files[0]);
     }
   };
-
+  
+  // Handle click on browse button
   const handleBrowseClick = () => {
-    // Simply trigger the hidden file input
     fileInputRef.current.click();
   };
-
+  
+  // Handle mouse down on crop box
+  const handleCropMouseDown = (e) => {
+    if (isCropping && cropBoxRef.current && containerRef.current) {
+      // Only proceed if we click inside the crop box
+      const rect = cropBoxRef.current.getBoundingClientRect();
+      const containerRect = containerRef.current.getBoundingClientRect();
+      
+      const mouseX = e.clientX - containerRect.left;
+      const mouseY = e.clientY - containerRect.top;
+      
+      // Determine if the mouse is inside the crop box
+      const isInside = 
+        mouseX >= rect.left - containerRect.left &&
+        mouseX <= rect.right - containerRect.left &&
+        mouseY >= rect.top - containerRect.top &&
+        mouseY <= rect.bottom - containerRect.top;
+      
+      if (isInside) {
+        setIsDraggingCrop(true);
+        setDragStart({
+          x: mouseX - (rect.left - containerRect.left),
+          y: mouseY - (rect.top - containerRect.top)
+        });
+      }
+    }
+  };
+  
+  // Handle mouse move for crop box dragging
+  const handleCropMouseMove = (e) => {
+    if (isCropping && isDraggingCrop && containerRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const scaleX = originalDimensions.width / containerRect.width;
+      const scaleY = originalDimensions.height / containerRect.height;
+      
+      // Get mouse position relative to container
+      const mouseX = e.clientX - containerRect.left;
+      const mouseY = e.clientY - containerRect.top;
+      
+      // Calculate new position
+      let newX = mouseX - dragStart.x;
+      let newY = mouseY - dragStart.y;
+      
+      // Convert to original image coordinates
+      newX = newX * scaleX;
+      newY = newY * scaleY;
+      
+      // Constrain to image boundaries
+      newX = Math.max(0, Math.min(newX, originalDimensions.width - cropCoordinates.width));
+      newY = Math.max(0, Math.min(newY, originalDimensions.height - cropCoordinates.height));
+      
+      // Update crop coordinates
+      setCropCoordinates(prev => ({
+        ...prev,
+        x: newX,
+        y: newY
+      }));
+    }
+  };
+  
+  // Handle mouse up to stop dragging
+  const handleCropMouseUp = () => {
+    setIsDraggingCrop(false);
+  };
+  
+  // Calculate styles for the crop box
+  const getCropBoxStyle = () => {
+    if (!isCropping || !containerRef.current) return {};
+    
+    const containerRect = containerRef.current.getBoundingClientRect();
+    
+    // Calculate scale factors
+    const scaleX = containerRect.width / originalDimensions.width;
+    const scaleY = containerRect.height / originalDimensions.height;
+    
+    // Scale crop coordinates to display size
+    const displayX = cropCoordinates.x * scaleX;
+    const displayY = cropCoordinates.y * scaleY;
+    const displayWidth = cropCoordinates.width * scaleX;
+    const displayHeight = cropCoordinates.height * scaleY;
+    
+    return {
+      left: `${displayX}px`,
+      top: `${displayY}px`,
+      width: `${displayWidth}px`,
+      height: `${displayHeight}px`
+    };
+  };
+  
   return (
     <div className="w-full">
-      {preview ? (
+      {/* Cropping UI */}
+      {isCropping && image && (
+        <div className="border rounded-lg p-4 mb-4">
+          <div className="flex flex-col items-center">
+            <p className="text-sm text-gray-600 mb-2">
+              Position the crop box by dragging it. When ready, click "Apply Crop".
+            </p>
+            
+            <div 
+              ref={containerRef}
+              className="relative mb-3 w-full bg-gray-800 overflow-hidden flex items-center justify-center"
+              style={{ 
+                maxWidth: '100%', 
+                height: '300px',
+                cursor: isDraggingCrop ? 'grabbing' : 'grab'
+              }}
+              onMouseDown={handleCropMouseDown}
+              onMouseMove={handleCropMouseMove}
+              onMouseUp={handleCropMouseUp}
+              onMouseLeave={handleCropMouseUp}
+            >
+              {/* Original image */}
+              <img
+                ref={imageRef}
+                src={URL.createObjectURL(image)}
+                alt="Original"
+                className="max-w-full max-h-full object-contain"
+              />
+              
+              {/* Semi-transparent overlay */}
+              <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+              
+              {/* Crop box */}
+              <div
+                ref={cropBoxRef}
+                className="absolute border-2 border-white"
+                style={{
+                  ...getCropBoxStyle(),
+                  boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)'
+                }}
+              >
+                {/* Transparent area inside crop box */}
+                <div className="absolute inset-0 bg-transparent"></div>
+              </div>
+            </div>
+            
+            <div className="flex space-x-3">
+              <button
+                type="button"
+                onClick={applyCrop}
+                className="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded"
+              >
+                Apply Crop
+              </button>
+              <button
+                type="button"
+                onClick={cancelCrop}
+                className="px-4 py-2 text-sm bg-red-100 hover:bg-red-200 text-red-700 rounded"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Preview area (shown after cropping) */}
+      {preview && !isCropping && (
         <div className="border rounded-lg p-4">
           <div className="flex flex-col items-center">
             <div 
@@ -193,12 +322,6 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
                 src={preview}
                 alt="Preview"
                 className="max-w-full max-h-full object-contain"
-                key={preview} // Add a key to force re-render when preview changes
-                onError={(e) => {
-                  console.error("Image failed to load:", e);
-                  // Try to reload the image if it fails
-                  e.target.src = `${preview}&retry=${Date.now()}`;
-                }}
               />
             </div>
             <div className="flex space-x-3">
@@ -212,6 +335,7 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
               <button
                 type="button"
                 onClick={() => {
+                  setImage(null);
                   setPreview(null);
                   onImageSelect(null);
                 }}
@@ -222,7 +346,10 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
             </div>
           </div>
         </div>
-      ) : (
+      )}
+      
+      {/* Upload UI (shown initially) */}
+      {!preview && !isCropping && (
         <div
           className={`border-2 border-dashed rounded-lg p-4 text-center ${
             isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
