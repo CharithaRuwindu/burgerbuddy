@@ -30,6 +30,7 @@ const Items = () => {
     const [makeavailableMessage, setMakeAvailableMessage] = useState("");
     const [makeunavailableMessage, setMakeUnavailableMessage] = useState("");
     const [showModal, setShowModal] = useState(false);
+    const [maintainRatio, setMaintainRatio] = useState(true);
 
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
@@ -889,11 +890,12 @@ const Items = () => {
                                             Item Image*
                                         </label>
 
-                                        <ImageHandler
-                                            onImageSelect={(file) => handleImageSelect(file)}
-                                            aspectRatio={3 / 2}
-                                            errorMessage={errors.image?.message}
-                                        />
+                                        <ImageHandler 
+  onImageSelect={handleImageSelect}
+  aspectRatio={3/2}
+  maintainAspectRatio={maintainRatio}
+  onToggleAspectRatio={setMaintainRatio}
+/>
 
                                         {/* <input
                                             type="file"

@@ -9,6 +9,7 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
   const [originalDimensions, setOriginalDimensions] = useState({ width: 0, height: 0 });
   const [isDraggingCrop, setIsDraggingCrop] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [resizeMode, setResizeMode] = useState(null); // 'tl', 'tr', 'bl', 'br', 'left', 'right', 'top', 'bottom'
   
   const fileInputRef = useRef(null);
   const imageRef = useRef(null);
@@ -32,23 +33,23 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
         setIsCropping(true);
         
         // Calculate default crop region based on aspect ratio
-        const cropWidth = img.width;
+        const cropWidth = img.width * 0.8;
         const cropHeight = cropWidth / aspectRatio;
         
         // If the calculated height is more than the image height,
         // recalculate based on height
         if (cropHeight > img.height) {
-          const newHeight = img.height;
+          const newHeight = img.height * 0.8;
           const newWidth = newHeight * aspectRatio;
           setCropCoordinates({
             x: (img.width - newWidth) / 2,
-            y: 0,
+            y: (img.height - newHeight) / 2,
             width: newWidth,
             height: newHeight
           });
         } else {
           setCropCoordinates({
-            x: 0,
+            x: (img.width - cropWidth) / 2,
             y: (img.height - cropHeight) / 2,
             width: cropWidth,
             height: cropHeight
@@ -154,45 +155,126 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
     fileInputRef.current.click();
   };
   
+  // Detect which resize handle or if dragging the crop box
+  const getResizeMode = (e, cropRect, containerRect) => {
+    const handleSize = 10; // Size of the resize handle hitbox
+    
+    const mouseX = e.clientX - containerRect.left;
+    const mouseY = e.clientY - containerRect.top;
+    
+    const cropLeft = cropRect.left - containerRect.left;
+    const cropTop = cropRect.top - containerRect.top;
+    const cropRight = cropRect.right - containerRect.left;
+    const cropBottom = cropRect.bottom - containerRect.top;
+    
+    // Check corners first (they have priority)
+    if (Math.abs(mouseX - cropLeft) <= handleSize && Math.abs(mouseY - cropTop) <= handleSize) {
+      return 'tl'; // top-left
+    }
+    if (Math.abs(mouseX - cropRight) <= handleSize && Math.abs(mouseY - cropTop) <= handleSize) {
+      return 'tr'; // top-right
+    }
+    if (Math.abs(mouseX - cropLeft) <= handleSize && Math.abs(mouseY - cropBottom) <= handleSize) {
+      return 'bl'; // bottom-left
+    }
+    if (Math.abs(mouseX - cropRight) <= handleSize && Math.abs(mouseY - cropBottom) <= handleSize) {
+      return 'br'; // bottom-right
+    }
+    
+    // Check edges
+    if (Math.abs(mouseX - cropLeft) <= handleSize && mouseY > cropTop + handleSize && mouseY < cropBottom - handleSize) {
+      return 'left';
+    }
+    if (Math.abs(mouseX - cropRight) <= handleSize && mouseY > cropTop + handleSize && mouseY < cropBottom - handleSize) {
+      return 'right';
+    }
+    if (Math.abs(mouseY - cropTop) <= handleSize && mouseX > cropLeft + handleSize && mouseX < cropRight - handleSize) {
+      return 'top';
+    }
+    if (Math.abs(mouseY - cropBottom) <= handleSize && mouseX > cropLeft + handleSize && mouseX < cropRight - handleSize) {
+      return 'bottom';
+    }
+    
+    // Check if inside the crop box for dragging
+    if (mouseX >= cropLeft && mouseX <= cropRight && mouseY >= cropTop && mouseY <= cropBottom) {
+      return 'move';
+    }
+    
+    return null;
+  };
+  
   // Handle mouse down on crop box
   const handleCropMouseDown = (e) => {
     if (isCropping && cropBoxRef.current && containerRef.current) {
-      // Only proceed if we click inside the crop box
       const rect = cropBoxRef.current.getBoundingClientRect();
       const containerRect = containerRef.current.getBoundingClientRect();
       
-      const mouseX = e.clientX - containerRect.left;
-      const mouseY = e.clientY - containerRect.top;
+      const mode = getResizeMode(e, rect, containerRect);
       
-      // Determine if the mouse is inside the crop box
-      const isInside = 
-        mouseX >= rect.left - containerRect.left &&
-        mouseX <= rect.right - containerRect.left &&
-        mouseY >= rect.top - containerRect.top &&
-        mouseY <= rect.bottom - containerRect.top;
-      
-      if (isInside) {
+      if (mode === 'move') {
         setIsDraggingCrop(true);
+        const mouseX = e.clientX - containerRect.left;
+        const mouseY = e.clientY - containerRect.top;
+        
         setDragStart({
           x: mouseX - (rect.left - containerRect.left),
           y: mouseY - (rect.top - containerRect.top)
+        });
+      } else if (mode) {
+        setResizeMode(mode);
+        const mouseX = e.clientX - containerRect.left;
+        const mouseY = e.clientY - containerRect.top;
+        
+        setDragStart({
+          x: mouseX,
+          y: mouseY
         });
       }
     }
   };
   
-  // Handle mouse move for crop box dragging
+  // Get cursor style based on resize mode
+  const getCursorStyle = () => {
+    if (isDraggingCrop) return 'grabbing';
+    
+    switch (resizeMode) {
+      case 'tl':
+      case 'br':
+        return 'nwse-resize';
+      case 'tr':
+      case 'bl':
+        return 'nesw-resize';
+      case 'left':
+      case 'right':
+        return 'ew-resize';
+      case 'top':
+      case 'bottom':
+        return 'ns-resize';
+      case 'move':
+        return 'grab';
+      default:
+        return 'default';
+    }
+  };
+  
+  // Handle mouse move for crop box dragging and resizing
   const handleCropMouseMove = (e) => {
-    if (isCropping && isDraggingCrop && containerRef.current) {
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const scaleX = originalDimensions.width / containerRect.width;
-      const scaleY = originalDimensions.height / containerRect.height;
-      
-      // Get mouse position relative to container
-      const mouseX = e.clientX - containerRect.left;
-      const mouseY = e.clientY - containerRect.top;
-      
-      // Calculate new position
+    if (!isCropping || (!isDraggingCrop && !resizeMode) || !containerRef.current) return;
+    
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const scaleX = originalDimensions.width / containerRect.width;
+    const scaleY = originalDimensions.height / containerRect.height;
+    
+    // Get mouse position relative to container
+    const mouseX = e.clientX - containerRect.left;
+    const mouseY = e.clientY - containerRect.top;
+    
+    // Convert to original image coordinates
+    const imgMouseX = mouseX * scaleX;
+    const imgMouseY = mouseY * scaleY;
+    
+    if (isDraggingCrop) {
+      // Handle dragging (moving) the crop box
       let newX = mouseX - dragStart.x;
       let newY = mouseY - dragStart.y;
       
@@ -210,12 +292,111 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
         x: newX,
         y: newY
       }));
+    } else if (resizeMode) {
+      // Handle resizing the crop box
+      let newCoords = { ...cropCoordinates };
+      const deltaX = (mouseX - dragStart.x) * scaleX;
+      const deltaY = (mouseY - dragStart.y) * scaleY;
+      
+      // Store original values to use when maintaining aspect ratio
+      const original = { ...cropCoordinates };
+      
+      // Update based on which resize handle is being dragged
+      switch (resizeMode) {
+        case 'tl': // Top-left
+          newCoords.x = Math.max(0, Math.min(original.x + deltaX, original.x + original.width - 20));
+          newCoords.y = Math.max(0, Math.min(original.y + deltaY, original.y + original.height - 20));
+          newCoords.width = original.width - (newCoords.x - original.x);
+          newCoords.height = original.height - (newCoords.y - original.y);
+          break;
+        case 'tr': // Top-right
+          newCoords.width = Math.max(20, Math.min(imgMouseX - newCoords.x, originalDimensions.width - newCoords.x));
+          newCoords.y = Math.max(0, Math.min(original.y + deltaY, original.y + original.height - 20));
+          newCoords.height = original.height - (newCoords.y - original.y);
+          break;
+        case 'bl': // Bottom-left
+          newCoords.x = Math.max(0, Math.min(original.x + deltaX, original.x + original.width - 20));
+          newCoords.width = original.width - (newCoords.x - original.x);
+          newCoords.height = Math.max(20, Math.min(imgMouseY - newCoords.y, originalDimensions.height - newCoords.y));
+          break;
+        case 'br': // Bottom-right
+          newCoords.width = Math.max(20, Math.min(imgMouseX - newCoords.x, originalDimensions.width - newCoords.x));
+          newCoords.height = Math.max(20, Math.min(imgMouseY - newCoords.y, originalDimensions.height - newCoords.y));
+          break;
+        case 'left': // Left edge
+          newCoords.x = Math.max(0, Math.min(original.x + deltaX, original.x + original.width - 20));
+          newCoords.width = original.width - (newCoords.x - original.x);
+          break;
+        case 'right': // Right edge
+          newCoords.width = Math.max(20, Math.min(imgMouseX - newCoords.x, originalDimensions.width - newCoords.x));
+          break;
+        case 'top': // Top edge
+          newCoords.y = Math.max(0, Math.min(original.y + deltaY, original.y + original.height - 20));
+          newCoords.height = original.height - (newCoords.y - original.y);
+          break;
+        case 'bottom': // Bottom edge
+          newCoords.height = Math.max(20, Math.min(imgMouseY - newCoords.y, originalDimensions.height - newCoords.y));
+          break;
+        default:
+          break;
+      }
+      
+      // Always maintain aspect ratio
+      // Keep track of which dimension was actively changed
+      let primaryChange = '';
+      
+      if (['left', 'right', 'tl', 'tr', 'bl', 'br'].includes(resizeMode)) {
+        primaryChange = 'width';
+      }
+      if (['top', 'bottom', 'tl', 'tr', 'bl', 'br'].includes(resizeMode)) {
+        primaryChange = primaryChange ? (Math.abs(deltaX) > Math.abs(deltaY) ? 'width' : 'height') : 'height';
+      }
+      
+      if (primaryChange === 'width') {
+        // Width was changed, adjust height to maintain aspect ratio
+        newCoords.height = newCoords.width / aspectRatio;
+        
+        // Make sure the height doesn't go outside image bounds
+        if (newCoords.y + newCoords.height > originalDimensions.height) {
+          newCoords.height = originalDimensions.height - newCoords.y;
+          newCoords.width = newCoords.height * aspectRatio;
+        }
+        
+        // Adjust y-coordinate for top handles
+        if (['tl', 'tr'].includes(resizeMode)) {
+          newCoords.y = original.y + original.height - newCoords.height;
+        }
+      } else {
+        // Height was changed, adjust width to maintain aspect ratio
+        newCoords.width = newCoords.height * aspectRatio;
+        
+        // Make sure the width doesn't go outside image bounds
+        if (newCoords.x + newCoords.width > originalDimensions.width) {
+          newCoords.width = originalDimensions.width - newCoords.x;
+          newCoords.height = newCoords.width / aspectRatio;
+        }
+        
+        // Adjust x-coordinate for left handles
+        if (['tl', 'bl'].includes(resizeMode)) {
+          newCoords.x = original.x + original.width - newCoords.width;
+        }
+      }
+      
+      // Update the crop coordinates
+      setCropCoordinates(newCoords);
+      
+      // Update drag start
+      setDragStart({
+        x: mouseX,
+        y: mouseY
+      });
     }
   };
   
-  // Handle mouse up to stop dragging
+  // Handle mouse up to stop dragging/resizing
   const handleCropMouseUp = () => {
     setIsDraggingCrop(false);
+    setResizeMode(null);
   };
   
   // Calculate styles for the crop box
@@ -238,9 +419,12 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
       left: `${displayX}px`,
       top: `${displayY}px`,
       width: `${displayWidth}px`,
-      height: `${displayHeight}px`
+      height: `${displayHeight}px`,
+      cursor: getCursorStyle()
     };
   };
+  
+  // No longer needed - aspect ratio is always maintained
   
   return (
     <div className="w-full">
@@ -249,7 +433,7 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
         <div className="border rounded-lg p-4 mb-4">
           <div className="flex flex-col items-center">
             <p className="text-sm text-gray-600 mb-2">
-              Position the crop box by dragging it. When ready, click "Apply Crop".
+              Position and resize the crop box. Drag the edges or corners to adjust size.
             </p>
             
             <div 
@@ -257,8 +441,7 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
               className="relative mb-3 w-full bg-gray-800 overflow-hidden flex items-center justify-center"
               style={{ 
                 maxWidth: '100%', 
-                height: '300px',
-                cursor: isDraggingCrop ? 'grabbing' : 'grab'
+                height: '300px'
               }}
               onMouseDown={handleCropMouseDown}
               onMouseMove={handleCropMouseMove}
@@ -287,24 +470,39 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
               >
                 {/* Transparent area inside crop box */}
                 <div className="absolute inset-0 bg-transparent"></div>
+                
+                {/* Resize handles - visual indicators */}
+                <div className="absolute w-3 h-3 bg-white border border-gray-800 rounded-full -top-1.5 -left-1.5" style={{ cursor: 'nwse-resize' }}></div>
+                <div className="absolute w-3 h-3 bg-white border border-gray-800 rounded-full -top-1.5 -right-1.5" style={{ cursor: 'nesw-resize' }}></div>
+                <div className="absolute w-3 h-3 bg-white border border-gray-800 rounded-full -bottom-1.5 -left-1.5" style={{ cursor: 'nesw-resize' }}></div>
+                <div className="absolute w-3 h-3 bg-white border border-gray-800 rounded-full -bottom-1.5 -right-1.5" style={{ cursor: 'nwse-resize' }}></div>
+                
+                <div className="absolute w-3 h-3 bg-white border border-gray-800 rounded-full top-1/2 -left-1.5 transform -translate-y-1/2" style={{ cursor: 'ew-resize' }}></div>
+                <div className="absolute w-3 h-3 bg-white border border-gray-800 rounded-full top-1/2 -right-1.5 transform -translate-y-1/2" style={{ cursor: 'ew-resize' }}></div>
+                <div className="absolute w-3 h-3 bg-white border border-gray-800 rounded-full -top-1.5 left-1/2 transform -translate-x-1/2" style={{ cursor: 'ns-resize' }}></div>
+                <div className="absolute w-3 h-3 bg-white border border-gray-800 rounded-full -bottom-1.5 left-1/2 transform -translate-x-1/2" style={{ cursor: 'ns-resize' }}></div>
               </div>
             </div>
             
-            <div className="flex space-x-3">
-              <button
-                type="button"
-                onClick={applyCrop}
-                className="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded"
-              >
-                Apply Crop
-              </button>
-              <button
-                type="button"
-                onClick={cancelCrop}
-                className="px-4 py-2 text-sm bg-red-100 hover:bg-red-200 text-red-700 rounded"
-              >
-                Cancel
-              </button>
+            <div className="flex flex-col items-center space-y-2">
+              <div className="flex space-x-3">
+                <button
+                  type="button"
+                  onClick={applyCrop}
+                  className="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded"
+                >
+                  Apply Crop
+                </button>
+                <button
+                  type="button"
+                  onClick={cancelCrop}
+                  className="px-4 py-2 text-sm bg-red-100 hover:bg-red-200 text-red-700 rounded"
+                >
+                  Cancel
+                </button>
+              </div>
+              
+              {/* Aspect ratio is always maintained - no toggle needed */}
             </div>
           </div>
         </div>
