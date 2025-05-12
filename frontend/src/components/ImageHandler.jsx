@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
+const ImageHandler = ({ onImageSelect, errorMessage }) => {
+  // Ensure aspectRatio is exactly 3/2 = 1.5
+  const fixedAspectRatio = 3/2;
+  
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -32,29 +35,26 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
         // Start cropping when a new image is loaded
         setIsCropping(true);
         
-        // Calculate default crop region based on aspect ratio
-        const cropWidth = img.width * 0.8;
-        const cropHeight = cropWidth / aspectRatio;
+        // Calculate default crop region based on fixed aspect ratio (3:2)
+        let cropWidth, cropHeight;
         
-        // If the calculated height is more than the image height,
-        // recalculate based on height
-        if (cropHeight > img.height) {
-          const newHeight = img.height * 0.8;
-          const newWidth = newHeight * aspectRatio;
-          setCropCoordinates({
-            x: (img.width - newWidth) / 2,
-            y: (img.height - newHeight) / 2,
-            width: newWidth,
-            height: newHeight
-          });
+        // Check which dimension should constrain the crop box
+        if (img.width / img.height > fixedAspectRatio) {
+          // Image is wider than the aspect ratio
+          cropHeight = img.height * 0.8;
+          cropWidth = cropHeight * fixedAspectRatio;
         } else {
-          setCropCoordinates({
-            x: (img.width - cropWidth) / 2,
-            y: (img.height - cropHeight) / 2,
-            width: cropWidth,
-            height: cropHeight
-          });
+          // Image is taller than the aspect ratio
+          cropWidth = img.width * 0.8;
+          cropHeight = cropWidth / fixedAspectRatio;
         }
+        
+        setCropCoordinates({
+          x: (img.width - cropWidth) / 2,
+          y: (img.height - cropHeight) / 2,
+          width: cropWidth,
+          height: cropHeight
+        });
       };
       img.src = imageUrl;
       
@@ -64,7 +64,7 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
       setIsCropping(false);
       setPreview(null);
     }
-  }, [image, aspectRatio]);
+  }, [image]);
   
   // Function to apply the crop
   const applyCrop = () => {
@@ -257,6 +257,23 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
     }
   };
   
+  // Function to verify the aspect ratio of crop coordinates
+  const verifyCropAspectRatio = (coords) => {
+    const ratio = coords.width / coords.height;
+    const expectedRatio = fixedAspectRatio;
+    const tolerance = 0.01; // Allow small floating point errors
+    
+    if (Math.abs(ratio - expectedRatio) > tolerance) {
+      console.warn(`Aspect ratio deviation detected: ${ratio.toFixed(4)} instead of ${expectedRatio.toFixed(4)}`);
+      // Force correct aspect ratio
+      const newCoords = {...coords};
+      newCoords.height = newCoords.width / expectedRatio;
+      return newCoords;
+    }
+    
+    return coords;
+  };
+
   // Handle mouse move for crop box dragging and resizing
   const handleCropMouseMove = (e) => {
     if (!isCropping || (!isDraggingCrop && !resizeMode) || !containerRef.current) return;
@@ -275,19 +292,15 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
     
     if (isDraggingCrop) {
       // Handle dragging (moving) the crop box
-      let newX = mouseX - dragStart.x;
-      let newY = mouseY - dragStart.y;
-      
-      // Convert to original image coordinates
-      newX = newX * scaleX;
-      newY = newY * scaleY;
+      let newX = imgMouseX - (dragStart.x * scaleX);
+      let newY = imgMouseY - (dragStart.y * scaleY);
       
       // Constrain to image boundaries
       newX = Math.max(0, Math.min(newX, originalDimensions.width - cropCoordinates.width));
       newY = Math.max(0, Math.min(newY, originalDimensions.height - cropCoordinates.height));
       
       // Update crop coordinates
-      setCropCoordinates(prev => ({
+      setCropCoordinates(prev => verifyCropAspectRatio({
         ...prev,
         x: newX,
         y: newY
@@ -295,95 +308,138 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
     } else if (resizeMode) {
       // Handle resizing the crop box
       let newCoords = { ...cropCoordinates };
-      const deltaX = (mouseX - dragStart.x) * scaleX;
-      const deltaY = (mouseY - dragStart.y) * scaleY;
+      
+      // Calculate how much the mouse has moved in image coordinates
+      const imgDeltaX = (mouseX - dragStart.x) * scaleX;
+      const imgDeltaY = (mouseY - dragStart.y) * scaleY;
       
       // Store original values to use when maintaining aspect ratio
       const original = { ...cropCoordinates };
       
+      // Determine which dimension is being primarily changed based on resize handle
+      let widthChanged = false;
+      let heightChanged = false;
+      
       // Update based on which resize handle is being dragged
       switch (resizeMode) {
         case 'tl': // Top-left
-          newCoords.x = Math.max(0, Math.min(original.x + deltaX, original.x + original.width - 20));
-          newCoords.y = Math.max(0, Math.min(original.y + deltaY, original.y + original.height - 20));
+          newCoords.x = Math.max(0, original.x + imgDeltaX);
+          newCoords.y = Math.max(0, original.y + imgDeltaY);
           newCoords.width = original.width - (newCoords.x - original.x);
           newCoords.height = original.height - (newCoords.y - original.y);
+          widthChanged = heightChanged = true;
           break;
         case 'tr': // Top-right
           newCoords.width = Math.max(20, Math.min(imgMouseX - newCoords.x, originalDimensions.width - newCoords.x));
-          newCoords.y = Math.max(0, Math.min(original.y + deltaY, original.y + original.height - 20));
+          newCoords.y = Math.max(0, original.y + imgDeltaY);
           newCoords.height = original.height - (newCoords.y - original.y);
+          widthChanged = heightChanged = true;
           break;
         case 'bl': // Bottom-left
-          newCoords.x = Math.max(0, Math.min(original.x + deltaX, original.x + original.width - 20));
+          newCoords.x = Math.max(0, original.x + imgDeltaX);
           newCoords.width = original.width - (newCoords.x - original.x);
           newCoords.height = Math.max(20, Math.min(imgMouseY - newCoords.y, originalDimensions.height - newCoords.y));
+          widthChanged = heightChanged = true;
           break;
         case 'br': // Bottom-right
           newCoords.width = Math.max(20, Math.min(imgMouseX - newCoords.x, originalDimensions.width - newCoords.x));
           newCoords.height = Math.max(20, Math.min(imgMouseY - newCoords.y, originalDimensions.height - newCoords.y));
+          widthChanged = heightChanged = true;
           break;
         case 'left': // Left edge
-          newCoords.x = Math.max(0, Math.min(original.x + deltaX, original.x + original.width - 20));
+          newCoords.x = Math.max(0, original.x + imgDeltaX);
           newCoords.width = original.width - (newCoords.x - original.x);
+          widthChanged = true;
           break;
         case 'right': // Right edge
           newCoords.width = Math.max(20, Math.min(imgMouseX - newCoords.x, originalDimensions.width - newCoords.x));
+          widthChanged = true;
           break;
         case 'top': // Top edge
-          newCoords.y = Math.max(0, Math.min(original.y + deltaY, original.y + original.height - 20));
+          newCoords.y = Math.max(0, original.y + imgDeltaY);
           newCoords.height = original.height - (newCoords.y - original.y);
+          heightChanged = true;
           break;
         case 'bottom': // Bottom edge
           newCoords.height = Math.max(20, Math.min(imgMouseY - newCoords.y, originalDimensions.height - newCoords.y));
+          heightChanged = true;
           break;
         default:
           break;
       }
       
       // Always maintain aspect ratio
-      // Keep track of which dimension was actively changed
-      let primaryChange = '';
-      
-      if (['left', 'right', 'tl', 'tr', 'bl', 'br'].includes(resizeMode)) {
-        primaryChange = 'width';
-      }
-      if (['top', 'bottom', 'tl', 'tr', 'bl', 'br'].includes(resizeMode)) {
-        primaryChange = primaryChange ? (Math.abs(deltaX) > Math.abs(deltaY) ? 'width' : 'height') : 'height';
-      }
-      
-      if (primaryChange === 'width') {
+      if (widthChanged) {
         // Width was changed, adjust height to maintain aspect ratio
-        newCoords.height = newCoords.width / aspectRatio;
+        const newHeight = newCoords.width / fixedAspectRatio;
         
-        // Make sure the height doesn't go outside image bounds
+        // If resizing from top edge, adjust y coordinate
+        if (['tl', 'tr'].includes(resizeMode)) {
+          newCoords.y = original.y + original.height - newHeight;
+        }
+        
+        newCoords.height = newHeight;
+        
+        // Make sure the new coordinates are within the image bounds
+        if (newCoords.y < 0) {
+          newCoords.y = 0;
+          newCoords.height = original.y + original.height;
+          newCoords.width = newCoords.height * fixedAspectRatio;
+          
+          if (['tl', 'bl'].includes(resizeMode)) {
+            newCoords.x = original.x + original.width - newCoords.width;
+          }
+        }
+        
         if (newCoords.y + newCoords.height > originalDimensions.height) {
           newCoords.height = originalDimensions.height - newCoords.y;
-          newCoords.width = newCoords.height * aspectRatio;
+          newCoords.width = newCoords.height * fixedAspectRatio;
         }
-        
-        // Adjust y-coordinate for top handles
-        if (['tl', 'tr'].includes(resizeMode)) {
-          newCoords.y = original.y + original.height - newCoords.height;
-        }
-      } else {
+      } else if (heightChanged) {
         // Height was changed, adjust width to maintain aspect ratio
-        newCoords.width = newCoords.height * aspectRatio;
+        const newWidth = newCoords.height * fixedAspectRatio;
         
-        // Make sure the width doesn't go outside image bounds
+        // If resizing from left edge, adjust x coordinate
+        if (['tl', 'bl'].includes(resizeMode)) {
+          newCoords.x = original.x + original.width - newWidth;
+        }
+        
+        newCoords.width = newWidth;
+        
+        // Make sure the new coordinates are within the image bounds
+        if (newCoords.x < 0) {
+          newCoords.x = 0;
+          newCoords.width = original.x + original.width;
+          newCoords.height = newCoords.width / fixedAspectRatio;
+          
+          if (['tl', 'tr'].includes(resizeMode)) {
+            newCoords.y = original.y + original.height - newCoords.height;
+          }
+        }
+        
         if (newCoords.x + newCoords.width > originalDimensions.width) {
           newCoords.width = originalDimensions.width - newCoords.x;
-          newCoords.height = newCoords.width / aspectRatio;
+          newCoords.height = newCoords.width / fixedAspectRatio;
         }
-        
-        // Adjust x-coordinate for left handles
-        if (['tl', 'bl'].includes(resizeMode)) {
-          newCoords.x = original.x + original.width - newCoords.width;
-        }
+      }
+      
+      // Check final bounds to ensure both dimensions fit
+      if (newCoords.x < 0) newCoords.x = 0;
+      if (newCoords.y < 0) newCoords.y = 0;
+      
+      // Make sure width and height are at least 20px
+      if (newCoords.width < 20) {
+        newCoords.width = 20;
+        newCoords.height = newCoords.width / fixedAspectRatio;
+      }
+      
+      if (newCoords.height < 20) {
+        newCoords.height = 20;
+        newCoords.width = newCoords.height * fixedAspectRatio;
       }
       
       // Update the crop coordinates
-      setCropCoordinates(newCoords);
+      setCropCoordinates(verifyCropAspectRatio(newCoords));
       
       // Update drag start
       setDragStart({
@@ -424,8 +480,6 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
     };
   };
   
-  // No longer needed - aspect ratio is always maintained
-  
   return (
     <div className="w-full">
       {/* Cropping UI */}
@@ -433,7 +487,7 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
         <div className="border rounded-lg p-4 mb-4">
           <div className="flex flex-col items-center">
             <p className="text-sm text-gray-600 mb-2">
-              Position and resize the crop box. Drag the edges or corners to adjust size.
+              Position and resize the crop box. The aspect ratio is fixed at 3:2.
             </p>
             
             <div 
@@ -441,7 +495,8 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
               className="relative mb-3 w-full bg-gray-800 overflow-hidden flex items-center justify-center"
               style={{ 
                 maxWidth: '100%', 
-                height: '300px'
+                height: '300px',
+                objectFit: 'contain'
               }}
               onMouseDown={handleCropMouseDown}
               onMouseMove={handleCropMouseMove}
@@ -501,8 +556,6 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
                   Cancel
                 </button>
               </div>
-              
-              {/* Aspect ratio is always maintained - no toggle needed */}
             </div>
           </div>
         </div>
@@ -514,7 +567,7 @@ const ImageHandler = ({ onImageSelect, aspectRatio = 3/2, errorMessage }) => {
           <div className="flex flex-col items-center">
             <div 
               className="mb-3 w-full bg-gray-100 overflow-hidden flex items-center justify-center"
-              style={{ maxWidth: '400px', aspectRatio: aspectRatio }}
+              style={{ maxWidth: '400px', aspectRatio: fixedAspectRatio }}
             >
               <img
                 src={preview}
