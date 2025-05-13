@@ -30,6 +30,7 @@ const Items = () => {
     const [makeavailableMessage, setMakeAvailableMessage] = useState("");
     const [makeunavailableMessage, setMakeUnavailableMessage] = useState("");
     const [showModal, setShowModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [maintainRatio, setMaintainRatio] = useState(true);
 
     const [errors, setErrors] = useState({});
@@ -457,6 +458,27 @@ const Items = () => {
                 itemImage: null
             }));
         }
+    };
+
+    const handleEditItem = () => {
+        resetEditForm();
+        setShowEditModal(true);
+    };
+
+    const handleEditModalClose = () => {
+        setShowEditModal(false);
+        resetEditForm();
+    };
+
+    const resetEditForm = () => {
+        setFormData({
+            name: "",
+            category: "",
+            price: "",
+            itemImage: "",
+            isActive: "",
+            isAvailable: ""
+        });
     };
 
     return (
@@ -890,28 +912,12 @@ const Items = () => {
                                             Item Image*
                                         </label>
 
-                                        <ImageHandler 
-  onImageSelect={handleImageSelect}
-  aspectRatio={3/2}
-  maintainAspectRatio={maintainRatio}
-  onToggleAspectRatio={setMaintainRatio}
-/>
-
-                                        {/* <input
-                                            type="file"
-                                            name="itemImage"
-                                            accept="image/*"
-                                            onChange={handleChange}
-                                            className={`w-full px-3 py-2 border rounded ${errors.itemImage ? 'border-red-500' : 'border-gray-300'}`}
+                                        <ImageHandler
+                                            onImageSelect={handleImageSelect}
+                                            aspectRatio={3 / 2}
+                                            maintainAspectRatio={maintainRatio}
+                                            onToggleAspectRatio={setMaintainRatio}
                                         />
-                                        {errors.itemImage && (
-                                            <p className="text-red-500 text-xs mt-1">{errors.itemImage}</p>
-                                        )}
-                                        {formData.itemImage && (
-                                            <div className="mt-2">
-                                                <p className="text-sm text-gray-600">File selected: {formData.itemImage.name}</p>
-                                            </div>
-                                        )} */}
                                     </div>
                                     <div>
                                         <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -1014,7 +1020,24 @@ const Items = () => {
                         </div>
                     </div >
                 )}
+
                 {/* add item form model ends here */}
+
+
+                {/* show edit model starts here */}
+
+                {showEditModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
+                            <button
+                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                                onClick={handleEditModalClose}
+                            >
+                                <span className="text-2xl">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                )}
 
             </div >
         </>
