@@ -5,6 +5,8 @@ import { TbHomeMove } from "react-icons/tb";
 import { RiChatDeleteLine, RiDeleteBin6Line } from "react-icons/ri";
 import { MdModeEditOutline } from "react-icons/md";
 import ImageHandler from "../components/ImageHandler";
+import EditItemModal from "../components/EditItemModal";
+import ItemDetailModal from "../components/ItemDetailModal";
 
 const Items = () => {
 
@@ -32,6 +34,8 @@ const Items = () => {
     const [showModal, setShowModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [maintainRatio, setMaintainRatio] = useState(true);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [showDetailModal, setShowDetailModal] = useState(false);
 
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
@@ -460,8 +464,16 @@ const Items = () => {
         }
     };
 
-    const handleEditItem = () => {
-        resetEditForm();
+    const handleEdit = (item) => {
+        setFormData({
+            menu_ID: item.menu_ID,
+            name: item.name,
+            category: item.category,
+            price: item.price,
+            itemImage: item.itemImage,
+            isActive: item.isActive,
+            isAvailable: item.isAvailable
+        });
         setShowEditModal(true);
     };
 
@@ -472,6 +484,7 @@ const Items = () => {
 
     const resetEditForm = () => {
         setFormData({
+            menu_ID: "",
             name: "",
             category: "",
             price: "",
@@ -479,6 +492,16 @@ const Items = () => {
             isActive: "",
             isAvailable: ""
         });
+    };
+
+    const handleRowClick = (item) => {
+        setSelectedItem(item);
+        setShowDetailModal(true);
+    };
+
+    const handleDetailModalClose = () => {
+        setShowDetailModal(false);
+        setSelectedItem(null);
     };
 
     return (
@@ -584,10 +607,10 @@ const Items = () => {
                                         <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
                                             <RiDeleteBin6Line className="h-6 w-6 text-red-600" />
                                         </div>
-                                        <h3 className="text-lg font-medium text-gray-900 mb-2">Deactivate User</h3>
+                                        <h3 className="text-lg font-medium text-gray-900 mb-2">Deactivate Item</h3>
                                         <div className="mt-2">
                                             <p className="text-sm text-gray-500">
-                                                Are you sure you want to deactivate this user? Their account will be moved to the deleted users section.
+                                                Are you sure you want to deactivate this Item?
                                             </p>
                                         </div>
                                     </>
@@ -620,10 +643,10 @@ const Items = () => {
                                         <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                                             <IoIosAddCircle className="h-6 w-6 text-green-600" />
                                         </div>
-                                        <h3 className="text-lg font-medium text-gray-900 mb-2">Reactivate User</h3>
+                                        <h3 className="text-lg font-medium text-gray-900 mb-2">Reactivate Item</h3>
                                         <div className="mt-2">
                                             <p className="text-sm text-gray-500">
-                                                Are you sure you want to reactivate this user? They will be able to access their account again.
+                                                Are you sure you want to reactivate this Item?
                                             </p>
                                         </div>
                                     </>
@@ -672,7 +695,7 @@ const Items = () => {
                     </ul>
                 </div>
 
-                {/* table */}
+                {/* table begin here */}
                 <div className="bg-white shadow-md rounded-lg overflow-hidden">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
@@ -706,21 +729,20 @@ const Items = () => {
                                     <tr
                                         key={index}
                                         className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} cursor-pointer hover:bg-gray-100`}
-                                    // onClick={() => handleRowClick(item)}
+                                        onClick={() => handleRowClick(item)}
                                     >
                                         <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{item.price}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{item.category}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex space-x-2">
-
                                                 <button
-                                                    // onClick={(e) => {
-                                                    //     e.stopPropagation();
-                                                    //     handleEdit(user);
-                                                    // }}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleEdit(item);
+                                                    }}
                                                     className="text-blue-800 font-medium py-2 px-2 rounded bg-blue-200 hover:bg-blue-400 border border-blue-500"
-                                                    title="Edit user"
+                                                    title="Edit item"
                                                 >
                                                     <MdModeEditOutline className="h-5 w-5" />
                                                 </button>
@@ -850,6 +872,8 @@ const Items = () => {
                         </tbody>
                     </table>
                 </div>
+
+                {/* taable ends here  */}
 
                 {/* pagination */}
                 {!loading && displayedItems.length > 0 && (
@@ -1027,16 +1051,23 @@ const Items = () => {
                 {/* show edit model starts here */}
 
                 {showEditModal && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
-                            <button
-                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-                                onClick={handleEditModalClose}
-                            >
-                                <span className="text-2xl">&times;</span>
-                            </button>
-                        </div>
-                    </div>
+                    <EditItemModal
+                        item={formData}
+                        onClose={handleEditModalClose}
+                        onUpdate={(updatedItem) => {
+                            setItems(prev => prev.map(item =>
+                                item.menu_ID === updatedItem.menu_ID ? updatedItem : item
+                            ));
+                            alert("Item updated successfully!");
+                        }}
+                    />
+                )}
+
+                {showDetailModal && (
+                    <ItemDetailModal
+                        item={selectedItem}
+                        onClose={handleDetailModalClose}
+                    />
                 )}
 
             </div >
