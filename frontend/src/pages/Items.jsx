@@ -700,6 +700,7 @@ const Items = () => {
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price (LKR)</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
@@ -731,6 +732,23 @@ const Items = () => {
                                         className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} cursor-pointer hover:bg-gray-100`}
                                         onClick={() => handleRowClick(item)}
                                     >
+                                        <td className="px-4 py-2 whitespace-nowrap">
+                                            <div className="flex items-center">
+                                                <div className="flex-shrink-0 h-24 w-36 rounded overflow-hidden border border-gray-200">
+                                                    {item.itemImage ? (
+                                                        <img
+                                                            src={`data:image/jpeg;base64,${item.itemImage}`}
+                                                            alt={item.name}
+                                                            className="h-full w-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="h-full w-full bg-gray-200 flex items-center justify-center">
+                                                            <span className="text-gray-500 text-sm">No image</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </td>
                                         <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{item.price}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{item.category}</td>
