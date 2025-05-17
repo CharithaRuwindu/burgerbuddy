@@ -22,8 +22,8 @@ const Menu = () => {
 
     return (
         <>
-            <h3 className="font-bold mt-2 ml-2">We got some choices for you</h3>
-            <div className="flex flex-wrap">
+            
+            <div className="flex flex-wrap mx-3 mt-5">
                 <span className="fixed bottom-0 right-0"><MenuSelector Active={Active} setActive={setActive}/></span>
             
 
@@ -43,7 +43,9 @@ const Menu = () => {
                     
                 ))
             ) : (
-                <div>Loading...</div>
+                <div>Loading...
+                    <h3 className="font-bold mt-2 ml-2">We got some choices for you</h3>
+                </div>
             )}
             </div>
         </>

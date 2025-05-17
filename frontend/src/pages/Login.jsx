@@ -275,26 +275,6 @@ const Login = () => {
       className="flex overflow-auto h-[92vh]"
       style={{ backgroundColor: "#F6F6F6" }}
     >
-      {/* {showAlert && (
-        <div
-          className={`fixed top-[10vh] left-1/2 transform -translate-x-1/2 p-4 rounded shadow-lg ${alertType === "success"
-            ? "bg-green-500"
-            : alertType === "error"
-              ? "bg-red-500"
-              : "bg-yellow-500"
-            } text-white`}
-        >
-          <div className="flex justify-between items-center">
-            <span>{alertMessage}</span>
-            <button
-              onClick={() => setShowAlert(false)}
-              className="ml-4 font-bold"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )} */}
 
       {showAlert &&
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -340,7 +320,7 @@ const Login = () => {
               type="text"
               name="email"
               onChange={handleLoginInput}
-              className="w-full border h-[6vh]"
+              className="w-full border h-[6vh] pl-2"
               required
               placeholder="Enter your email"
             />
@@ -360,7 +340,7 @@ const Login = () => {
                   type={showLoginPassword ? "text" : "password"}
                   name="password"
                   onChange={handleLoginInput}
-                  className="w-full border h-[6vh]"
+                  className="w-full border h-[6vh] pl-2"
                   placeholder="Enter your password"
                   required
                 />
@@ -423,7 +403,7 @@ const Login = () => {
                 type="text"
                 name="firstName"
                 onChange={handleSignupInput}
-                className="w-full border h-[6vh]"
+                className="w-full border h-[6vh] pl-2"
                 required
                 placeholder="Enter your First Name"
               />
@@ -441,7 +421,7 @@ const Login = () => {
                 type="text"
                 name="lastName"
                 onChange={handleSignupInput}
-                className="w-full border h-[6vh]"
+                className="w-full border h-[6vh] pl-2"
                 required
                 placeholder="Enter your Last Name"
               />
@@ -459,7 +439,7 @@ const Login = () => {
                 type="text"
                 name="email"
                 onChange={handleSignupInput}
-                className="w-full border h-[6vh]"
+                className="w-full border h-[6vh] pl-2"
                 required
                 placeholder="Enter your email"
               />
@@ -480,7 +460,7 @@ const Login = () => {
                   type={showSignupPassword ? "text" : "password"}
                   name="password"
                   onChange={handleSignupInput}
-                  className="w-full border h-[6vh]"
+                  className="w-full border h-[6vh] pl-2"
                   placeholder="Enter your password"
                   required
                 />
@@ -516,7 +496,7 @@ const Login = () => {
                 type="text"
                 name="contactNumber"
                 onChange={handleSignupInput}
-                className="w-full border h-[6vh]"
+                className="w-full border h-[6vh] pl-2"
                 required
                 placeholder="Enter your contact number"
               />
@@ -534,7 +514,7 @@ const Login = () => {
                 type="text"
                 name="address"
                 onChange={handleSignupInput}
-                className="w-full border h-[6vh]"
+                className="w-full border h-[6vh] pl-2"
                 required
                 placeholder="Enter your Address"
               />
