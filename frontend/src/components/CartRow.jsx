@@ -1,5 +1,5 @@
 import { ImBin, useState, useEffect } from '../utils/Imports';
-import { removeItem } from '../redux/slices/cartSlice';
+import { removeItem } from '../reducers/cartSlice';
 import { useDispatch } from 'react-redux';
 
 export default function CartRow({ menu_ID, itemImage, name, price, qty }) {
