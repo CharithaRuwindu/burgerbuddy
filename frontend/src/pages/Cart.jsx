@@ -1,73 +1,72 @@
-import { useEffect, ImBin, useState, axios, CartRow } from '../utils/Imports';
-import { useSelector } from 'react-redux';
-
+import { ImBin } from '../utils/Imports';
+import { useSelector, useDispatch } from 'react-redux';
+import { clearCart, selectCartItems, selectCartTotalQuantity, selectCartTotalAmount } from '../reducers/cartSlice';
+import CartRow from '../components/CartRow';
 
 const Cart = () => {
+    const dispatch = useDispatch();
+    
+    // Use selectors to get cart data from Redux
+    const cartItems = useSelector(selectCartItems);
+    const totalQuantity = useSelector(selectCartTotalQuantity);
+    const totalAmount = useSelector(selectCartTotalAmount);
+    
+    const deliveryCharges = 350.00;
+    const finalTotal = totalAmount + deliveryCharges;
 
-    const [cart, setCart] = useState([]);
-    const cartstate = useSelector((state) => state.cart);
-
-    useEffect(() => {
-        getItemInfo();
-    },[cartstate]);
-
-    const getItemInfo = () => {
-        var itemlist = cartstate.map(item => item.id).join(',');
-
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`/api/Menus/items?ids=${itemlist}`);
-                setCart(response.data);
-            } catch (error) {
-                console.log("Error fetching data:", error);
-            }
-        };
-        fetchData();
+    const handleClearCart = () => {
+        dispatch(clearCart());
     };
+
     return (
         <div className="flex justify-center overflow-auto h-[92vh]" style={{ backgroundColor: '#F6F6F6' }}>
-
             <div className='mt-[5%] w-[60%]'>
                 <div className='h-[8%] flex items-center text-slate-600 bg-white rounded-xl shadow-lg'>
                     <input type="checkbox" name="" id="" className='ml-7' />
                     <div className='ml-3'>Select All</div>
-                    <div className='ml-auto mr-5 flex cursor-pointer hover:text-red-400'>
+                    <div 
+                        className='ml-auto mr-5 flex cursor-pointer hover:text-red-400'
+                        onClick={handleClearCart}
+                    >
                         <div className='content-center mr-2'><ImBin /></div>
                         <div>Delete</div>
                     </div>
                 </div>
+                
                 <div className='bg-white rounded-xl shadow-lg pb-5 mt-[2%]'>
-                    <table className='w-full pt-1 border-separate border-spacing-y-4'>
-                        <thead className='font-semibold h-10'>
-                            <tr className='text-center'>
-                                <td className='w-[7%]'></td>
-                                <td className='w-[22%]'>Food Item</td>
-                                <td className='w-[21%]'>Price</td>
-                                <td className='w-[21%]'>Quantity</td>
-                                <td className='w-[21%]'>Total Price (LKR)</td>
-                                <td className='w-[8%]'></td>
-                            </tr>
-                        </thead>
-                        <tbody className=''>
-                            {cart ? (
-                                cart.map((cartitem) => (
-
-                                    <CartRow key={cartitem.menu_ID}
-                                        menu_ID={cartitem.menu_ID}
-                                        itemImage={cartitem.itemImage}
-                                        name={cartitem.name}
-                                        price={cartitem.price}
-                                        qty={2}
+                    {cartItems.length === 0 ? (
+                        <div className='text-center py-10 text-gray-500'>
+                            Your cart is empty
+                        </div>
+                    ) : (
+                        <table className='w-full pt-1 border-separate border-spacing-y-4'>
+                            <thead className='font-semibold h-10'>
+                                <tr className='text-center'>
+                                    <td className='w-[7%]'></td>
+                                    <td className='w-[22%]'>Food Item</td>
+                                    <td className='w-[21%]'>Price</td>
+                                    <td className='w-[21%]'>Quantity</td>
+                                    <td className='w-[21%]'>Total Price (LKR)</td>
+                                    <td className='w-[8%]'></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {cartItems.map((cartItem) => (
+                                    <CartRow 
+                                        key={cartItem.id}
+                                        menu_ID={cartItem.id}
+                                        itemImage={cartItem.image}
+                                        name={cartItem.name}
+                                        price={cartItem.price}
+                                        qty={cartItem.quantity}
                                     />
-
-                                ))
-                            ) : null
-                            }
-
-                        </tbody>
-                    </table>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
             </div>
+            
             <div className='mt-[5%] ml-[3%] w-[25%]'>
                 <div className='h-[70%] bg-white rounded-xl shadow-lg'>
                     <p className='pt-[4%] ml-[5%] text-xl'>
@@ -78,11 +77,11 @@ const Cart = () => {
                         <tbody>
                             <tr>
                                 <td className='w-[70%]'>Subtotal</td>
-                                <td>LKR. 0</td>
+                                <td>LKR. {totalAmount.toFixed(2)}</td>
                             </tr>
                             <tr>
                                 <td className='w-[70%]'>Delivery Charges</td>
-                                <td>LKR. 350.00</td>
+                                <td>LKR. {deliveryCharges.toFixed(2)}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -90,18 +89,31 @@ const Cart = () => {
                         <tbody>
                             <tr>
                                 <td className='w-[70%]'>Total</td>
-                                <td>LKR. 0</td>
+                                <td>LKR. {finalTotal.toFixed(2)}</td>
                             </tr>
                         </tbody>
                     </table>
                     <div className='mt-[5%]'>
-                        <div className='bg-yellow-600 text-center font-semibold text-stone-100 py-3 w-[90%] mx-auto cursor-pointer rounded-md hover:bg-yellow-700 transition-colors delay-100'>
+                        <div 
+                            className={`text-center font-semibold text-stone-100 py-3 w-[90%] mx-auto rounded-md transition-colors delay-100 ${
+                                cartItems.length === 0 
+                                    ? 'bg-gray-400 cursor-not-allowed' 
+                                    : 'bg-yellow-600 cursor-pointer hover:bg-yellow-700'
+                            }`}
+                            onClick={cartItems.length > 0 ? () => {/* Handle checkout */} : undefined}
+                        >
                             Proceed to checkout
                         </div>
+                    </div>
+                    
+                    {/* Optional: Display total items count */}
+                    <div className='text-center text-sm text-gray-500 mt-2'>
+                        {totalQuantity} {totalQuantity === 1 ? 'item' : 'items'} in cart
                     </div>
                 </div>
             </div>
         </div>
     );
 };
-export default Cart
+
+export default Cart;
