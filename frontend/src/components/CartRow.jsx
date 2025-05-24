@@ -1,12 +1,17 @@
 import { ImBin } from '../utils/Imports';
-import { removeFromCart, updateQuantity } from '../reducers/cartSlice';
+import { removeItemCompletely, updateQuantity } from '../reducers/cartSlice';
 import { useDispatch } from 'react-redux';
 
-export default function CartRow({ menu_ID, itemImage, name, price, qty }) {
+export default function CartRow({ menu_ID, itemImage, name, price, qty, isSelected, onSelect }) {
     const dispatch = useDispatch();
 
     const handleRemoveItem = (id) => {
-        dispatch(removeFromCart(id));
+        // Remove the entire item from cart (not just 1 quantity)
+        dispatch(removeItemCompletely(id));
+    };
+
+    const handleCheckboxChange = (e) => {
+        onSelect(menu_ID, e.target.checked);
     };
 
     const changeQuantity = (expression) => {
@@ -30,7 +35,13 @@ export default function CartRow({ menu_ID, itemImage, name, price, qty }) {
 
     return (
         <tr className='text-center' key={menu_ID}>
-            <td><input type="checkbox" name="" id="" /></td>
+            <td>
+                <input 
+                    type="checkbox" 
+                    checked={isSelected}
+                    onChange={handleCheckboxChange}
+                />
+            </td>
             <td>
                 <img src={`data:image/jpeg;base64,${itemImage}`} className='h-36 m-auto' alt="fooditem" />
                 <p>{name}</p>

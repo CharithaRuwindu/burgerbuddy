@@ -33,6 +33,7 @@ const Menu = () => {
                     
                     <ItemCard
                         key={menu.menu_ID}
+                        itemId={menu.menu_ID}
                         itemName={menu.name}
                         itemPrice={`LKR ${menu.price}`}
                         itemImage={menu.itemImage}

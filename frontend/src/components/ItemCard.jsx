@@ -1,14 +1,28 @@
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../reducers/cartSlice';
 
-export default function ItemCard({ itemName, itemCategory, itemPrice, itemImage, itemAvailability, itemId }) {
+export default function ItemCard({ itemId, itemName, itemPrice, itemImage }) {
   const dispatch = useDispatch();
 
   const handleAddToCart = () => {
+    let parsedPrice;
+    if (typeof itemPrice === 'string') {
+      parsedPrice = parseFloat(itemPrice.replace(/[^\d.-]/g, ''));
+    } else {
+      parsedPrice = parseFloat(itemPrice);
+    }
+
+    console.log('Adding item to cart:', {
+      id: itemId,
+      name: itemName,
+      originalPrice: itemPrice,
+      parsedPrice: parsedPrice
+    });
+
     const item = {
       id: itemId,
       title: itemName,
-      price: parseFloat(itemPrice.replace('$', '')),
+      price: parsedPrice || 0,
       image: itemImage
     };
     
