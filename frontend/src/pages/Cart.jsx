@@ -7,18 +7,15 @@ import { useState, useEffect } from 'react';
 const Cart = () => {
     const dispatch = useDispatch();
     
-    // Use selectors to get cart data from Redux
     const cartItems = useSelector(selectCartItems);
     const totalQuantity = useSelector(selectCartTotalQuantity);
     const totalAmount = useSelector(selectCartTotalAmount);
     
-    // Local state for checkbox management
     const [selectedItems, setSelectedItems] = useState(new Set());
     const [selectAll, setSelectAll] = useState(false);
     
     const deliveryCharges = 350.00;
     
-    // Calculate subtotal only for selected items
     const selectedSubtotal = cartItems.reduce((total, item) => {
         if (selectedItems.has(item.id)) {
             return total + (item.price * item.quantity);
@@ -26,9 +23,15 @@ const Cart = () => {
         return total;
     }, 0);
     
+    const selectedQuantity = cartItems.reduce((total, item) => {
+        if (selectedItems.has(item.id)) {
+            return total + item.quantity;
+        }
+        return total;
+    }, 0);
+    
     const finalTotal = selectedSubtotal + (selectedSubtotal > 0 ? deliveryCharges : 0);
 
-    // Update selectAll state when individual items are selected/deselected
     useEffect(() => {
         if (cartItems.length > 0) {
             const allSelected = cartItems.every(item => selectedItems.has(item.id));
@@ -41,10 +44,8 @@ const Cart = () => {
 
     const handleSelectAll = () => {
         if (selectAll) {
-            // Deselect all
             setSelectedItems(new Set());
         } else {
-            // Select all
             const allIds = new Set(cartItems.map(item => item.id));
             setSelectedItems(allIds);
         }
@@ -169,9 +170,8 @@ const Cart = () => {
                         </div>
                     </div>
                     
-                    {/* Display selected items count */}
                     <div className='text-center text-sm text-gray-500 mt-2'>
-                        {selectedItems.size} of {totalQuantity} {totalQuantity === 1 ? 'item' : 'items'} selected
+                        {selectedQuantity} of {totalQuantity} {totalQuantity === 1 ? 'item' : 'items'} selected
                     </div>
                 </div>
             </div>
