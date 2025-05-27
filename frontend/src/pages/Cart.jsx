@@ -132,7 +132,7 @@ const Cart = () => {
             </div>
             
             <div className='mt-[5%] ml-[3%] w-[28%]'>
-                <div className='min-h-[80%] bg-white rounded-xl shadow-lg'>
+                <div className=' bg-white rounded-xl shadow-lg'>
                     <p className='pt-[6%] ml-[5%] text-xl'>
                         Summary
                     </p>
@@ -170,7 +170,7 @@ const Cart = () => {
                         </div>
                     </div>
                     
-                    <div className='text-center text-sm text-gray-500 mt-2'>
+                    <div className='text-center text-sm text-gray-500 mt-2 pb-4'>
                         {selectedQuantity} of {totalQuantity} {totalQuantity === 1 ? 'item' : 'items'} selected
                     </div>
                 </div>
