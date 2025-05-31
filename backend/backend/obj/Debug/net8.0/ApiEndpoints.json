@@ -162,6 +162,70 @@
   },
   {
     "ContainingType": "backend.Controllers.MenusController",
+    "Method": "DeactivateItem",
+    "RelativePath": "api/Menus/{id}/deactivate",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.Controllers.MenusController",
+    "Method": "AvailableItem",
+    "RelativePath": "api/Menus/{id}/makeavailable",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.Controllers.MenusController",
+    "Method": "UnavailableItem",
+    "RelativePath": "api/Menus/{id}/makeunavailable",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.Controllers.MenusController",
+    "Method": "ReactivateItem",
+    "RelativePath": "api/Menus/{id}/reactivate",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.Controllers.MenusController",
     "Method": "GetItemsByIds",
     "RelativePath": "api/Menus/items",
     "HttpMethod": "GET",

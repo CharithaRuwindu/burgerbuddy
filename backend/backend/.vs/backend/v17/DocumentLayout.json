@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "E:\\personal project\\burgerbuddy\\backend\\backend\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\models\\entities\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend.csproj|solutionrelative:models\\entities\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\controllers\\menuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend.csproj|solutionrelative:controllers\\menuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend.csproj|solutionrelative:controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -39,10 +47,6 @@
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\controllers\\menuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend.csproj|solutionrelative:controllers\\menuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend.csproj|e:\\personal project\\burgerbuddy\\backend\\backend\\migrations\\20250407182303_tokencomplete.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F38EBA10-A617-4616-870F-A380BD89D9C8}|backend.csproj|solutionrelative:migrations\\20250407182303_tokencomplete.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -54,7 +58,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -62,7 +66,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
+              "Title": "Menu.cs",
+              "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\Entities\\Menu.cs",
+              "RelativeDocumentMoniker": "Models\\Entities\\Menu.cs",
+              "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\Entities\\Menu.cs",
+              "RelativeToolTip": "Models\\Entities\\Menu.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-14T15:30:35.319Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "User.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\Entities\\User.cs",
               "RelativeDocumentMoniker": "Models\\Entities\\User.cs",
@@ -70,12 +87,11 @@
               "RelativeToolTip": "Models\\Entities\\User.cs",
               "ViewState": "AgIAAC4AAAAAAAAAAADwvwwAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-28T17:37:33.424Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-28T17:37:33.424Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "backend.csproj",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\backend.csproj",
               "RelativeDocumentMoniker": "backend.csproj",
@@ -83,12 +99,11 @@
               "RelativeToolTip": "backend.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-04-27T18:23:57.517Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-27T18:23:57.517Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "GetUserDto.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\GetUserDto.cs",
               "RelativeDocumentMoniker": "Models\\GetUserDto.cs",
@@ -96,12 +111,11 @@
               "RelativeToolTip": "Models\\GetUserDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-26T14:53:09.564Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-26T14:53:09.564Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "AddUserDto.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\AddUserDto.cs",
               "RelativeDocumentMoniker": "Models\\AddUserDto.cs",
@@ -109,12 +123,11 @@
               "RelativeToolTip": "Models\\AddUserDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-13T18:22:44.494Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-13T18:22:44.494Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "UpdateUserDto.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Models\\UpdateUserDto.cs",
               "RelativeDocumentMoniker": "Models\\UpdateUserDto.cs",
@@ -126,20 +139,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "UsersController.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Controllers\\UsersController.cs",
               "RelativeDocumentMoniker": "Controllers\\UsersController.cs",
               "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Controllers\\UsersController.cs",
               "RelativeToolTip": "Controllers\\UsersController.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAuwC4AAAAnAAAAAAAAAA==",
+              "ViewState": "AgIAAI0AAAAAAAAAAAAowJwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-13T18:22:53.048Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-13T18:22:53.048Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "AuthenticationController.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Controllers\\AuthenticationController.cs",
               "RelativeDocumentMoniker": "Controllers\\AuthenticationController.cs",
@@ -147,24 +159,23 @@
               "RelativeToolTip": "Controllers\\AuthenticationController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAJsAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-10T18:26:12.133Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-10T18:26:12.133Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 1,
               "Title": "MenusController.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Controllers\\MenusController.cs",
               "RelativeDocumentMoniker": "Controllers\\MenusController.cs",
               "ToolTip": "E:\\personal project\\burgerbuddy\\backend\\backend\\Controllers\\MenusController.cs",
               "RelativeToolTip": "Controllers\\MenusController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAH8AAAAsAAAAAAAAAA==",
+              "ViewState": "AgIAAGQAAAAAAAAAAAAiwGkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-08T18:24:44.002Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "20250407182303_tokencomplete.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Migrations\\20250407182303_tokencomplete.cs",
               "RelativeDocumentMoniker": "Migrations\\20250407182303_tokencomplete.cs",
@@ -176,7 +187,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "appsettings.json",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -188,7 +199,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "Program.cs",
               "DocumentMoniker": "E:\\personal project\\burgerbuddy\\backend\\backend\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
