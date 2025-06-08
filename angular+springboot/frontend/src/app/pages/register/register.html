@@ -1,0 +1,147 @@
+<div class="register-container">
+  <div class="register-card">
+    <!-- Header -->
+    <div class="card-header">
+      <div class="icon-container">
+        <i class="fas fa-user"></i>
+      </div>
+      <h2 class="card-title">Create account</h2>
+      <p class="card-description">
+        Sign up for a new account to get started
+      </p>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <div class="form-content">
+        <!-- Full Name Field -->
+        <div class="form-field">
+          <label for="name" class="field-label">Full Name</label>
+          <div class="input-container">
+            <i class="fas fa-user input-icon"></i>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              placeholder="Enter your full name"
+              class="form-input"
+              [class.error]="hasFieldError('name')"
+            />
+          </div>
+          <div class="error-message" *ngIf="hasFieldError('name')">
+            {{ getFieldError('name') }}
+          </div>
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-field">
+          <label for="email" class="field-label">Email</label>
+          <div class="input-container">
+            <i class="fas fa-envelope input-icon"></i>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="Enter your email"
+              class="form-input"
+              [class.error]="hasFieldError('email')"
+            />
+          </div>
+          <div class="error-message" *ngIf="hasFieldError('email')">
+            {{ getFieldError('email') }}
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-field">
+          <label for="password" class="field-label">Password</label>
+          <div class="input-container">
+            <i class="fas fa-lock input-icon"></i>
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Create a password"
+              class="form-input password-input"
+              [class.error]="hasFieldError('password')"
+            />
+            <button
+              type="button"
+              (click)="togglePasswordVisibility()"
+              class="password-toggle"
+            >
+              <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <div class="error-message" *ngIf="hasFieldError('password')">
+            {{ getFieldError('password') }}
+          </div>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="form-field">
+          <label for="confirmPassword" class="field-label">Confirm Password</label>
+          <div class="input-container">
+            <i class="fas fa-lock input-icon"></i>
+            <input
+              id="confirmPassword"
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              placeholder="Confirm your password"
+              class="form-input password-input"
+              [class.error]="hasFieldError('confirmPassword')"
+            />
+            <button
+              type="button"
+              (click)="toggleConfirmPasswordVisibility()"
+              class="password-toggle"
+            >
+              <i [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <div class="error-message" *ngIf="hasFieldError('confirmPassword')">
+            {{ getFieldError('confirmPassword') }}
+          </div>
+        </div>
+
+        <!-- Terms and Privacy -->
+        <div class="terms-text">
+          By creating an account, you agree to our
+          <button type="button" (click)="onTermsClick()" class="link-button">
+            Terms of Service
+          </button>
+          and
+          <button type="button" (click)="onPrivacyClick()" class="link-button">
+            Privacy Policy
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="card-footer">
+        <button
+          type="submit"
+          class="submit-button"
+          [disabled]="isLoading"
+        >
+          <div *ngIf="isLoading" class="loading-content">
+            <div class="spinner"></div>
+            <span>Creating account...</span>
+          </div>
+          <span *ngIf="!isLoading">Create account</span>
+        </button>
+
+        <div class="sign-in-link">
+          Already have an account?
+          <button
+            type="button"
+            (click)="onBackToSignIn()"
+            class="link-button font-medium"
+          >
+            Sign in
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
